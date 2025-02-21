@@ -1,2 +1,0 @@
-add_example(porting_registers)
-add_example(porting_registers_slm)

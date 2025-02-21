@@ -1,1 +1,0 @@
-add_example(sycl_prepare_bench)

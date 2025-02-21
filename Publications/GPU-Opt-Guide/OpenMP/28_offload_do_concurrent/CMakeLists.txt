@@ -1,3 +1,0 @@
-add_fortran_example(do_concurrent)
-add_fortran_example(hybrid_do_concurrent)
-add_fortran_example(omp6_do_concurrent)

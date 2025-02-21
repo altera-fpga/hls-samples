@@ -1,1 +1,0 @@
-add_openmp_example(histogram)

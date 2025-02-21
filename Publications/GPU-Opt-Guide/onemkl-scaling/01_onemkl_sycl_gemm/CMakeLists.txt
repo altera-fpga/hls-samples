@@ -1,1 +1,0 @@
-add_example_with_mkl(onemkl_sycl_gemm)

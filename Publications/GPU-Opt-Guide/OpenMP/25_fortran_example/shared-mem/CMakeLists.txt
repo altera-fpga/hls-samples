@@ -1,1 +1,0 @@
-add_fortran_example_with_mkl_i8(test-SharedMem)

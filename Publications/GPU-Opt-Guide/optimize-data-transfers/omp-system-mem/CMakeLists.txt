@@ -1,1 +1,0 @@
-add_fortran_example_with_mkl(openmp_system_mem)

@@ -1,1 +1,0 @@
-add_example(flat_sycl_vec_add)

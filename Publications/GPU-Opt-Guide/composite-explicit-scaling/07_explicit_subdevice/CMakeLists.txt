@@ -1,2 +1,0 @@
-add_example(explicit_subdevice)
-set_tests_properties(explicit_subdevice PROPERTIES ENVIRONMENT "ZE_FLAT_DEVICE_HIERARCHY=COMPOSITE")

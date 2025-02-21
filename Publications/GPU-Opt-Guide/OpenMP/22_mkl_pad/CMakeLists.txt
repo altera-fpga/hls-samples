@@ -1,4 +1,0 @@
-include_directories(common)
-
-add_example_with_mkl(dgemm_pad_c_01)
-add_fortran_example_with_mkl(dgemm_pad_f_01)

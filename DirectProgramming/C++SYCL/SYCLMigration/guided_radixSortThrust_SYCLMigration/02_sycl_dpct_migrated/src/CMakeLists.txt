@@ -1,5 +1,0 @@
-add_executable(radixSortMigrated radixSortMigrated.cpp)
-
-target_link_libraries(radixSortMigrated OpenCL sycl)
-
-add_custom_target(run_radixSortMigrated radixSortMigrated)
