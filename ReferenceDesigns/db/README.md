@@ -34,8 +34,8 @@ flowchart LR
    style tier4 fill:#f96,stroke:#333,stroke-width:1px,color:#fff
 ```
 
-Find more information about how to navigate this part of the code samples in the [FPGA top-level README.md](/DirectProgramming/C++SYCL_FPGA/README.md).
-You can also find more information about [troubleshooting build errors](/README.md#troubleshooting), [using Visual Studio Code with the code samples](/README.md#use-visual-studio-code-vs-code-optional), [links to selected documentation](/DirectProgramming/C++SYCL_FPGA/README.md#documentation), etc.
+Find more information about how to navigate this part of the code samples in the [FPGA top-level README.md](/README.md).
+You can also find more information about [troubleshooting build errors](/README.md#troubleshooting), [using Visual Studio Code with the code samples](/README.md#use-visual-studio-code-vs-code-optional), [links to selected documentation](/README.md#documentation), etc.
 
 | Optimized for                     | Description
 ---                                 |---
@@ -60,7 +60,7 @@ You can also find more information about [troubleshooting build errors](/README.
 
 In this design, we accelerate four database queries as **offload accelerators**. In an offload accelerator scheme, the queries are performed by transferring the relevant data from the CPU host to the FPGA, starting the query kernel on the FPGA, and copying the results back. This means that the relevant performance number is the processing time (the wall clock time) from when the query is requested to the time the output data is accessible by the host. This includes the time to transfer data between the CPU and FPGA over PCIe (with an approximate read and write bandwidth of 6877 and 6582 MB/s, respectively). Most of the total query time is spent transferring the data between the CPU and FPGA, and the query kernels themselves are a small portion of the total latency.
 
-> **Note**: Refer to the [Performance Disclaimers](/DirectProgramming/C++SYCL_FPGA/README.md#performance-disclaimers) section for important performance information.
+> **Note**: Refer to the [Performance Disclaimers](/README.md#performance-disclaimers) section for important performance information.
 
 ## Key Implementation Details
 

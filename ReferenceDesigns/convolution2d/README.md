@@ -34,8 +34,8 @@ flowchart LR
    style tier4 fill:#f96,stroke:#333,stroke-width:1px,color:#fff
 ```
 
-Find more information about how to navigate this part of the code samples in the [FPGA top-level README.md](/DirectProgramming/C++SYCL_FPGA/README.md).
-You can also find more information about [troubleshooting build errors](/README.md#troubleshooting), [using Visual Studio Code with the code samples](/README.md#use-visual-studio-code-vs-code-optional), [links to selected documentation](/DirectProgramming/C++SYCL_FPGA/README.md#documentation), etc.
+Find more information about how to navigate this part of the code samples in the [FPGA top-level README.md](/README.md).
+You can also find more information about [troubleshooting build errors](/README.md#troubleshooting), [using Visual Studio Code with the code samples](/README.md#use-visual-studio-code-vs-code-optional), [links to selected documentation](/README.md#documentation), etc.
 
 | Optimized for      | Description
 |:---                |:---
@@ -61,7 +61,7 @@ Performance results are based on testing conducted with a pre-release version of
 * These estimates were achieved by setting a 600 MHz clock target for the `Agilex7` device. You can set the clock target by adding the `-Xsclock=600MHz` flag to CMakeLists.txt, or by passing it to the `cmake` command as shown in [Building the `convolution2d` Tutorial](#building-the-convolution2d-tutorial).
 * The reported fMAX is the 'restricted fMAX' as reported by Intel® Quartus® Prime.
 
-> **Note**: Refer to the [Performance Disclaimers](/DirectProgramming/C++SYCL_FPGA/README.md#performance-disclaimers) section for important performance information.
+> **Note**: Refer to the [Performance Disclaimers](/README.md#performance-disclaimers) section for important performance information.
 
 #### Intel Agilex® 7 FPGA
 

@@ -32,8 +32,8 @@ flowchart LR
    style tier4 fill:#f96,stroke:#333,stroke-width:1px,color:#fff
 ```
 
-Find more information about how to navigate this part of the code samples in the [FPGA top-level README.md](/DirectProgramming/C++SYCL_FPGA/README.md).
-You can also find more information about [troubleshooting build errors](/README.md#troubleshooting), [using Visual Studio Code with the code samples](/README.md#use-visual-studio-code-vs-code-optional), [links to selected documentation](/DirectProgramming/C++SYCL_FPGA/README.md#documentation), etc.
+Find more information about how to navigate this part of the code samples in the [FPGA top-level README.md](/README.md).
+You can also find more information about [troubleshooting build errors](/README.md#troubleshooting), [using Visual Studio Code with the code samples](/README.md#use-visual-studio-code-vs-code-optional), [links to selected documentation](/README.md#documentation), etc.
 
 | Optimized for        | Description
 |:---                  |:---
@@ -56,7 +56,7 @@ You can also find more information about [troubleshooting build errors](/README.
 
 Performance results are based on testing as of May 14, 2024.
 
-> **Note**: Refer to the [Performance Disclaimers](/DirectProgramming/C++SYCL_FPGA/README.md#performance-disclaimers) section for important performance information.
+> **Note**: Refer to the [Performance Disclaimers](/README.md#performance-disclaimers) section for important performance information.
 
 | Device                                            | Throughput
 |:---                                               |:---
