@@ -76,10 +76,6 @@ using acc_lz_to_crc_channel_array =
       32,
       NUM_ENGINES
     >;
-    
-using NonCachingLSU = sycl::ext::intel::lsu<sycl::ext::intel::burst_coalesce<true>,
-                                            sycl::ext::intel::cache<0>,
-                                            sycl::ext::intel::statically_coalesce<true>>;
 
 template <int Begin, int End>
 struct Unroller {
@@ -2168,7 +2164,7 @@ event SubmitLZReduction(queue &q, size_t block_size, bool last_block,
         // load in new data
         struct LzInput in;
         Unroller<0, kVec>::step([&](int i) {
-          in.data[i] = NonCachingLSU::load(acc_pibuf + inpos); // Reads 16 bytes, just one time.
+          in.data[i] = acc_pibuf[inpos++]; // Reads 16 bytes, just one time.
           inpos++;
           input_data.arr[i] =
               in.data[i];  // Send a copy of the data to the CRC kernel, through
