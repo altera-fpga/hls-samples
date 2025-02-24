@@ -15,7 +15,7 @@
 #include "produce.hpp"
 #include "sorting_networks.hpp"
 
-// Included from DirectProgramming/C++SYCL_FPGA/include/
+// Included from include/
 #include "constexpr_math.hpp"
 #include "pipe_utils.hpp" 
 #include "unrolled_loop.hpp"

@@ -8,7 +8,7 @@
 #include "data_bundle.hpp"
 #include "shift_reg.hpp"
 
-// Included from DirectProgramming/C++SYCL_FPGA/include/
+// Included from include/
 #include "constexpr_math.hpp"
 #include "unrolled_loop.hpp"
 

@@ -10,7 +10,7 @@
 
 #include "memory_transfers.hpp"
 
-// Included from DirectProgramming/C++SYCL_FPGA/include/
+// Included from include/
 #include "streaming_cholesky.hpp"
 #include "tuple.hpp"
 

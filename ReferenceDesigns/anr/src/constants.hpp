@@ -3,7 +3,7 @@
 
 #include <sycl/ext/intel/ac_types/ac_int.hpp>
 
-// Included from DirectProgramming/C++SYCL_FPGA/include/
+// Included from include/
 #include "constexpr_math.hpp"
 
 // The size of the filter can be changed at the command line

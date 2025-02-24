@@ -3,7 +3,7 @@
 
 #include "qfp.hpp"
 
-// Included from DirectProgramming/C++SYCL_FPGA/include/
+// Included from include/
 #include "constexpr_math.hpp"
 #include "rom_base.hpp"
 

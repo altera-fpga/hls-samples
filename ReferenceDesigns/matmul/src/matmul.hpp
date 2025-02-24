@@ -8,7 +8,7 @@
 #include <sycl/sycl.hpp>
 
 #include "memory_transfers.hpp"
-// Included from DirectProgramming/C++SYCL_FPGA/include/
+// Included from include/
 #include "streaming_matmul.hpp"
 
 #if not defined(IS_BSP)
