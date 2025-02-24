@@ -3,8 +3,8 @@
 
 #include <sycl/ext/intel/ac_types/ac_int.hpp>
 
-#include "constexpr_math.hpp"  // DirectProgramming/C++SYCL_FPGA/include
-#include "unrolled_loop.hpp"   // DirectProgramming/C++SYCL_FPGA/include
+#include "constexpr_math.hpp"  // From the include directory
+#include "unrolled_loop.hpp"   // From the include directory
 
 namespace fpga_tools {
 

@@ -1,7 +1,7 @@
 #ifndef __PARALLEL_COPY_ARRAY_HPP__
 #define __PARALLEL_COPY_ARRAY_HPP__
 
-#include "unrolled_loop.hpp"   // DirectProgramming/C++SYCL_FPGA/include
+#include "unrolled_loop.hpp"   // From the include directory
 
 // ParallelCopyArray
 // Defines a struct with a single element data, which is an array of type T.

@@ -70,7 +70,7 @@ The key optimization techniques used in this design include:
 2. Improving code reuse, readability, and extendability using C++ templates for FPGA device code.
 3. Showcasing the usage of advanced FPGA optimizations listed above to improve the performance of a large design.
 
-This design leverages concepts discussed in the [FPGA tutorials](/DirectProgramming/C++SYCL_FPGA/Tutorials) to optimize the different database queries,.
+This design leverages concepts discussed in the [FPGA tutorials](/Tutorials) to optimize the different database queries,.
 
 * *Shannonization to improve Fmax/II* (shannonization)
 * *Optimizing Inner Loop Throughput* (optimize_inner_loop)

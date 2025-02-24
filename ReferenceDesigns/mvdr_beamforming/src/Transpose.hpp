@@ -4,8 +4,8 @@
 #include <sycl/sycl.hpp>
 #include <sycl/ext/intel/fpga_extensions.hpp>
 
-#include "tuple.hpp"          // DirectProgramming/C++SYCL_FPGA/include
-#include "unrolled_loop.hpp"  // DirectProgramming/C++SYCL_FPGA/include
+#include "tuple.hpp"          // From the include directory
+#include "unrolled_loop.hpp"  // From the include directory
 
 using namespace sycl;
 

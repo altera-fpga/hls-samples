@@ -82,7 +82,7 @@ while (keep_going) {
 }
 ```
 
-In this sample, `StopPipe` has been assigned the `protocol::avalon_mm_uses_ready` property so it is mapped to the kernel's control/status register (CSR) instead of a streaming interface. Mapping to the CSR allows this kernel to be managed by a memory-mapped host (such as a Nios® V softcore processor), but mapping to a streaming interface is convenient if this kernel were to be managed by another SYCL kernel. For details about the `protocol::avalon_mm_uses_ready` property, see the [CSR Pipes](/DirectProgramming/C++SYCL_FPGA/Tutorials/Features/hls_flow_interfaces/component_interfaces_comparison/csr-pipes) sub-sample within the [Component Interfaces Comparison](/DirectProgramming/C++SYCL_FPGA/Tutorials/Features/hls_flow_interfaces/component_interfaces_comparison) code sample.
+In this sample, `StopPipe` has been assigned the `protocol::avalon_mm_uses_ready` property so it is mapped to the kernel's control/status register (CSR) instead of a streaming interface. Mapping to the CSR allows this kernel to be managed by a memory-mapped host (such as a Nios® V softcore processor), but mapping to a streaming interface is convenient if this kernel were to be managed by another SYCL kernel. For details about the `protocol::avalon_mm_uses_ready` property, see the [CSR Pipes](/Tutorials/Features/hls_flow_interfaces/component_interfaces_comparison/csr-pipes) sub-sample within the [Component Interfaces Comparison](/Tutorials/Features/hls_flow_interfaces/component_interfaces_comparison) code sample.
 
 ![](assets/stopcsr.png)
 

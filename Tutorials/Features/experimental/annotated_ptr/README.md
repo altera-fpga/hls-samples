@@ -46,7 +46,7 @@ You can also find more information about [troubleshooting build errors](/README.
 
 ## Purpose
 
-The [hls_flow_interfaces/mmhost](/DirectProgramming/C++SYCL_FPGA/Tutorials/Features/hls_flow_interfaces/mmhost) code sample demonstrates how to use the `annotated_arg` wrapper class to customize an Avalon memory-mapped interface for an FPGA IP component.
+The [hls_flow_interfaces/mmhost](/Tutorials/Features/hls_flow_interfaces/mmhost) code sample demonstrates how to use the `annotated_arg` wrapper class to customize an Avalon memory-mapped interface for an FPGA IP component.
 
 A useful design optimization in FPGA SYCL code is to design with multiple buffer locations, (either multiple memory channels in a full SYCL system, or multiple memory-mapped host interfaces in a SYCL HLS IP). If your code contains un-annotated pointers (e.g. `float *`), the compiler will not know at compile time which buffer location to assign to load/store units (LSUs) associated with that pointer. This tutorial shows how to use the `annotated_ptr` class to constrain memory accesses to a pointer variable inside the kernel, which reduces the number of LSUs used in the generated FPGA IP component.
 

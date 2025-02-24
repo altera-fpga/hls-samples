@@ -52,7 +52,7 @@ You can also find more information about [troubleshooting build errors](/README.
 
 
 ## Purpose
-The `annotated_arg` class can be used to customize Avalon memory-mapped interfaces for FPGA IP components. (To learn more about the `annotated_arg` class, refer to the code sample [mmhost](/DirectProgramming/C++SYCL_FPGA/Tutorials/Features/hls_flow_interfaces/mmhost)). This tutorial will further demonstrate how to use the helper code in `annotated_class_util.hpp` to clean up your code that uses `annotated_arg`. You may add `annotated_class_util.hpp` to your designs.
+The `annotated_arg` class can be used to customize Avalon memory-mapped interfaces for FPGA IP components. (To learn more about the `annotated_arg` class, refer to the code sample [mmhost](/Tutorials/Features/hls_flow_interfaces/mmhost)). This tutorial will further demonstrate how to use the helper code in `annotated_class_util.hpp` to clean up your code that uses `annotated_arg`. You may add `annotated_class_util.hpp` to your designs.
 
 
 ### Simplify the Declaration of Annotated Types with Groups of Properties by Using the `properties_t` Alias
@@ -88,7 +88,7 @@ sycl::ext::oneapi::experimental::annotated_arg<int *, ArgProps> arg_x;
 > set(USER_FLAGS ${USER_FLAGS} -std=c++20)
 >```
 
-> **Note**: The `properties_t` alias can be used on other annotated classes that specify properties in form of `decltype(sycl::ext::oneapi::experimental::properties{...})`, such as [device_global](/DirectProgramming/C++SYCL_FPGA/Tutorials/Features/experimental/device_global) and [pipe](/DirectProgramming/C++SYCL_FPGA/Tutorials/Features/hls_flow_interfaces/streaming_data_interfaces), assuming you have included the header file "annotation_class_util.hpp" that appears in this code sample.
+> **Note**: The `properties_t` alias can be used on other annotated classes that specify properties in form of `decltype(sycl::ext::oneapi::experimental::properties{...})`, such as [device_global](/Tutorials/Features/experimental/device_global) and [pipe](/Tutorials/Features/hls_flow_interfaces/streaming_data_interfaces), assuming you have included the header file "annotation_class_util.hpp" that appears in this code sample.
 
 
 ### Allocate Host/Shared Memory with Properties That Match with Avalon Memory-Mapped Host Interfaces by Using the Helper Function `alloc_annotated`
