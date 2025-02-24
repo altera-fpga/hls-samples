@@ -11,7 +11,7 @@
 #include <sycl/sycl.hpp>
 #include <sycl/ext/intel/fpga_extensions.hpp>
 
-#include "tuple.hpp"  // DirectProgramming/C++SYCL_FPGA/include
+#include "tuple.hpp"  // From the include directory
 #include "mvdr_complex.hpp"
 
 #if not defined(REAL_IO_PIPES)

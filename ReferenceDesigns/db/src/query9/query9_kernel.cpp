@@ -6,7 +6,7 @@
 #include "query9_kernel.hpp"
 #include "pipe_types.hpp"
 
-#include "onchip_memory_with_cache.hpp" // DirectProgramming/C++SYCL_FPGA/include
+#include "onchip_memory_with_cache.hpp" // From the include directory
 
 #include "../db_utils/Accumulator.hpp"
 #include "../db_utils/LikeRegex.hpp"

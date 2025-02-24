@@ -66,7 +66,7 @@ The sample demonstrates the following important concepts:
 
 ### A Simple Array of Pipes
 
-To create an array of pipes, include the `pipe_utils.hpp` header from the `../DirectProgramming/C++SYCL_FPGA/include/..` directory in your design:
+To create an array of pipes, include the `pipe_utils.hpp` header from the `include/..` directory in your design:
 
 ```c++
 #include "pipe_utils.hpp"

@@ -123,7 +123,7 @@ These source files are in the sample `src` directory.
 |`cholesky.hpp`            | Contains the compute function that calls the kernels.
 |`memory_transfers.hpp`    | Contains functions to transfer matrices from/to the FPGA DDR with streaming interfaces.
 
-For `constexpr_math.hpp`, `memory_utils.hpp`, `metaprogramming_utils.hpp`, and `unrolled_loop.hpp` see the README in the `DirectProgramming/C++SYCL_FPGA/include/` directory.
+For `constexpr_math.hpp`, `memory_utils.hpp`, `metaprogramming_utils.hpp`, and `unrolled_loop.hpp` see the README in the `include/` directory.
 
 ## Build the `Cholesky Decomposition` Reference Design
 

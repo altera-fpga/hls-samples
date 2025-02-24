@@ -113,13 +113,13 @@ The following source files are in the `src` directory.
 |`row_stencil.hpp`                | A generic library for computing a row stencil (a 1D horizontal convolution).
 |`shift_reg.hpp`                  | A generic library for a shift register.
 
-For `constexpr_math.hpp`, `unrolled_loop.hpp`, and `rom_base.hpp` see the README in the `DirectProgramming/C++SYCL_FPGA/include/` directory.
+For `constexpr_math.hpp`, `unrolled_loop.hpp`, and `rom_base.hpp` see the README in the `include/` directory.
 
 #### Reusable Header Files
 
 The design uses the following generic header files.
 
->**Note**: Some of these headers files are in the `/DirectProgramming/C++SYCL_FPGA/include` folder. You might need to copy some of them to the reference design sample `src` directory to compile the program correctly.
+>**Note**: Some of these headers files are in the `include` folder. You might need to copy some of them to the reference design sample `src` directory to compile the program correctly.
 
 | File                                    | Description
 |:---                                     |:---

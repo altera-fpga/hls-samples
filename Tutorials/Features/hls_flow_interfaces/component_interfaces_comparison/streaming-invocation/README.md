@@ -23,7 +23,7 @@ In this design, all kernel arguments (`A_in`, `B_in`, `C_out`, `len`) are implem
 Since `A_in`, `B_in` and `C_out` are pointers, they will share a Avalon memory-mapped host interface.
 
 ## Build the Design
-This design supports four compilation options: Emulator, Simulator, Optimization Report, FPGA Hardware. For details on the different compilation options, see [fpga_compile](DirectProgramming/C++SYCL_FPGA/Tutorials/GettingStarted/fpga_compile) tutorial.
+This design supports four compilation options: Emulator, Simulator, Optimization Report, FPGA Hardware. For details on the different compilation options, see [fpga_compile](/Tutorials/GettingStarted/fpga_compile) tutorial.
 
 > **Note**: When working with the command-line interface (CLI), you should configure the oneAPI toolkits using environment variables. 
 > Set up your CLI environment by sourcing the `setvars` script located in the root of your oneAPI installation every time you open a new terminal window. 

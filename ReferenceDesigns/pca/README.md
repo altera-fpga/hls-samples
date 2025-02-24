@@ -242,7 +242,7 @@ The sorting actually creates an index list of the most significant columns.
 This index is then used to stream the Eigen values and Eigen vectors out of the kernel in the correct order.
 
 
-More information about the QR decomposition algorithm used in this design can be found in the [QRD reference design](/DirectProgramming/C++SYCL_FPGA/ReferenceDesigns/qrd).
+More information about the QR decomposition algorithm used in this design can be found in the [QRD reference design](/ReferenceDesigns/qrd).
 
 
 To optimize the performance-critical loop in this algorithm, the design leverages concepts discussed in the following FPGA tutorials:

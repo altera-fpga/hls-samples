@@ -4,7 +4,7 @@ This code sample demonstrates how to optimize a banked memory system.
 
 ## Purpose
 
-When compiling your design for FPGA architectures, the Intel® oneAPI DPC++/C++ Compiler can choose to implement your variables as registers, or as block memories. The details of this decision are better defined in the [Memory System code sample](DirectProgramming/C++SYCL_FPGA/Tutorials/Features/memory_attributes). However, an ill-formed memory layout can lead to negative impact on your system performance. 
+When compiling your design for FPGA architectures, the Intel® oneAPI DPC++/C++ Compiler can choose to implement your variables as registers, or as block memories. The details of this decision are better defined in the [Memory System code sample](/Tutorials/Features/memory_attributes). However, an ill-formed memory layout can lead to negative impact on your system performance. 
 
 This tutorial teaches you:
 

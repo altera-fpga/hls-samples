@@ -72,7 +72,7 @@ Performance results are based on testing conducted with a pre-release version of
 | 4               | 3x3               | `float`          | 10-bit Integer | 639.8                 | 7677  |  36        | 18
 | 8               | 3x3               | `float`          | 10-bit Integer | 639.8                 | 14410 |  72        | 19
 
-> **Note**: This design uses a relatively large number of ALM resources because of the floating-point conversions in `ConvolutionFunction()` in `src/convolution_kernel.hpp`. The coefficients for this design were specified as floating-point for maximal flexibility in coefficient values, but the enthusiastic user is encouraged to convert this function to fixed-point using the `ac_fixed` types, as described in [this sample](/DirectProgramming/C%2B%2BSYCL_FPGA/Tutorials/Features/ac_fixed).
+> **Note**: This design uses a relatively large number of ALM resources because of the floating-point conversions in `ConvolutionFunction()` in `src/convolution_kernel.hpp`. The coefficients for this design were specified as floating-point for maximal flexibility in coefficient values, but the enthusiastic user is encouraged to convert this function to fixed-point using the `ac_fixed` types, as described in [this sample](/Tutorials/Features/ac_fixed).
 
 ## Key Implementation Details
 
