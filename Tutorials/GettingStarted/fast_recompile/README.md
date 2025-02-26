@@ -62,7 +62,7 @@ flowchart LR
 ```
 
 Find more information about how to navigate this part of the code samples in the [FPGA top-level README.md](/README.md).
-You can also find more information about [troubleshooting build errors](/README.md#troubleshooting), [using Visual Studio Code with the code samples](/README.md#use-visual-studio-code-vs-code-optional), [links to selected documentation](/README.md#documentation), and more.
+You can also find more information about [troubleshooting build errors](/README.md#troubleshooting), [links to selected documentation](/README.md#documentation), and more.
 
 ## Key Implementation Details
 
