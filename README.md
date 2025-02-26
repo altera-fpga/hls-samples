@@ -24,7 +24,7 @@ Alternatively, you can download a zip file containing the primary branch in repo
 
 ### Understand FPGA Programming
 
-The *Introduction To FPGA Design Concepts* section of the [FPGA Optimization Guide for Intel® oneAPI Toolkits](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/optimization-guide) contains information on the basic concepts that are foundational to FPGA programming. Read that section to get the most from these FPGA samples.
+The section [Introduction To FPGA Design Concepts](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/developer-guide/current/introduction-to-fpga-design-concepts.html) contains information on the basic concepts that are foundational to FPGA programming. Read that section to get the most from these FPGA samples.
 
 ## FPGA Repository Structure
 
@@ -254,7 +254,7 @@ No product or component can be absolutely secure.
 
 ## Documentation
 
-- The [FPGA Optimization Guide for Intel® oneAPI Toolkits](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/optimization-guide) helps you understand how to target FPGAs using SYCL and Intel® oneAPI Toolkits.
+- The [Intel® oneAPI FPGA Handbook](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/developer-guide) helps you understand how to target FPGAs using SYCL and Intel® oneAPI Toolkits.
 - The [Intel® oneAPI Programming Guide](https://www.intel.com/content/www/us/en/docs/oneapi/programming-guide) helps you understand target-independent, SYCL-compliant programming using Intel® oneAPI Toolkits.
 - The [Intel® oneAPI DPC++/C++ Compiler Release Notes](https://www.intel.com/content/www/us/en/developer/articles/release-notes/intel-oneapi-dpc-c-compiler-release-notes.html).
 - The [Migrating OpenCL™ FPGA Designs to SYCL*](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/migrate-opencl-design-to-dpcpp) guide.
