@@ -1,0 +1,36 @@
+name: sys-hld Comment Commands
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  pull-to-latest:
+    name: Pull To Latest
+    if: github.event.issue.pull_request
+    runs-on: [self-hosted, static, linux, "site-SC"]
+    steps:
+      - name: pull the PR branch up to date with Stella
+        if: startsWith(github.event.comment.body, '@sys-hld pull')
+        env:
+          PR_NUMBER: ${{ github.event.issue.number }}
+        shell: "arc shell jq -- bash {0}"
+        run: |
+          set -e
+          gh pr comment -R "$GITHUB_REPOSITORY" --body "@$GITHUB_ACTOR I didn't make this PR, so I can't update it for you. If you meant to ask me to fix a 'conflict with the base branch' error, make sure you're writing your comment on the correct PR! It should be the one that the error appears below in the Stella Info block." "$PR_NUMBER"
+
+  override-code-review:
+    name: Override Code Review
+    if: github.event.issue.pull_request
+    runs-on: [self-hosted, static, linux, "site-SC"]
+    steps:
+      - name: approve this PR
+        if: startsWith(github.event.comment.body, '@sys-hld I am authorized to override code review')
+        shell: "arc shell jq -- bash {0}"
+        run: |
+          if [ "${{ github.event.issue.user.login }}" = "sys-hld" ]; then
+            gh pr comment --body "I can't review this PR because I made it."
+          else
+            gh pr review -a --body "Approved! I hope you know what you're doing...
+
+          @${{ github.event.repository.owner.login}}/fpga-hld-dhe-developers" "${{ github.event.issue.html_url }}"
+          fi

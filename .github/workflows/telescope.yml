@@ -1,0 +1,106 @@
+name: Telescope
+
+on:
+  pull_request_target:
+    types:
+      - assigned
+      - converted_to_draft
+      - ready_for_review
+      - opened
+      - closed
+      - reopened
+      - synchronize
+  pull_request_review:
+    types:
+      - submitted
+      - dismissed
+  issue_comment:
+    types:
+      - created
+
+
+jobs:
+  # TODO: Merge the jobs once they no longer expect different repos to be checked out in the main working directory.
+  apr:
+    name: Analyze Pull Request
+    runs-on: [ self-hosted, static, "site-SC" ]
+    if: github.event_name != 'issue_comment' || startsWith(github.event.comment.body, '@sys-hld rerun Telescope')
+    concurrency: 
+      group: telescope-${{ github.event.number || github.event.issue.number || github.event.pull_request.number }}
+    steps:
+      - name: Checkout Actions Repo
+        uses: actions/checkout@v3
+        with:
+          repository: intel-innersource/applications.fpga.oneapi.internal.github-actions
+          token: ${{ secrets.SYS_HLD_TOKEN }}
+          path: .github/internal/actions
+
+      - name: Create Helper PRs
+        uses: ./.github/internal/actions/create-pr
+        with:
+          pr_number: ${{ github.event.number || github.event.issue.number || github.event.pull_request.number }}
+          pr_action: ${{ github.event.action }}
+          mongodb_connection_string: ${{ secrets.MONGODB_CONNECTION_STRING }}
+
+  mergebot:
+    name: Mergebot
+    # this must be always() so that it doesn't get skipped when APR is skipped.
+    if: always() && (github.event_name != 'issue_comment' || startsWith(github.event.comment.body, '@sys-hld rerun Telescope'))
+    needs:
+      - apr
+    runs-on: [self-hosted, static, linux, "site-SC"]
+    concurrency: 
+      group: telescope-${{ github.event.number || github.event.issue.number }}
+    steps:
+      - name: Check Runner Contents
+        run: ls -la
+    
+      - uses: actions/checkout@v3
+        name: Checkout Metarepo
+        with:
+          repository: intel-innersource/applications.fpga.oneapi.stella
+          token: ${{ secrets.SYS_HLD_TOKEN }}
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Clean Stale Git Locks
+        run: |
+          find .git -name index.lock | xargs rm -fv
+
+      - name: Checkout Actions Repo
+        uses: actions/checkout@v3
+        with:
+          repository: intel-innersource/applications.fpga.oneapi.internal.github-actions
+          token: ${{ secrets.SYS_HLD_TOKEN }}
+          path: .github/internal/actions
+          persist-credentials: false
+
+      - name: Detect and Execute Automatic Merge
+        uses: ./.github/internal/actions/mergebot
+        with:
+          token: ${{ secrets.SYS_HLD_TOKEN }}
+          mongodb_connection_string: ${{ secrets.MONGODB_CONNECTION_STRING }}
+          
+  stella-ui:
+    name: Stella UI
+    runs-on: [ self-hosted, static, "site-SC" ]
+    needs:
+      - apr
+      - mergebot
+    # This job must run even if the other ones fail.
+    if: always() && (github.event_name != 'issue_comment' || startsWith(github.event.comment.body, '@sys-hld rerun Telescope'))
+    concurrency: 
+      group: telescope-${{ github.event.number || github.event.issue.number }}
+    steps:
+      - name: Checkout Actions Repo
+        uses: actions/checkout@v3
+        with:
+          repository: intel-innersource/applications.fpga.oneapi.internal.github-actions
+          token: ${{ secrets.SYS_HLD_TOKEN }}
+          path: .github/internal/actions
+
+      - name: Update Stella UI
+        uses: ./.github/internal/actions/update-stella-ui
+        with:
+          token: ${{ secrets.SYS_HLD_TOKEN }}
+          mongodb_connection_string: ${{ secrets.MONGODB_CONNECTION_STRING }}

@@ -1,0 +1,19 @@
+name: Repository Specific Checks
+
+on:
+  workflow_call:
+
+jobs:
+  example-job:
+    name: Example Job
+    runs-on: [ self-hosted, static, linux, "site-SC" ]
+    steps:
+    - name: Example
+      run: echo Do nothing
+
+  example-job-2:
+    name: Example Job 2
+    runs-on: [ self-hosted, static, linux, "site-SC" ]
+    steps:
+    - name: Example
+      run: echo Do nothing
