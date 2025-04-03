@@ -1,7 +1,7 @@
-# Direct CMake to use icpx rather than the default C++ compiler/linker on Linux
+# Direct CMake to use aclang rather than the default C++ compiler/linker on Linux
 # and icx-cl on Windows
 if(UNIX)
-    set(CMAKE_CXX_COMPILER icpx)
+    set(CMAKE_CXX_COMPILER aclang)
 else() # Windows
     include (CMakeForceCompiler)
     CMAKE_FORCE_CXX_COMPILER (icx-cl IntelDPCPP)
@@ -156,12 +156,12 @@ message(STATUS "Additional USER_LIBS=${USER_LIBS}")
 
 if(WIN32)
     # add qactypes for Windows
-    set(QACTYPES "-Qactypes")
+    set(QACTYPES "")
     # This is a Windows-specific flag that enables exception handling in host code
     set(WIN_FLAG "/EHsc")
 else()
     # add qactypes for Linux
-    set(QACTYPES "-qactypes")
+    set(QACTYPES "")
 endif()
 
 string(TOLOWER "${CMAKE_BUILD_TYPE}" LOWER_BUILD_TYPE)
@@ -226,7 +226,7 @@ target_compile_options(${REPORT_TARGET} PRIVATE ${REPORT_COMPILE_FLAGS})
 
 # The report target does not need the QACTYPES flag at link stage
 set(MODIFIED_COMMON_LINK_FLAGS_REPORT ${COMMON_LINK_FLAGS})
-list(REMOVE_ITEM MODIFIED_COMMON_LINK_FLAGS_REPORT ${QACTYPES})
+
 
 target_link_libraries(${REPORT_TARGET} ${MODIFIED_COMMON_LINK_FLAGS_REPORT})
 target_link_libraries(${REPORT_TARGET} ${REPORT_LINK_FLAGS})
