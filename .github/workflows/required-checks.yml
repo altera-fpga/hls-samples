@@ -45,7 +45,7 @@ jobs:
     - name: checkout codeowners-validator action repo
       uses: actions/checkout@v3
       with:
-        repository: intel-sandbox/applications.fpga.oneapi.internal.github-actions
+        repository: altera-sandbox/applications.fpga.oneapi.internal.github-actions
         token: ${{ secrets.SYS_HLD_TOKEN }}
         path: .github/internal/actions
         persist-credentials: false
@@ -81,7 +81,7 @@ jobs:
     - name: Checkout Actions Repo
       uses: actions/checkout@v3
       with:
-        repository: intel-innersource/applications.fpga.oneapi.external.actionsdesk-lfs-warning
+        repository: altera-innersource/applications.fpga.oneapi.external.actionsdesk-lfs-warning
         ref: master
         token: ${{ secrets.SYS_HLD_TOKEN }}
         path: .github/external/actions/actionsdesk-lfs-warning
@@ -137,7 +137,7 @@ jobs:
       - name: Checkout Actions Repo
         uses: actions/checkout@v3
         with:
-          repository: intel-innersource/applications.fpga.oneapi.internal.github-actions
+          repository: altera-innersource/applications.fpga.oneapi.internal.github-actions
           token: ${{ secrets.SYS_HLD_TOKEN }}
           path: .github/internal/actions
       - name: Get Reviewers
@@ -213,7 +213,7 @@ jobs:
       - name: Checkout Actions Repo
         uses: actions/checkout@v3
         with:
-          repository: intel-innersource/applications.fpga.oneapi.internal.github-actions
+          repository: altera-innersource/applications.fpga.oneapi.internal.github-actions
           token: ${{ secrets.SYS_HLD_TOKEN }}
           path: .github/internal/actions
 

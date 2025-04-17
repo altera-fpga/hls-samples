@@ -13,7 +13,7 @@ jobs:
       - name: Checkout action repo
         uses: actions/checkout@v3
         with:
-          repository: intel-innersource/applications.fpga.oneapi.internal.github-actions
+          repository: altera-innersource/applications.fpga.oneapi.internal.github-actions
           token: ${{ secrets.SYS_HLD_TOKEN }}
           path: .github/internal/actions
           persist-credentials: false
