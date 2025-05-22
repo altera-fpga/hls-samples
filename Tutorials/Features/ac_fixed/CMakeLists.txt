@@ -45,7 +45,7 @@ set(USER_FPGA_FLAGS ${USER_FPGA_FLAGS})
 if(WIN32)
     set(USER_FLAGS -fp:precise;${USER_FLAGS})
 else()
-    set(USER_FLAGS -fp-model=precise;${USER_FLAGS})
+    set(USER_FLAGS -ffp-model=precise;${USER_FLAGS})
 endif()
 
 # Use cmake -DUSER_INCLUDE_PATHS=<paths> to set extra paths for general

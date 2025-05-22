@@ -69,7 +69,7 @@ endif()
 if(WIN32)
     set(PRECISE_FLAG "-fp:precise")
 else()
-    set(PRECISE_FLAG "-fp-model=precise")
+    set(PRECISE_FLAG "-ffp-model=precise")
     # Prevent ignoring NaN values
     set(EXTRA_COMPILE_FLAG -fno-finite-math-only)
 endif()
