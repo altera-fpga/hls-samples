@@ -1,13 +1,13 @@
 # `Annotated Classes Clean Coding` Sample
 
-This Intel® FPGA tutorial demonstrates how to use the included `annotated_class_util.hpp` header file to write cleaner code. You can use this header file to write cleaner code as follows:
+This tutorial demonstrates how to use the included `annotated_class_util.hpp` header file to write cleaner code. You can use this header file to write cleaner code as follows:
 * simplify the declaration of annotated types with groups of properties by using the `properties_t` alias.
 * create annotated pointers more neatly than the standard USM allocation APIs by using the `alloc_annotated` helper function.
 
 | Optimized for                     | Description
 |:---                               |:---
 | OS                                | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware                          | Intel® Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
+| Hardware                          | Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
 | Software                          | Intel® oneAPI DPC++/C++ Compiler
 | What you will learn               | How to use the provided helper funtion to allocate host/shared memory with properties for your FPGA IP components
 | Time to complete                  | 10 minutes
@@ -15,14 +15,14 @@ This Intel® FPGA tutorial demonstrates how to use the included `annotated_class
 
 > **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> To use the simulator flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
+> To use the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
 > - Questa*-Intel® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
 >
-> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
+> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 > :warning: Make sure the GCC (for Linux) or Visual Studio (for Windows) in your system supports C++20 features. This requires GCC 9 or later (for Linux) or Visual Studio 2019 version 16.11 or later (for Windows).
 

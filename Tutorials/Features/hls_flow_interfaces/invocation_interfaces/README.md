@@ -19,19 +19,19 @@ Use the `get` kernel properties method to specify how the IP is started, and `an
 | Optimized for        | Description
 |:---                  |:---
 | OS                   | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware             | Intel® Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
+| Hardware             | Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
 | Software             | Intel® oneAPI DPC++/C++ Compiler
 
 > **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> For using the simulator flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
+> For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
 > - Questa*-Intel® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
 
-> **Warning** Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
+> **Warning** Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 This sample is part of the FPGA code samples.
 It is categorized as a Tier 2 sample that demonstrates a compiler feature.
@@ -77,7 +77,7 @@ The invocation interface and any argument interfaces are specified independently
 
 If you would like an argument to have its own **dedicated** ready/valid handshake, implement that argument using a [streaming interface](../streaming_data_interfaces/).
 
-> **Note**: The register-mapped and streaming interface features are **only** supported in the SYCL HLS flow. The SYCL HLS flow compiles SYCL* source code to IPs that can be deployed into your Intel® Quartus® Prime projects. Emulator and simulator executables are still generated to allow you to validate your IP. You can compile the generated RTL with Intel® Quartus® Prime to generate accurate f<sub>MAX</sub> and area estimates. However, the six `.fpga` executables generated in this tutorial are **not** designed to run on FPGA devices directly.
+> **Note**: The register-mapped and streaming interface features are **only** supported in the SYCL HLS flow. The SYCL HLS flow compiles SYCL* source code to IPs that can be deployed into your Quartus® Prime projects. Emulator and simulator executables are still generated to allow you to validate your IP. You can compile the generated RTL with Quartus® Prime to generate accurate f<sub>MAX</sub> and area estimates. However, the six `.fpga` executables generated in this tutorial are **not** designed to run on FPGA devices directly.
 
 ### Declaring a Register-Mapped Invocation Interface
 
@@ -308,7 +308,7 @@ This code sample contains 6 source files that together demonstrate a full spectr
 ### On Linux*
 
 1. Change to the sample directory.
-2. Build the program for Intel® Agilex® 7 device family, which is the default.
+2. Build the program for Agilex® 7 device family, which is the default.
    ```
    mkdir build
    cd build
@@ -356,7 +356,7 @@ This code sample contains 6 source files that together demonstrate a full spectr
       ```
       make fpga_sim
       ```
-   4. Run the generated HDL through Intel® Quartus® Prime to generate accurate f<sub>MAX</sub> and area estimates.
+   4. Run the generated HDL through Quartus® Prime to generate accurate f<sub>MAX</sub> and area estimates.
       > **Warning**: The FPGA executables generated in this tutorial are **not** supported to be run on FPGA devices directly.
       ```
       make fpga
@@ -365,7 +365,7 @@ This code sample contains 6 source files that together demonstrate a full spectr
 ### On Windows*
 
 1. Change to the sample directory.
-2. Build the program for the Intel® Agilex® 7 device family, which is the default.
+2. Build the program for the Agilex® 7 device family, which is the default.
    ```
    mkdir build
    cd build
@@ -413,7 +413,7 @@ This code sample contains 6 source files that together demonstrate a full spectr
       ```
       nmake fpga_sim
       ```
-   4. Run the generated HDL through Intel® Quartus® Prime to generate accurate f<sub>MAX</sub> and area estimates.
+   4. Run the generated HDL through Quartus® Prime to generate accurate f<sub>MAX</sub> and area estimates.
       > **Warning**: The FPGA executables generated in this tutorial are **not** supported to be run on FPGA devices directly.
 
 > **Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your 'build' directory in a shorter path, for example c:\samples\build.  You can then run cmake from that directory, and provide cmake with the full path to your sample directory, for example:

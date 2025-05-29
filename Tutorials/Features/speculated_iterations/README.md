@@ -20,19 +20,19 @@ The `speculated_iterations` attribute is a loop attribute that enables you to di
 | Optimized for        | Description
 |:---                  |:---
 | OS                   | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware             | Intel® Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
+| Hardware             | Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
 | Software             | Intel® oneAPI DPC++/C++ Compiler
 
 > **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> For using the simulator flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
+> For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
 > - Questa*-Intel® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
 
-> **Warning**: Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
+> **Warning**: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 This sample is part of the FPGA code samples. It is categorized as a Tier 2 sample that demonstrates a compiler feature.
 
@@ -102,7 +102,7 @@ In both increasing and decreasing cases, some experimentation is usually necessa
 
 In the tutorial design's kernel, the loop's exit condition involves a logarithm and a compare operation. This complex exit condition prevents the loop from achieving ```II=1```.
 
-The design enqueues variants of the kernel with 0, 10, and 27 speculated iterations, respectively, to demonstrate the effect of the `speculated_iterations` attribute on an Intel® Arria® 10 FPGA. Different numbers are chosen for the Intel® Stratix® 10 and Intel Agilex® 7 targets accordingly.
+The design enqueues variants of the kernel with 0, 10, and 27 speculated iterations, respectively, to demonstrate the effect of the `speculated_iterations` attribute on an Arria® 10 FPGA. Different numbers are chosen for the Stratix® 10 and Agilex® 7 targets accordingly.
 
 ## Build the `Speculated Iterations` Tutorial
 
@@ -122,7 +122,7 @@ The design enqueues variants of the kernel with 0, 10, and 27 speculated iterati
 ### On Linux*
 
 1. Change to the sample directory.
-2. Build the program for Intel® Agilex® 7 device family, which is the default.
+2. Build the program for Agilex® 7 device family, which is the default.
    ```
    mkdir build
    cd build
@@ -173,7 +173,7 @@ The design enqueues variants of the kernel with 0, 10, and 27 speculated iterati
 ### On Windows*
 
 1. Change to the sample directory.
-2. Build the program for the Intel® Agilex® 7 device family, which is the default.
+2. Build the program for the Agilex® 7 device family, which is the default.
    ```
    mkdir build
    cd build

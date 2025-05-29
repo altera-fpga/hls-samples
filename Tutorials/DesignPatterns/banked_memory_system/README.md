@@ -34,7 +34,7 @@ flowchart LR
 ```
 
 Find more information about how to navigate this part of the code samples in the [FPGA top-level README.md](/README.md).
-You can also find more information about [troubleshooting build errors](/README.md#troubleshooting), [running the sample on the Intel® DevCloud](/README.md#build-and-run-the-samples-on-intel-devcloud-optional), [links to selected documentation](/README.md#documentation), etc.
+You can also find more information about [troubleshooting build errors](/README.md#troubleshooting), [links to selected documentation](/README.md#documentation), etc.
 
 | Optimized for      | Description
 |:---                |:---
@@ -44,14 +44,14 @@ You can also find more information about [troubleshooting build errors](/README.
 
 > **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> For using the simulator flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
+> For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
 > - Questa*-Intel® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
 >
-> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
+> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 ## Key Implementation Details
 
@@ -194,7 +194,7 @@ This design uses CMake to generate a build script for GNU/make.
 
 1. Change to the sample directory.
 
-2. Build the program for Intel® Agilex® 7 device family, which is the default.
+2. Build the program for Agilex® 7 device family, which is the default.
 
    ```
    mkdir build
@@ -232,7 +232,7 @@ This design uses CMake to generate a build script for GNU/make.
 
 1. Change to the sample directory.
 
-2. Build the program for the Intel® Agilex® 7 device family, which is the default.
+2. Build the program for the Agilex® 7 device family, which is the default.
    ```
    mkdir build
    cd build
@@ -312,7 +312,7 @@ This design uses CMake to generate a build script for GNU/make.
 ## Example Output
 
 ```
-Running on device: Intel(R) FPGA Emulation Device
+Running on device: FPGA Emulation Device
 Launch kernel
 Checking output
 Verification PASSED.

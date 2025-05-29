@@ -1,24 +1,24 @@
 # `Platform Designer` Sample
 
-This example design shows how to use an FPGA IP produced with the Intel® oneAPI DPC++/C++ Compiler with the Intel® Quartus® Prime Pro Edition software suite. Please refer to [Platform Designer Standard](../platform_designer_standard/) code sample when targeting a Cyclone® V SoC Board.
+This example design shows how to use an FPGA IP produced with the Intel® oneAPI DPC++/C++ Compiler with the Quartus® Prime Pro Edition software suite. Please refer to [Platform Designer Standard](../platform_designer_standard/) code sample when targeting a Cyclone® V SoC Board.
 
 | Optimized for                     | Description
 |:---                               |:---
 | OS                                | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware                          | This process applies to any Intel® FPGA that is supported by the DPC++/C++ compiler, but the sample Intel® Quartus® Prime Pro Edition project targets the [Intel® Arria® 10 SX SoC Development Kit](https://www.intel.com/content/www/us/en/products/details/fpga/development-kits/arria/10-sx.html)
-| Software                          | Intel® oneAPI DPC++/C++ Compiler <br> Intel® Quartus® Prime Pro Edition Version 22.3 or later
-| What you will learn               | How to integrate an RTL IP generated from a SYCL kernel with an Intel® Quartus® Prime Pro Edition project
+| Hardware                          | This process applies to any FPGA that is supported by the DPC++/C++ compiler, but the sample Quartus® Prime Pro Edition project targets the [Arria® 10 SX SoC Development Kit](https://www.intel.com/content/www/us/en/products/details/fpga/development-kits/arria/10-sx.html)
+| Software                          | Intel® oneAPI DPC++/C++ Compiler <br> Quartus® Prime Pro Edition Version 22.3 or later
+| What you will learn               | How to integrate an RTL IP generated from a SYCL kernel with an Quartus® Prime Pro Edition project
 | Time to complete                  | 1 hour
 
 > **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> To use the simulator flow, Intel® Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
+> To use the simulator flow, Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
 > - Questa*-Intel® FPGA Starter Edition
 > - Questa* Advanced Simulator
 > - ModelSim® SE
 >
-> To use the hardware compile flow, Intel® Quartus® Prime Pro Edition must be installed and accessible through your PATH.
+> To use the hardware compile flow, Quartus® Prime Pro Edition must be installed and accessible through your PATH.
 
 ## Prerequisites
 
@@ -48,15 +48,15 @@ You can also find more information about [troubleshooting build errors](/README.
 This sample demonstrates how to:
 
 * Compile a SYCL kernel into an IP component
-* Add the IP component to an Intel® Platform Designer system
-* Add the Platform Designer system to a top-level entity in a Intel® Quartus® Prime project
+* Add the IP component to a Platform Designer system
+* Add the Platform Designer system to a top-level entity in a Quartus® Prime project
 * Compile and run the resulting system on a hardware board. 
 
 The sample uses the JTAG to Avalon® Master Bridge Intel FPGA IP to connect your IP component to the JTAG control interface. You can use the System Console application to control and observe the behavior of your IP component.
 
 ![](assets/csr-output-example-simple.svg)
 
-This example is intended for users interested in creating standalone modules that can be included in Intel® Quartus® Prime projects. It serves as a minimal example, and while it targets a specific board, a user familiar with the Intel® Quartus® Prime Software Suite should be able to easily port this design to other hardware.
+This example is intended for users interested in creating standalone modules that can be included in Quartus® Prime projects. It serves as a minimal example, and while it targets a specific board, a user familiar with the Quartus® Prime Software Suite should be able to easily port this design to other hardware.
 
 ## Key Implementation Details
 
@@ -65,18 +65,18 @@ This tutorial is structured with four source code directories.
 | Source Directory  | Description
 |:--                |:--
 | `add_oneapi`      | The source and build scripts needed to compile a simple IP using oneAPI
-| `add_quartus_sln` | An example of the project files that are created using the Intel® Quartus® Prime GUI
-| `starting_files`  | The minimal source files you need to create a Intel® Quartus® Prime project. Additional project files are created using the Intel® Quartus® Prime GUI.
+| `add_quartus_sln` | An example of the project files that are created using the Quartus® Prime GUI
+| `starting_files`  | The minimal source files you need to create a Quartus® Prime project. Additional project files are created using the Quartus® Prime GUI.
 | `system_console`  | Scripts for controlling the System Console application while you test the design in hardware
 
 ### Board-specific Considerations
 
-This design is intended to work with the Intel® Arria® 10 SX SoC Development Kit. These board-specific configurations are not guaranteed to work with different boards:
+This design is intended to work with the Arria® 10 SX SoC Development Kit. These board-specific configurations are not guaranteed to work with different boards:
 1. Choose `10AS066N3F40E2SG` device to match the devkit
 2. Choose pin `PIN_AM10` to drive the `i_clk` signal
 3. Choose pin `PIN_AR23` to drive the `fpga_led` signal
 4. Choose pin `PIN_AV21` to drive the `reset_button_n` signal
-5. Use `jtag.sdc` from the Intel® Arria® 10 SoC Golden Hardware Reference Design (GHRD) [source code](https://github.com/altera-opensource/ghrd-socfpga).
+5. Use `jtag.sdc` from the Arria® 10 SoC Golden Hardware Reference Design (GHRD) [source code](https://github.com/altera-opensource/ghrd-socfpga).
 
 ## Building the `platform_designer` Tutorial
 
@@ -118,9 +118,9 @@ Follow these steps to compile and test the design:
    > cd ..
    ```
 
-2. **From the same terminal**, prepare a project directory called `add_quartus` for the Intel® Quartus® Prime project and copy the source files `add.sv` and `jtag.sdc` from the `starting_files` directory into it. Then launch the Intel® Quartus® Prime Pro Edition GUI, and create a new Intel® Quartus® Prime project using the 'New Project' wizard.
+2. **From the same terminal**, prepare a project directory called `add_quartus` for the Quartus® Prime project and copy the source files `add.sv` and `jtag.sdc` from the `starting_files` directory into it. Then launch the Quartus® Prime Pro Edition GUI, and create a new Quartus® Prime project using the 'New Project' wizard.
 
-   > **Note**: You may confirm your Intel® Quartus® Prime project settings by comparing with the sample Intel® Quartus® Prime project included in the `add_quartus_sln` directory.
+   > **Note**: You may confirm your Quartus® Prime project settings by comparing with the sample Quartus® Prime project included in the `add_quartus_sln` directory.
 
    Linux:
    
@@ -158,7 +158,7 @@ Follow these steps to compile and test the design:
       
       `jtag.sdc` contains timing constraints for the JTAG IP.
 
-3. Copy the IP you generated in Step 1 to the Intel Quartus® Prime project. 
+3. Copy the IP you generated in Step 1 to the Quartus® Prime project. 
 
    Linux:
 
@@ -176,7 +176,7 @@ Follow these steps to compile and test the design:
 
 4. Create the Platform Designer system.
 
-   1. Open Platform Designer from the Intel® Quartus® Prime GUI:
+   1. Open Platform Designer from the Quartus® Prime GUI:
 
       ![](assets/open-platform-designer-button.png)
 
@@ -212,19 +212,19 @@ Follow these steps to compile and test the design:
 
    8. Make sure there are no errors in the 'System Messages' panel.
 
-   9. Generate the system so that it can be included in the Intel® Quartus® Prime project by clicking `Generate HDL...`
+   9. Generate the system so that it can be included in the Quartus® Prime project by clicking `Generate HDL...`
 
       ![](assets/generate-hdl.png)
 
    10. Close Platform Designer. 
    
-6. In the Intel® Quartus® Prime window, run Analysis and Elaboration by clicking 'Start Analysis and Elaboration'.
+6. In the Quartus® Prime window, run Analysis and Elaboration by clicking 'Start Analysis and Elaboration'.
 
    ![](assets/start-analysis.png)
 
 7. Select pins for the `i_clk` and `reset_button_n` inputs and `fpga_led` output. The JTAG to Avalon® Master Bridge Intel FPGA IP handles the connection between your design and the JTAG pins on your board automatically.
 
-   1. Open the pin planner using `Assignments` > `Pin Planner` in the main Intel® Quartus® Prime GUI. Consult the data sheet for your board to choose an appropriate clock input. In this project, the `PIN_AM10` was chosen because it supplies a 100MHz clock signal in the the GHRD source code (see link in **Board-specifc Considerations**).
+   1. Open the pin planner using `Assignments` > `Pin Planner` in the main Quartus® Prime GUI. Consult the data sheet for your board to choose an appropriate clock input. In this project, the `PIN_AM10` was chosen because it supplies a 100MHz clock signal in the the GHRD source code (see link in **Board-specifc Considerations**).
 
    2. Assign pins for the `fpga_led` and `reset_button_n` signals using the same method:
    
@@ -244,7 +244,7 @@ Follow these steps to compile and test the design:
 
 8. Add the timing constraints. 
 
-   1. If you are using the Intel® Arria® 10 SX SoC Dev Kit, you can find a timing constraints file for the JTAG interface (jtag.sdc) in the GHRD. This file was added during project creation.
+   1. If you are using the Arria® 10 SX SoC Dev Kit, you can find a timing constraints file for the JTAG interface (jtag.sdc) in the GHRD. This file was added during project creation.
 
    2. Create a new Synopsis Design Constraints (SDC) file named `add.sdc` and insert a new clock called `i_clk` to match the clock you defined in `add.sv`. Set the period to be 10ns:
 
@@ -261,7 +261,7 @@ Follow these steps to compile and test the design:
       set_false_path -from * -to [get_ports {fpga_led}]
       ```
 
-9. Compile the full design by clicking the 'Start Compilation' button in the Intel® Quartus® Prime GUI.
+9. Compile the full design by clicking the 'Start Compilation' button in the Quartus® Prime GUI.
 
       ![](assets/start-compilation-quartus.png)
 
@@ -279,7 +279,7 @@ Follow these steps to compile and test the design:
    > xcopy add_quartus\output_files\add.sof system_console /Y
    ```
 
-You may also build the SOF using the pre-generated Intel® Qupartus® Prime project in the `add_quartus_sln` directory by executing the included `build_system.tcl` script. This script has been verified against the latest version of Quartus® Prime Pro Edition software available at the time of writing (24.1). The script and pre-generated project may not work with other versions of Quartus® Prime.
+You may also build the SOF using the pre-generated Quartus® Prime project in the `add_quartus_sln` directory by executing the included `build_system.tcl` script. This script has been verified against the latest version of Quartus® Prime Pro Edition software available at the time of writing (24.1). The script and pre-generated project may not work with other versions of Quartus® Prime.
 
    Linux:
 
@@ -298,12 +298,12 @@ You may also build the SOF using the pre-generated Intel® Qupartus® Prime proj
    ```
 
 ### Additional Documentation
-- [Intel® Arria® 10 SoC Golden System Reference Design](https://rocketboards.org/foswiki/Documentation/Arria10SoCGSRD) describes a reference design you can use with your Intel® Arria® 10 SX SoC Developer kit.
-- [Intel® Arria® 10 SX SoC Development Kit](https://www.intel.com/content/www/us/en/products/details/fpga/development-kits/arria/10-sx.html) describes the Intel® Arria® 10 SX SoC Development kit in greater detail.
-- [Intel® FPGA Software Installation and Licensing](https://www.intel.com/content/www/us/en/docs/programmable/683472/current/) describes how to license Intel® Quartus® Prime Pro Edition software.
-- [Intel® Quartus® Prime Pro Edition User Guide: Getting Started](https://www.intel.com/content/www/us/en/docs/programmable/683463/current/) introduces you to the Intel® Quartus® Prime Pro Edition software.
-- [Intel® Quartus® Prime Pro Edition User Guide: Platform Designer](https://www.intel.com/content/www/us/en/docs/programmable/683609/current/) describes the Intel® Platform Designer software.
-- [Intel® Quartus® Prime Pro Edition User Guide: Programmer](https://www.intel.com/content/www/us/en/docs/programmable/683039/current/) describes the Intel® Quartus® Prime Pro Programmer software.
+- [Arria® 10 SoC Golden System Reference Design](https://rocketboards.org/foswiki/Documentation/Arria10SoCGSRD) describes a reference design you can use with your Arria® 10 SX SoC Developer kit.
+- [Arria® 10 SX SoC Development Kit](https://www.intel.com/content/www/us/en/products/details/fpga/development-kits/arria/10-sx.html) describes the Arria® 10 SX SoC Development kit in greater detail.
+- [Intel® FPGA Software Installation and Licensing](https://www.intel.com/content/www/us/en/docs/programmable/683472/current/) describes how to license Quartus® Prime Pro Edition software.
+- [Quartus® Prime Pro Edition User Guide: Getting Started](https://www.intel.com/content/www/us/en/docs/programmable/683463/current/) introduces you to the Quartus® Prime Pro Edition software.
+- [Quartus® Prime Pro Edition User Guide: Platform Designer](https://www.intel.com/content/www/us/en/docs/programmable/683609/current/) describes the Intel® Platform Designer software.
+- [Quartus® Prime Pro Edition User Guide: Programmer](https://www.intel.com/content/www/us/en/docs/programmable/683039/current/) describes the Quartus® Prime Pro Programmer software.
 
 ## Running the Sample
 
@@ -317,7 +317,7 @@ See output:
 > test.bat
 Info: *******************************************************************
 Info: Running Quartus Prime Programmer
-<output from Intel® Quartus® Prime programmer>
+<output from Quartus® Prime programmer>
 Info: Quartus Prime Programmer was successful. 0 errors, 0 warnings
     Info: Peak virtual memory: 1309 megabytes
     Info: Processing ended: Wed Feb  8 15:26:54 2023

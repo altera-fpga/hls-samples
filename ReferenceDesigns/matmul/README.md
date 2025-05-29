@@ -38,19 +38,19 @@ You can also find more information about [troubleshooting build errors](/README.
 | Optimized for        | Description
 |:---                  |:---
 | OS                   | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware             | Intel® Agilex™ 7, Arria® 10, and Stratix® 10 FPGAs
+| Hardware             | Agilex™ 7, Arria® 10, and Stratix® 10 FPGAs
 | Software             | Intel® oneAPI DPC++/C++ Compiler
 
 > **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> For using the simulator flow, Intel® Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
+> For using the simulator flow, Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
 > - Questa*-Intel® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition must be installed and accessible through your PATH.
 >
-> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
+> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 ### Performance
 
@@ -149,7 +149,7 @@ These results were gathered from targeting the Arria® 10 device family using th
 |:---               |:---
 | `-Xshardware`     | Target FPGA hardware (as opposed to FPGA emulator)
 | `-Xsclock=360MHz` | The FPGA backend attempts to achieve 360 MHz
-| `-Xsseed`         | Specifies the Intel® Quartus® compile seed, to yield slightly higher fmax
+| `-Xsseed`         | Specifies the Quartus® compile seed, to yield slightly higher fmax
 
 Additionaly, the cmake build system can be configured using the following parameters:
 

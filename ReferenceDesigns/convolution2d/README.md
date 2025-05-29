@@ -1,6 +1,6 @@
 # 2D Image Convolution
 
-This project demonstrates how to use SYCL HLS to create a 2D Convolution IP that can be used in your Intel® Quartus® Prime projects. 
+This project demonstrates how to use SYCL HLS to create a 2D Convolution IP that can be used in your Quartus® Prime projects. 
 
 ## Purpose
 
@@ -40,30 +40,30 @@ You can also find more information about [troubleshooting build errors](/README.
 | Optimized for      | Description
 |:---                |:---
 | OS                 | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware           | Intel® Agilex® 7, Arria® 10, and Stratix® 10 FPGAs
+| Hardware           | Agilex® 7, Arria® 10, and Stratix® 10 FPGAs
 | Software           | Intel® oneAPI DPC++/C++ Compiler
 
 > **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> For using the simulator flow, Intel® Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
+> For using the simulator flow, Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
 > - Questa*-Intel® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition must be installed and accessible through your PATH.
 >
-> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
+> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 ### Performance
 
-Performance results are based on testing conducted with a pre-release version of oneAPI 2024.2, with released Intel® Quartus® Prime Pro Edition 24.1 software. Testing was conducted May 25, 2024. Area and f<sub>MAX</sub> estimates are averaged across 8 seeds. 
+Performance results are based on testing conducted with a pre-release version of oneAPI 2024.2, with released Quartus® Prime Pro Edition 24.1 software. Testing was conducted May 25, 2024. Area and f<sub>MAX</sub> estimates are averaged across 8 seeds. 
 * These area estimates are ONLY for the `Convolution2d` kernel, and do not include the `RGB2Grey` or `Grey2RGB` kernels. You can compile the design with only the `Convolution2d` kernel by compiling with the `-DTEST_CONV2D_ISOLATED=1` compiler flag, or by adding `#define TEST_CONV2D_ISOLATED 1` in `src/main.cpp`.
 * These estimates were achieved by setting a 600 MHz clock target for the `Agilex7` device. You can set the clock target by adding the `-Xsclock=600MHz` flag to CMakeLists.txt, or by passing it to the `cmake` command as shown in [Building the `convolution2d` Tutorial](#building-the-convolution2d-tutorial).
-* The reported fMAX is the 'restricted fMAX' as reported by Intel® Quartus® Prime.
+* The reported fMAX is the 'restricted fMAX' as reported by Quartus® Prime.
 
 > **Note**: Refer to the [Performance Disclaimers](/README.md#performance-disclaimers) section for important performance information.
 
-#### Intel Agilex® 7 FPGA
+#### Agilex® 7 FPGA
 
 | Parallel Pixels | Window Dimensions | Coefficient Type | Input Type     | f<sub>MAX</sub> (MHz) | ALMs  | DSP blocks | M20K Block RAM
 |---              |---                |---               |---             |---                    |---    |---         |---

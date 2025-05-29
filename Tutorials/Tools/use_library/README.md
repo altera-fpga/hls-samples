@@ -15,19 +15,19 @@ This FPGA tutorial demonstrates how to build SYCL device libraries from RTL sour
 | Optimized for                     | Description
 |:---                               |:---
 | OS                                | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware                          | Intel® Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
+| Hardware                          | Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
 | Software                          | Intel® oneAPI DPC++/C++ Compiler
 
 > **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> For using the simulator flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
+> For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
 > - Questa*-Intel® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
 >
-> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
+> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 
 This sample is part of the FPGA code samples.
@@ -154,7 +154,7 @@ Note that the library files (\*.a) must be included after all of the cpp files i
 ### On a Linux* System
 
 1. Change to the sample directory.
-2. Build the program for Intel® Agilex® 7 device family, which is the default.
+2. Build the program for Agilex® 7 device family, which is the default.
    ```
    mkdir build
    cd build
@@ -181,7 +181,7 @@ Note that the library files (\*.a) must be included after all of the cpp files i
       ```
       make fpga_sim
       ```
-   4. Compile for FPGA hardware (longer compile time, runs Intel® Quartus® Prime to get accurate area estimates).
+   4. Compile for FPGA hardware (longer compile time, runs Quartus® Prime to get accurate area estimates).
       ```
       make fpga
       ```
@@ -189,7 +189,7 @@ Note that the library files (\*.a) must be included after all of the cpp files i
 ### On a Windows* System
 
 1. Change to the sample directory.
-2. Build the program for the Intel® Agilex® 7 device family, which is the default.
+2. Build the program for the Agilex® 7 device family, which is the default.
    ```
    mkdir build
    cd build
@@ -215,7 +215,7 @@ Note that the library files (\*.a) must be included after all of the cpp files i
       ```
       nmake fpga_sim
       ```
-   4. Compile for FPGA hardware (longer compile time, runs Intel® Quartus® Prime to get accurate area estimates).
+   4. Compile for FPGA hardware (longer compile time, runs Quartus® Prime to get accurate area estimates).
       ```
       nmake fpga
       ```

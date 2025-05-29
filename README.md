@@ -68,10 +68,10 @@ flowchart LR
 |:---                                                                                                       |:---                                                                              |:---
 | [fpga_compile](Tutorials/GettingStarted/fpga_compile)                                                     | [Tutorials/GettingStarted](Tutorials/GettingStarted)                             | How and why compiling SYCL* code for FPGA differs from CPU or GPU <br> FPGA device image types and when to use them. <br> The compile options used to target FPGA
 | [fast_recompile](Tutorials/GettingStarted/fast_recompile)                                                 | [Tutorials/GettingStarted](Tutorials/GettingStarted)                             | Why to separate host and device code compilation in your FPGA project <br> How to use the `-reuse-exe` and device link. <br> Which method to choose for your project
-| [fpga_template](Tutorials/GettingStarted/fpga_template)                                                   | [Tutorials/GettingStarted](Tutorials/GettingStarted)                             | An Intel® FPGA tutorial that explains the CMake build system that is used in other code samples, and serves as a template that you can re-use in your own designs
+| [fpga_template](Tutorials/GettingStarted/fpga_template)                                                   | [Tutorials/GettingStarted](Tutorials/GettingStarted)                             | An FPGA tutorial that explains the CMake build system that is used in other code samples, and serves as a template that you can re-use in your own designs
 | [component_interfaces_comparison](Tutorials/Features/hls_flow_interfaces/component_interfaces_comparison) | [Tutorials/Features/hls_flow_interfaces](Tutorials/Features/hls_flow_interfaces) | This sample introduces different invocation/data interfaces that can be used for IP components
-| [platform_designer](Tutorials/Tools/platform_designer)                                                    | [Tutorials/Tools](Tutorials/Tools)                                               | How to use FPGA IP produced with the Intel® oneAPI DPC++/C++ Compiler with Intel® Quartus® Prime Pro Edition software suite and Platform Designer
-| [platform_designer_standard](Tutorials/Tools/platform_designer_standard)                                  | [Tutorials/Tools](Tutorials/Tools)                                               | How to use FPGA IP produced with the Intel® oneAPI DPC++/C++ Compiler with Intel® Quartus® Prime Standard Edition software suite and Platform Designer
+| [platform_designer](Tutorials/Tools/platform_designer)                                                    | [Tutorials/Tools](Tutorials/Tools)                                               | How to use FPGA IP produced with the Intel® oneAPI DPC++/C++ Compiler with Quartus® Prime Pro Edition software suite and Platform Designer
+| [platform_designer_standard](Tutorials/Tools/platform_designer_standard)                                  | [Tutorials/Tools](Tutorials/Tools)                                               | How to use FPGA IP produced with the Intel® oneAPI DPC++/C++ Compiler with Quartus® Prime Standard Edition software suite and Platform Designer
 
 #### Tier 2: Explore the Fundamentals
 
@@ -192,7 +192,7 @@ All the Tier 4 samples are in the [ReferenceDesigns](ReferenceDesigns) category.
 | [board_test](ReferenceDesigns/board_test)                 | How to test board interfaces to ensure the designed platform provides expected performance
 | [cholesky](ReferenceDesigns/cholesky)                     | How to implement high performance matrix Cholesky decomposition on a FPGA
 | [cholesky_inversion](ReferenceDesigns/cholesky_inversion) | How to implement high performance Cholesky matrix decomposition on a FPGA
-| [convolution_2d](ReferenceDesigns/convolution2d)          | How to implement a 2D convolution IP component that can be exported to Intel® Quartus® Prime
+| [convolution_2d](ReferenceDesigns/convolution2d)          | How to implement a 2D convolution IP component that can be exported to Quartus® Prime
 | [crr](ReferenceDesigns/crr)                               | How to implement the Cox-Ross-Rubinstein (CRR) binomial tree model on a FPGA
 | [db](ReferenceDesigns/db)                                 | How to accelerate database queries using an FPGA
 | [decompress](ReferenceDesigns/decompress)                 | How to implement an efficient GZIP and Snappy decompression engine on a FPGA
@@ -259,7 +259,7 @@ No product or component can be absolutely secure.
 - The [Intel® oneAPI DPC++/C++ Compiler Release Notes](https://www.intel.com/content/www/us/en/developer/articles/release-notes/intel-oneapi-dpc-c-compiler-release-notes.html).
 - The [Migrating OpenCL™ FPGA Designs to SYCL*](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/migrate-opencl-design-to-dpcpp) guide.
 - [Additional FPGA-specific Resources](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/optimization-guide).
-- The [Intel® Quartus® Prime Pro and Standard Software User Guides](https://www.intel.com/content/www/us/en/support/programmable/support-resources/design-software/user-guides.html).
+- The [Quartus® Prime Pro and Standard Software User Guides](https://www.intel.com/content/www/us/en/support/programmable/support-resources/design-software/user-guides.html).
 
 ## Licenses
 

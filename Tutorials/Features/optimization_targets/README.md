@@ -31,19 +31,19 @@ As an example, this tutorial shows how to use the minimum latency optimization t
 | Optimized for        | Description
 |:---                  |:---
 | OS                   | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware             | Intel® Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
+| Hardware             | Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
 | Software             | Intel® oneAPI DPC++/C++ Compiler
 
 > **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> For using the simulator flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
+> For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
 > - Questa*-Intel® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
 
-> **Warning**: Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
+> **Warning**: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 This sample is part of the FPGA code samples.
 It is categorized as a Tier 3 sample that demonstrates a compiler feature.
@@ -103,7 +103,7 @@ The basic function performed by the tutorial kernel is an RGB to grayscale algor
 ### On Linux*
 
 1. Change to the sample directory.
-2. Build the program for Intel® Agilex® 7 device family, which is the default.
+2. Build the program for Agilex® 7 device family, which is the default.
    ```
    mkdir build
    cd build
@@ -158,7 +158,7 @@ The basic function performed by the tutorial kernel is an RGB to grayscale algor
 ### On Windows*
 
 1. Change to the sample directory.
-2. Build the program for the Intel® Agilex® 7 device family, which is the default.
+2. Build the program for the Agilex® 7 device family, which is the default.
    ```
    mkdir build
    cd build
@@ -287,9 +287,9 @@ Exec Time: 1.9772e-05s, InputMB: 0.0038147MB
 PASSED: all kernel results are correct
 ```
 
-Comparing to Intel® Arria® 10 GX FPGA, it is more notable on Intel® Stratix® 10 SX FPGA that the minimum latency optimization target significantly reduces the latency, along with the f<sub>MAX</sub> and the throughput. That is because the minimum latency optimization target disables the hyper-optimized handshaking, which achieves higher f<sub>MAX</sub> at the cost of increased latency. 
+Comparing to Arria® 10 GX FPGA, it is more notable on Stratix® 10 SX FPGA that the minimum latency optimization target significantly reduces the latency, along with the f<sub>MAX</sub> and the throughput. That is because the minimum latency optimization target disables the hyper-optimized handshaking, which achieves higher f<sub>MAX</sub> at the cost of increased latency. 
 
-> **Note**: For more information on the hyper-optimized handshaking protocol on Intel® Stratix® 10 and Intel Agilex® 7 devices, see the [*Modify the Handshaking Protocol Between Clusters (-Xshyper-optimized-handshaking)*](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/optimization-guide/current/hyper-opt-handshaking.html) topic in the *FPGA Optimization Guide for Intel® oneAPI Toolkits Developer Guide*.
+> **Note**: For more information on the hyper-optimized handshaking protocol on Stratix® 10 and Agilex® 7 devices, see the [*Modify the Handshaking Protocol Between Clusters (-Xshyper-optimized-handshaking)*](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/optimization-guide/current/hyper-opt-handshaking.html) topic in the *FPGA Optimization Guide for Intel® oneAPI Toolkits Developer Guide*.
 
 ## License
 

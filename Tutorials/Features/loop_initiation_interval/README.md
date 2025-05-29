@@ -25,19 +25,19 @@ This FPGA tutorial demonstrates how to use the `intel::initiation_interval` attr
 | Optimized for        | Description
 |:---                  |:---
 | OS                   | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware             | Intel® Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
+| Hardware             | Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
 | Software             | Intel® oneAPI DPC++/C++ Compiler
 
 > **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> For using the simulator flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
+> For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
 > - Questa*-Intel® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
 
-> **Warning**: Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
+> **Warning**: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 This sample is part of the FPGA code samples.
 It is categorized as a Tier 2 sample that demonstrates a compiler feature.
@@ -100,7 +100,7 @@ By default, the compiler attempts to schedule each loop with the optimal minimum
 
 The `intel::initiation_interval` attribute can be used to specify an II for a particular loop. It informs the compiler to ignore the default heuristic and to try and schedule the loop that the attribute is applied to with the specific II the user provides.
 
-The targeted f<sub>MAX</sub> can be specified using the [`–Xsclock`](https://software.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide/top/fpga-optimization-flags-attributes-pragmas-and-extensions/optimization-flags/specify-schedule-fmax-target-for-kernels-xsclock-clock-target.html) compiler argument. The argument determines the pipelining effort of the compiler, which uses an internal model of the FPGA fabric to estimate f<sub>MAX</sub>. The true f<sub>MAX</sub> is known only after compiling to hardware. Without the argument, the default target f<sub>MAX</sub> is 240MHz for the Intel® Arria® 10 FPGAs and 480MHz for the Intel® Stratix® 10 and Agilex® 7 FPGAs, but the compiler will not strictly enforce reaching that default target when scheduling loops.
+The targeted f<sub>MAX</sub> can be specified using the [`–Xsclock`](https://software.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide/top/fpga-optimization-flags-attributes-pragmas-and-extensions/optimization-flags/specify-schedule-fmax-target-for-kernels-xsclock-clock-target.html) compiler argument. The argument determines the pipelining effort of the compiler, which uses an internal model of the FPGA fabric to estimate f<sub>MAX</sub>. The true f<sub>MAX</sub> is known only after compiling to hardware. Without the argument, the default target f<sub>MAX</sub> is 240MHz for the Arria® 10 FPGAs and 480MHz for the Stratix® 10 and Agilex® 7 FPGAs, but the compiler will not strictly enforce reaching that default target when scheduling loops.
 
 >**Note:** The scheduler prioritizes II over f<sub>MAX</sub> if both `-Xsclock` **and** `intel::initiation_interval` are used. Your kernel may be able to achieve a lower II for the loop with the `intel::initiation_interval` attribute while targeting a specific f<sub>MAX</sub>, but the loop will not be scheduled with the lower II.
 
@@ -151,9 +151,9 @@ Depending on the feedback path in the long-running loop, the rest of the kernel 
 
 In this part, `intel::initiation_interval` is used for both the short and long running loops to show the two scenarios where using the attribute is appropriate.
 
-The first `intel::initiation_interval` declaration sets an II value of 3 for the Intel® Arria® 10 FPGA, and an II value of 5 for the Intel® Stratix® 10 and Agilex® 7 FPGAs. Since the initialization loop has a low trip count compared to the long-running loop, a higher II for the initialization loop is a reasonable tradeoff to allow for a higher overall f<sub>MAX</sub> for the entire kernel.
+The first `intel::initiation_interval` declaration sets an II value of 3 for the Arria® 10 FPGA, and an II value of 5 for the Stratix® 10 and Agilex® 7 FPGAs. Since the initialization loop has a low trip count compared to the long-running loop, a higher II for the initialization loop is a reasonable tradeoff to allow for a higher overall f<sub>MAX</sub> for the entire kernel.
 
->**Note:** For Intel® Stratix® 10 FPGA, the estimated f<sub>MAX</sub> of the long-running loop is not able to reach the default targeted f<sub>MAX</sub> of 480MHz while maintaining an II of 1. This is due to the nature of the feedback path that exists in the long running loop. Setting the II of the initialization loop to 5 ensures that the initialization loop is not the bottleneck when finding the maximum operating frequency.
+>**Note:** For Stratix® 10 FPGA, the estimated f<sub>MAX</sub> of the long-running loop is not able to reach the default targeted f<sub>MAX</sub> of 480MHz while maintaining an II of 1. This is due to the nature of the feedback path that exists in the long running loop. Setting the II of the initialization loop to 5 ensures that the initialization loop is not the bottleneck when finding the maximum operating frequency.
 
 The second `intel::initiation_interval` declaration sets an II of 1 for the long-running loop. We might not want to compromise the II of 1 achieved for this loop while performing optimizations on other parts of the kernel. By declaring that the loop should have an II of 1, the compiler will produce an error if it cannot schedule this loop with that II. The error implies that the other optimization will have a negative performance impact on this loop. This makes it easier to find the cause of any throughput drops in larger designs.
 
@@ -175,7 +175,7 @@ The second `intel::initiation_interval` declaration sets an II of 1 for the long
 ### On Linux*
 
 1. Change to the sample directory.
-2. Build the program for Intel® Agilex® 7 device family, which is the default.
+2. Build the program for Agilex® 7 device family, which is the default.
    ```
    mkdir build
    cd build
@@ -230,7 +230,7 @@ The second `intel::initiation_interval` declaration sets an II of 1 for the long
 ### On Windows*
 
 1. Change to the sample directory.
-2. Build the program for the Intel® Agilex® 7 device family, which is the default.
+2. Build the program for the Agilex® 7 device family, which is the default.
    ```
    mkdir build
    cd build

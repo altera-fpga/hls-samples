@@ -4,7 +4,7 @@ This reference design demonstrates how to use an FPGA to accelerate database que
 
 | Area                   | Description
 |:---                    |:---
-| What you will learn    | How to accelerate database queries using an Intel FPGA
+| What you will learn    | How to accelerate database queries using an FPGA
 | Time to complete       | 1 hour
 | Category               | Reference Designs and End to End
 
@@ -12,7 +12,7 @@ This reference design demonstrates how to use an FPGA to accelerate database que
 
 The database query acceleration sample includes 8 tables and a set of 21 business-oriented queries with broad industry-wide relevance. This reference design shows how four queries can be accelerated using oneAPI. To do so, we create a set of common database operators (found in the `src/db_utils/` directory) that are combined in different ways to build the four queries.
 
-Note that this design uses a lot of resources and is designed with Intel® Stratix® 10 FPGA capabilities in mind.
+Note that this design uses a lot of resources and is designed with Stratix® 10 FPGA capabilities in mind.
 
 ## Prerequisites
 
@@ -40,19 +40,19 @@ You can also find more information about [troubleshooting build errors](/README.
 | Optimized for                     | Description
 ---                                 |---
 | OS                                | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware                          | Intel® Agilex® 7, Arria® 10, and Stratix® 10 FPGAs
+| Hardware                          | Agilex® 7, Arria® 10, and Stratix® 10 FPGAs
 | Software                          | Intel® oneAPI DPC++/C++ Compiler
 
 > **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> For using the simulator flow, Intel® Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
+> For using the simulator flow, Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
 > - Questa*-Intel® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition must be installed and accessible through your PATH.
 >
-> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
+> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 > **Note**: You'll need a large FPGA part to be able to fit the query 9 variant of this design
 
@@ -66,7 +66,7 @@ In this design, we accelerate four database queries as **offload accelerators**.
 
 The key optimization techniques used in this design include:
 
-1. Accelerating complex database queries using an Intel FPGA and oneAPI.
+1. Accelerating complex database queries using an FPGA.
 2. Improving code reuse, readability, and extendability using C++ templates for FPGA device code.
 3. Showcasing the usage of advanced FPGA optimizations listed above to improve the performance of a large design.
 

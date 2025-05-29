@@ -39,25 +39,25 @@ You can also find more information about [troubleshooting build errors](/README.
 | Optimized for        | Description
 |:---                  |:---
 | OS                   | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware             | Intel® Agilex® 7, Arria® 10, and Stratix® 10 FPGAs
+| Hardware             | Agilex® 7, Arria® 10, and Stratix® 10 FPGAs
 | Software             | Intel® oneAPI DPC++/C++ Compiler
 
 > **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> For using the simulator flow, Intel® Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
+> For using the simulator flow, Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
 > - Questa*-Intel® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition must be installed and accessible through your PATH.
 >
-> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
+> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 ## Key Implementation Details
 
 The GZIP DEFLATE algorithm uses a GZIP-compatible Limpel-Ziv 77 (LZ77) algorithm for data de-duplication and a GZIP-compatible Static Huffman algorithm for bit reduction. The implementation includes three FPGA accelerated tasks (LZ77, Static Huffman, and CRC).
 
-The FPGA implementation of the algorithm enables either one or two independent GZIP compute engines to operate in parallel on the FPGA. The available FPGA resources constrain the number of engines. By default, the design is parameterized to create a single engine when the design is compiled to target an Intel® Arria® 10 FPGA. Two engines are created when compiling for Intel® Stratix® 10 or Agilex® 7 FPGAs, which are a larger device.
+The FPGA implementation of the algorithm enables either one or two independent GZIP compute engines to operate in parallel on the FPGA. The available FPGA resources constrain the number of engines. By default, the design is parameterized to create a single engine when the design is compiled to target an Arria® 10 FPGA. Two engines are created when compiling for Stratix® 10 or Agilex® 7 FPGAs, which are a larger device.
 
 This reference design contains two variants: "High Bandwidth" and "Low-Latency."
 
@@ -99,8 +99,8 @@ To optimize performance, GZIP leverages techniques discussed in the following FP
 | Flag                      | Description
 |:---                       |:---
 | `-Xshardware`             | Targets FPGA hardware (instead of FPGA emulator).
-| `-Xsparallel=2`           | Uses two cores when compiling the bitstream through Intel® Quartus®.
-| `-Xsseed=<seed_num>`      | Uses a particular seed while running Intel® Quartus®, selected to yield the best Fmax for this design.
+| `-Xsparallel=2`           | Uses two cores when compiling the bitstream through Quartus®.
+| `-Xsseed=<seed_num>`      | Uses a particular seed while running Quartus®, selected to yield the best Fmax for this design.
 | `-Xsnum-reorder=6`        | On FPGA boards that have a large memory bandwidth, specify a wider data path for read data from global memory.
 | `-Xsopt-arg="-nocaching"` | Specifies that cached LSUs should not be used.
 

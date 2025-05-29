@@ -1,24 +1,24 @@
 # `Platform Designer Standard` Sample
 
-This example design shows how to use an FPGA IP produced with the Intel® oneAPI DPC++/C++ Compiler with the Intel® Quartus® Prime Standard Edition.
+This example design shows how to use an FPGA IP produced with the Intel® oneAPI DPC++/C++ Compiler with the Quartus® Prime Standard Edition.
 
 | Optimized for                     | Description
 |:---                               |:---
 | OS                                | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10 <br> Windows Server* 2019
-| Hardware                          | This process applies to the Cyclone® V line of FPGAs, but the sample Intel® Quartus® Prime Standard Edition project targets the [Terasic DE1-SOC Development Board](https://de1-soc.terasic.com/)
-| Software                          | Intel® oneAPI DPC++/C++ Compiler <br> Intel® Quartus® Prime Standard Edition Version 22.3 or later
-| What you will learn               | How to integrate an RTL IP generated from a SYCL kernel with an Intel® Quartus® Prime Standard Edition
+| Hardware                          | This process applies to the Cyclone® V line of FPGAs, but the sample Quartus® Prime Standard Edition project targets the [Terasic DE1-SOC Development Board](https://de1-soc.terasic.com/)
+| Software                          | Intel® oneAPI DPC++/C++ Compiler <br> Quartus® Prime Standard Edition Version 22.3 or later
+| What you will learn               | How to integrate an RTL IP generated from a SYCL kernel with an Quartus® Prime Standard Edition
 | Time to complete                  | 1 hour
 
 > **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> To use the simulator flow, Intel® Quartus® Prime Standard Edition and one of the following simulators must be installed and accessible through your PATH:
+> To use the simulator flow, Quartus® Prime Standard Edition and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
 > - Questa*-Intel® FPGA Starter Edition
 > - Questa* Advanced Simulator
 > - ModelSim® SE
 >
-> To use the hardware compile flow, Intel® Quartus® Prime Standard Edition must be installed and accessible through your PATH.
+> To use the hardware compile flow, Quartus® Prime Standard Edition must be installed and accessible through your PATH.
 
 ## Prerequisites
 
@@ -48,15 +48,15 @@ You can also find more information about [troubleshooting build errors](/README.
 This sample demonstrates how to:
 
 * Compile a SYCL kernel into an IP component
-* Add the IP component to an Intel® Platform Designer system
-* Add the Platform Designer system to a top-level entity in a Intel® Quartus® Prime project
+* Add the IP component to a Platform Designer system
+* Add the Platform Designer system to a top-level entity in a Quartus® Prime project
 * Compile and run the resulting system on a hardware board. 
 
 The sample uses the JTAG to Avalon® Master Bridge Intel FPGA IP to connect your IP component to the JTAG control interface. You can use the System Console application to control and observe the behavior of your IP component.
 
 ![](assets/csr-output-example-simple.svg)
 
-This example is intended for users interested in creating standalone modules that can be included in Intel® Quartus® Prime projects. It serves as a minimal example, and while it targets a specific board, a user familiar with the Intel® Quartus® Prime Software Suite should be able to easily port this design to other hardware.
+This example is intended for users interested in creating standalone modules that can be included in Quartus® Prime projects. It serves as a minimal example, and while it targets a specific board, a user familiar with the Quartus® Prime Software Suite should be able to easily port this design to other hardware.
 
 ## Key Implementation Details
 
@@ -65,8 +65,8 @@ This tutorial is structured with four source code directories.
 | Source Directory  | Description
 |:--                |:--
 | `add_oneapi`      | The source and build scripts needed to compile a simple IP using oneAPI
-| `add_quartus_sln` | An example of the project files that are created using the Intel® Quartus® Prime GUI
-| `starting_files`  | The minimal source files you need to create a Intel® Quartus® Prime project. Additional project files are created using the Intel® Quartus® Prime GUI.
+| `add_quartus_sln` | An example of the project files that are created using the Quartus® Prime GUI
+| `starting_files`  | The minimal source files you need to create a Quartus® Prime project. Additional project files are created using the Quartus® Prime GUI.
 | `system_console`  | Scripts for controlling the System Console application while you test the design in hardware
 
 ### Board-specific Considerations
@@ -117,9 +117,9 @@ Follow these steps to compile and test the design:
    > cd ..
    ```
 
-2. **From the same terminal**, prepare a project directory called `add_quartus` for the Intel® Quartus® Prime project and copy the source files `add.sv` and `jtag.sdc` from the `starting_files` directory into it. Then launch the Intel® Quartus® Prime Standard Edition GUI, and create a new Intel® Quartus® Prime project using the 'New Project' wizard.
+2. **From the same terminal**, prepare a project directory called `add_quartus` for the Quartus® Prime project and copy the source files `add.sv` and `jtag.sdc` from the `starting_files` directory into it. Then launch the Quartus® Prime Standard Edition GUI, and create a new Quartus® Prime project using the 'New Project' wizard.
 
-   > **Note**: You may confirm your Intel® Quartus® Prime project settings by comparing with the sample Intel® Quartus® Prime project included in the `add_quartus_sln` directory.
+   > **Note**: You may confirm your Quartus® Prime project settings by comparing with the sample Quartus® Prime project included in the `add_quartus_sln` directory.
 
    Linux:
    
@@ -157,7 +157,7 @@ Follow these steps to compile and test the design:
       
       `jtag.sdc` contains timing constraints for the JTAG IP.
 
-3. Copy the IP you generated in Step 1 to the Intel Quartus® Prime project. 
+3. Copy the IP you generated in Step 1 to the Quartus® Prime project. 
 
    Linux:
 
@@ -175,7 +175,7 @@ Follow these steps to compile and test the design:
 
 4. Create the Platform Designer system.
 
-   1. Open Platform Designer from the Intel® Quartus® Prime GUI. A a blank system will be created for you. ![](assets/new-platform-designer-system.png)
+   1. Open Platform Designer from the Quartus® Prime GUI. A a blank system will be created for you. ![](assets/new-platform-designer-system.png)
 
    2. Add the following IP to your system:
 
@@ -198,7 +198,7 @@ Follow these steps to compile and test the design:
 
    5. Make sure there are no errors in the 'System Messages' panel.
 
-   6. Generate the system so that it can be included in the Intel® Quartus® Prime project by clicking `Generate HDL...`
+   6. Generate the system so that it can be included in the Quartus® Prime project by clicking `Generate HDL...`
 
       ![](assets/generate-hdl.png)
 
@@ -206,13 +206,13 @@ Follow these steps to compile and test the design:
    >  **Note**: Upon closing the Platform Designer window, if you are prompted to add this IP to your Quartus project, please follow the instructions in the pop-up window by clicking `Project` > `Add/Remove Files in Project` to add the IP files.
    > ![](assets/add-files-in-project.png)
 
-5. In the Intel® Quartus® Prime window, run Analysis and Elaboration by clicking 'Start Analysis and Elaboration'.
+5. In the Quartus® Prime window, run Analysis and Elaboration by clicking 'Start Analysis and Elaboration'.
 
    ![](assets/start-analysis.png)
 
 6. Select pins for the `i_clk` and `reset_button` inputs and `fpga_led` output. The JTAG to Avalon® Master Bridge Intel FPGA IP handles the connection between your design and the JTAG pins on your board automatically.
 
-   1. Open the pin planner using `Assignments` > `Pin Planner` in the main Intel® Quartus® Prime GUI. In the bottom pane of the Pin Planner GUI, you will find a list of signals to assign pins to. Consult the data sheet for your board to choose an appropriate clock input. Double-click the *Location* cell and select a proper clock input. In this project, the `PIN_AF14` was chosen because it supplies a 50MHz clock signal.
+   1. Open the pin planner using `Assignments` > `Pin Planner` in the main Quartus® Prime GUI. In the bottom pane of the Pin Planner GUI, you will find a list of signals to assign pins to. Consult the data sheet for your board to choose an appropriate clock input. Double-click the *Location* cell and select a proper clock input. In this project, the `PIN_AF14` was chosen because it supplies a 50MHz clock signal.
 
    2. Assign pins for the `fpga_led` and `reset_button` signals using the same method. Your final pin assignment should match with the following screenshot.
 
@@ -226,7 +226,7 @@ Follow these steps to compile and test the design:
 
       > **Note**: Make sure you choose 'LVDS' for the I/O standard of `i_clk`, the pin location will be automatically populated for `i_clk(n)`.
 
-7. Compile the full design by clicking the 'Start Compilation' button in the Intel® Quartus® Prime GUI.
+7. Compile the full design by clicking the 'Start Compilation' button in the Quartus® Prime GUI.
 
       ![](assets/start-compilation-quartus.png)
 
@@ -244,7 +244,7 @@ Follow these steps to compile and test the design:
    > xcopy add_quartus\output_files\add.sof system_console /Y
    ```
 
-You may also build the SOF using the pre-generated Intel® Quartus® Prime project in the `add_quartus_sln` directory by executing the included `build_system.tcl` script. This script has been verified against the latest version of Quartus® Prime Standard Edition software available at the time of writing (23.1). The script and pre-generated project may not work with other versions of Quartus® Prime.
+You may also build the SOF using the pre-generated Quartus® Prime project in the `add_quartus_sln` directory by executing the included `build_system.tcl` script. This script has been verified against the latest version of Quartus® Prime Standard Edition software available at the time of writing (23.1). The script and pre-generated project may not work with other versions of Quartus® Prime.
 
    Linux:
 
@@ -263,12 +263,12 @@ You may also build the SOF using the pre-generated Intel® Quartus® Prime proje
    ```
 
 ### Additional Documentation
-- [Intel® Cyclone® V SoC Golden System Reference Design](https://www.rocketboards.org/foswiki/Documentation/CycloneVSoCGSRD) describes a reference design you can use with your Intel® Cyclone® V SoC FPGA.
-- [Intel® Cyclone® V FPGA and SoC FPGA](https://www.intel.com/content/www/us/en/products/details/fpga/cyclone/v.html) describes the Intel® Cyclone® V FPGA in greater detail.
-- [Intel® Quartus® Prime Standard Edition User Guide: Getting Started](https://www.intel.com/content/www/us/en/docs/programmable/683475/current/introduction-to.html) introduces you to the Intel® Quartus® Prime Standard software.
-- [Intel® Quartus® Prime Standard Edition User Guide: Platform Designer](https://www.intel.com/content/www/us/en/docs/programmable/683364/current/creating-a-system-with.html) describes the Intel® Platform Designer software.
-- [Intel® Quartus® Prime Standard Edition User Guide: Programmer](https://www.intel.com/content/www/us/en/docs/programmable/683528/current/programming-fpga-devices.html) describes the Intel® Quartus® Prime Standard Programmer software.
-- [Intel® Quartus® Prime Standard Edition User Guide: Debug Tools](https://www.intel.com/content/www/us/en/docs/programmable/683552/current/system-console-commands.html) describes the console commands enable testing.
+- [Cyclone® V SoC Golden System Reference Design](https://www.rocketboards.org/foswiki/Documentation/CycloneVSoCGSRD) describes a reference design you can use with your Cyclone® V SoC FPGA.
+- [Cyclone® V FPGA and SoC FPGA](https://www.intel.com/content/www/us/en/products/details/fpga/cyclone/v.html) describes the Cyclone® V FPGA in greater detail.
+- [Quartus® Prime Standard Edition User Guide: Getting Started](https://www.intel.com/content/www/us/en/docs/programmable/683475/current/introduction-to.html) introduces you to the Quartus® Prime Standard software.
+- [Quartus® Prime Standard Edition User Guide: Platform Designer](https://www.intel.com/content/www/us/en/docs/programmable/683364/current/creating-a-system-with.html) describes the Intel® Platform Designer software.
+- [Quartus® Prime Standard Edition User Guide: Programmer](https://www.intel.com/content/www/us/en/docs/programmable/683528/current/programming-fpga-devices.html) describes the Quartus® Prime Standard Programmer software.
+- [Quartus® Prime Standard Edition User Guide: Debug Tools](https://www.intel.com/content/www/us/en/docs/programmable/683552/current/system-console-commands.html) describes the console commands enable testing.
 
 ## Running the Sample
 
@@ -279,14 +279,14 @@ To move the design to a different computer for testing, copy the entire `system_
 See output:
 
 ```
-<output from Intel® Quartus® Prime programmer>
+<output from Quartus® Prime programmer>
 Info: Quartus Prime Programmer was successful. 0 errors, 0 warnings
     Info: Peak virtual memory: 4465 megabytes
     Info: Processing ended: Mon Aug 26 13:33:39 2024
     Info: Elapsed time: 00:00:05
     Info: Total CPU time (on all processors): 00:00:00
 Press any key to continue . . .
-<output from Intel® Quartus® Prime Tcl Shell>
+<output from Quartus® Prime Tcl Shell>
 Info: Command: quartus_sh -t test_add.tcl
 Info (345047): Preparing to create a connection to System Console. This may take several seconds.
 Info (345009): A connection to System Console was successfully established on port 58780

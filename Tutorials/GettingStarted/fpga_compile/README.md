@@ -19,19 +19,19 @@ While SYCL* code can be compiled for CPU, GPU, or FPGA, compiling to FPGA is som
 | Optimized for        | Description
 |:---                  |:---
 | OS                   | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware             | Intel® Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
+| Hardware             | Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
 | Software             | Intel® oneAPI DPC++/C++ Compiler
 
 > **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> For using the simulator flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
+> For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
 > - Questa*-Intel® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
 
-> **Warning**: Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
+> **Warning**: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 This sample is part of the FPGA code samples.
 It is categorized as a Tier 1 sample that helps you getting started.
@@ -68,7 +68,7 @@ Long compile times are detrimental to developer productivity. The Intel® oneAPI
 
 In the FPGA multiarchitecture binary generation flow, you can generate an executable host application and accelerator for a PCIe FPGA board if you have a compatible board support package (BSP).
 
-In the FPGA IP component generation flow, you can generate an IP component that you can import into an Intel® Quartus® Prime project. You can generate an IP by targeting your compilation to a supported Intel® FPGA device family or part number (for example, `Agilex 7` or `AGFA014R24B1E1V`) instead of a named board.
+In the FPGA IP component generation flow, you can generate an IP component that you can import into an Quartus® Prime project. You can generate an IP by targeting your compilation to a supported FPGA device family or part number (for example, `Agilex 7` or `AGFA014R24B1E1V`) instead of a named board.
 
 The FPGA IP component generation flow does not generate any FPGA accelerated executable, only RTL (Register Transfer Level) IP component files. The host application is treated only as a test bench that exercises and validates your IP component in emulation and simulation.
 
@@ -81,7 +81,7 @@ The four types of FPGA compilation are summarized in the table below.
 | Emulator            | Seconds        | x86-64 binary       | Compiles the FPGA device code to the CPU. Use the Intel® FPGA Emulation Platform for OpenCL™ software to verify your SYCL code’s functional correctness.
 | Optimization Report | Minutes        | RTL + FPGA reports  | Compiles the FPGA device code to RTL and generates an optimization report that describes the structures generated on the FPGA, identifies performance bottlenecks, and estimates resource utilization. This report will include the interfaces defined in your selected Board Support Package.
 | Simulator          | Minutes         | RTL + FPGA reports + x86-64 binary    | Compiles the FPGA device code to RTL and generates a simulation test bench. Use the Questa*-Intel® FPGA Edition simulator to verify your design.
-| FPGA Hardware      | Multiple Hours  | Quartus Place & Route (Multiarchitecture binary) + FPGA reports + x86-64 host binary                                                  | Compiles the FPGA device code to RTL and compiles the generated RTL using Intel® Quartus® Prime. If you specified a BSP with `FPGA_DEVICE`, this will generate an FPGA image that you can run on the corresponding accelerator board.
+| FPGA Hardware      | Multiple Hours  | Quartus Place & Route (Multiarchitecture binary) + FPGA reports + x86-64 host binary                                                  | Compiles the FPGA device code to RTL and compiles the generated RTL using Quartus® Prime. If you specified a BSP with `FPGA_DEVICE`, this will generate an FPGA image that you can run on the corresponding accelerator board.
 
 The typical FPGA development workflow is to iterate in each of these stages, refining the code using the feedback provided by that stage. You can avoid long compile times by relying on emulation and the optimization report whenever possible.
 
@@ -112,7 +112,7 @@ The Intel oneAPI DPC++/C++ Compiler links your design C++ test bench with an RTL
 
 #### FPGA Hardware (Hardware Image)
 
-The generated Verilog RTL is mapped onto the FPGA hardware resources by the Intel® Quartus® Prime software. The estimated performance and resource utilization is therefore much more accurate than the estimates obtained in the optimization report compilation type.
+The generated Verilog RTL is mapped onto the FPGA hardware resources by the Quartus® Prime software. The estimated performance and resource utilization is therefore much more accurate than the estimates obtained in the optimization report compilation type.
 
 If you compile a multiarchitecture binary, the resulting binary will include an FPGA hardware image (also referred to as a bitstream) that is executable on an FPGA accelerator card with a supported BSP. The compiler will interface your design with the BSP, and your host application will make the system calls to launch kernels on the FPGA.
 
@@ -233,7 +233,7 @@ Part 4 shows the vector addition in SYCL* C++ with a 'function' coding style and
 
 1. Change to the sample directory.
 
-2. Build the program for Intel® Agilex® 7 device family, which is the default.
+2. Build the program for Agilex® 7 device family, which is the default.
    ```
    mkdir build
    cd build
@@ -269,7 +269,7 @@ Part 4 shows the vector addition in SYCL* C++ with a 'function' coding style and
 
 1. Change to the sample directory.
 
-2. Build the program for the Intel® Agilex® 7 device family, which is the default.
+2. Build the program for the Agilex® 7 device family, which is the default.
    ```
    mkdir build
    cd build
