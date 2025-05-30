@@ -41,7 +41,7 @@ flowchart LR
 ```
 
 Find more information about how to navigate this part of the code samples in the [FPGA top-level README.md](/README.md).
-You can also find more information about [troubleshooting build errors](/README.md#troubleshooting), [running the sample on the Intel® DevCloud](/README.md#build-and-run-the-samples-on-intel-devcloud-optional), [links to selected documentation](/README.md#documentation), etc.
+You can also find more information about [troubleshooting build errors](/README.md#troubleshooting), [links to selected documentation](/README.md#documentation), etc.
 
 ## Purpose
 
