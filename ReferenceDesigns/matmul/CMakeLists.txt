@@ -69,7 +69,7 @@ endif()
 if(WIN32)
     set(EMULATOR_PLATFORM_FLAGS -fp:precise)
 else()
-    set(EXTRA_COMPILE_FLAG -fno-finite-math-only)
+    set(EXTRA_COMPILE_FLAG -fhonor-nans;-fhonor-infinities)
 endif()
 
 # Set design parameters according to the selected board

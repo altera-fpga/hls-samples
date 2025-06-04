@@ -71,7 +71,7 @@ if(WIN32)
     set(STACK_FLAG "-F 12582912")
 else()
     # Prevent ignoring NaN values
-    set(EXTRA_COMPILE_FLAG "-fno-finite-math-only")
+    set(EXTRA_COMPILE_FLAG -fhonor-nans;-fhonor-infinities)
 endif()
 
 

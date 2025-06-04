@@ -70,7 +70,7 @@ if(WIN32)
     set(EXTRA_EMULATOR_COMPILE_FLAGS "-fp:precise")
 else()
     # Prevent ignoring NaN values
-    set(EXTRA_COMPILE_FLAG "-fno-finite-math-only")
+    set(EXTRA_COMPILE_FLAG -fhonor-nans;-fhonor-infinities)
 endif()
 
 if(DEVICE_FLAG MATCHES "A10")
