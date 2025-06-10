@@ -71,7 +71,7 @@ if(WIN32)
 else()
     set(PRECISE_FLAG "-ffp-model=precise")
     # Prevent ignoring NaN values
-    set(EXTRA_COMPILE_FLAG -fno-finite-math-only)
+    set(EXTRA_COMPILE_FLAG -fhonor-nans;-fhonor-infinities)
 endif()
 
 set(BENCHMARK 1)
