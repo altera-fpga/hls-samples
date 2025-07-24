@@ -40,6 +40,12 @@ if(NOT DEFINED FPGA_DEVICE)
 else()
     message(STATUS "Configuring the design with the following target: ${FPGA_DEVICE}")
 
+    string(TOLOWER ${FPGA_DEVICE} FPGA_DEVICE_NAME)
+    if(FPGA_DEVICE_NAME MATCHES ".*cyclone.*")
+        message(STATUS "Limiting hardware merge units for Cyclone FPGA series")
+        set(LIMIT_HW_MERGE_UNITS_FLAG "-DLIMIT_HW_MERGE_UNITS=1")
+    endif()
+
     # Check if the target is a BSP
     if(IS_BSP MATCHES "1")
         set(IS_BSP "1")
@@ -80,7 +86,7 @@ if((IS_BSP STREQUAL "0") OR FPGA_DEVICE MATCHES ".*usm.*" OR DEFINED USE_USM_HOS
 endif()
 
 # Select the number of merge units to use. Must be a power of 2.
-# e.g. cmake .. -DNUM_MERGE_UNITS=16
+# e.g. cmake .. -DMERGE_UNITS=16
 if(MERGE_UNITS)
     set(MERGE_UNITS_FLAG "-DMERGE_UNITS=${MERGE_UNITS}")
     message(STATUS "Number of merge units explicitly set to ${MERGE_UNITS}")
