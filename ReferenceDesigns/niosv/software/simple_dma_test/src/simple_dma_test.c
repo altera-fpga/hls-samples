@@ -1,4 +1,4 @@
-//  Copyright (c) 2022 Intel Corporation
+//  Copyright Altera Corporation. All rights reserved.
 //  SPDX-License-Identifier: MIT
 //
 // This design leverages a simple DMA oneAPI kernel that has had its RTL

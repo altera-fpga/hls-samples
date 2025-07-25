@@ -1,4 +1,4 @@
-//  Copyright (c) 2024 Intel Corporation
+//  Copyright Altera Corporation. All rights reserved.
 //  SPDX-License-Identifier: MIT
 
 // vvp_stream_adapters.hpp

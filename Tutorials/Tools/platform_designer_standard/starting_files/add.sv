@@ -1,4 +1,4 @@
-//  Copyright (c) 2023 Intel Corporation                                  
+//  Copyright Altera Corporation. All rights reserved.
 //  SPDX-License-Identifier: MIT                                          
 
 module add (

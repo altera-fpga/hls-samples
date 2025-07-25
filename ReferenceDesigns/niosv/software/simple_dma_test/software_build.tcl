@@ -1,4 +1,4 @@
-#  Copyright (c) 2022 Intel Corporation
+#  Copyright Altera Corporation. All rights reserved.
 #  SPDX-License-Identifier: MIT
 
 # Description: 
