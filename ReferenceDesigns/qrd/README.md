@@ -43,11 +43,11 @@ You can also find more information about [troubleshooting build errors](/README.
 
 | Optimized for        | Description
 |:---                  |:---
-| OS                   | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware             | Agilex® 7, Arria® 10, and Stratix® 10 FPGAs
-| Software             | Intel® oneAPI DPC++/C++ Compiler
+| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware             | Agilex® 5, Agilex® 7 and Arria® 10 FPGAs
+| Software             | HLS IP Gen Compiler
 
-> **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
@@ -57,9 +57,6 @@ You can also find more information about [troubleshooting build errors](/README.
 > When using the hardware compile flow, Quartus® Prime Pro Edition must be installed and accessible through your PATH.
 >
 > :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
->
-> :warning: This code sample may fail to compile with the Intel® oneAPI DPC++/C++ Compiler 2024.2 due to a known bug which will be fixed in a patch. Information about the patch will be available on
-https://www.intel.com/content/www/us/en/developer/tools/oneapi/fpga.html
 
 ### Performance
 

@@ -1,16 +1,16 @@
 # `Platform Designer` Sample
 
-This example design shows how to use an FPGA IP produced with the Intel® oneAPI DPC++/C++ Compiler with the Quartus® Prime Pro Edition software suite. Please refer to [Platform Designer Standard](../platform_designer_standard/) code sample when targeting a Cyclone® V SoC Board.
+This example design shows how to use an FPGA IP produced with the HLS IP Gen Compiler with the Quartus® Prime Pro Edition software suite. Please refer to [Platform Designer Standard](../platform_designer_standard/) code sample when targeting a Cyclone® V SoC Board.
 
 | Optimized for                     | Description
 |:---                               |:---
-| OS                                | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
+| OS                                | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
 | Hardware                          | This process applies to any FPGA that is supported by the DPC++/C++ compiler, but the sample Quartus® Prime Pro Edition project targets the [Arria® 10 SX SoC Development Kit](https://www.intel.com/content/www/us/en/products/details/fpga/development-kits/arria/10-sx.html)
-| Software                          | Intel® oneAPI DPC++/C++ Compiler <br> Quartus® Prime Pro Edition Version 22.3 or later
+| Software                          | HLS IP Gen Compiler
 | What you will learn               | How to integrate an RTL IP generated from a SYCL kernel with an Quartus® Prime Pro Edition project
 | Time to complete                  | 1 hour
 
-> **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > To use the simulator flow, Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition

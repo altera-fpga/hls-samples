@@ -4,13 +4,13 @@ This project serves as a template for HLS FPGA designs, and demonstrates the fea
 
 | Optimized for                     | Description
 |:---                               |:---
-| OS                                | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware                          | Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
-| Software                          | Intel® oneAPI DPC++/C++ Compiler
+| OS                                | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware                          | Agilex® 5, Agilex® 7 and Arria® 10 FPGAs
+| Software                          | HLS IP Gen Compiler
 | What you will learn               | Best practices for creating and managing a oneAPI FPGA project
 | Time to complete                  | 10 minutes
 
-> **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > To use the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
@@ -48,7 +48,7 @@ You can also find more information about [troubleshooting build errors](/README.
 
 ## Purpose
 
-Use this project as a starting point when you build designs for the Intel® oneAPI DPC++/C++ compiler when targeting FPGAs. It includes a CMake build system to automate selecting the various command-line flags for the oneAPI DPC++/C++ compiler, and a simple single-source design to serve as an example. You can customize the build flags by modifying the top part of `CMakeLists.txt`: if you want to pass additional flags to the Intel® oneAPI DPC++/C++ compiler, you can change the `USER_FLAGS` and `USER_FPGA_FLAGS` variables defined in `CMakeLists.txt`. Similarly, you can add additional include paths to the `USER_INCLUDE_PATHS` variable. You can also explicitly define these variables at the command-line if you want to perform a quick test without changing the CMake build system.
+Use this project as a starting point when you build designs for the HLS IP Gen compiler when targeting FPGAs. It includes a CMake build system to automate selecting the various command-line flags for the HLS IP Gen compiler, and a simple single-source design to serve as an example. You can customize the build flags by modifying the top part of `CMakeLists.txt`: if you want to pass additional flags to the HLS IP Gen compiler, you can change the `USER_FLAGS` and `USER_FPGA_FLAGS` variables defined in `CMakeLists.txt`. Similarly, you can add additional include paths to the `USER_INCLUDE_PATHS` variable. You can also explicitly define these variables at the command-line if you want to perform a quick test without changing the CMake build system.
 
 > **Note**: The code sample in this design uses USM shared allocations for improved code simplicity as compared with buffers/accessors. The included CMake build system can also be used for designs that use buffers and accessors or USM device allocations.
 

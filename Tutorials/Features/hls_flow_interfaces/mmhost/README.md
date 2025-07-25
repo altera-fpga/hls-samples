@@ -1,15 +1,15 @@
 # Avalon Memory-Mapped Host Interfaces (mmhost) Sample
-This tutorial demonstrates how to configure Avalon memory-mapped host data interfaces for IP components produced with the Intel® oneAPI DPC++/C++ Compiler.
+This tutorial demonstrates how to configure Avalon memory-mapped host data interfaces for IP components produced with the HLS IP Gen Compiler.
 
 | Optimized for                     | Description
 ---                                 |---
-| OS                                | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware                          | Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
-| Software                          | Intel® oneAPI DPC++/C++ Compiler
+| OS                                | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware                          | Agilex® 5, Agilex® 7 and Arria® 10 FPGAs
+| Software                          | HLS IP Gen Compiler
 | What you will learn               | How to customize Avalon memory-mapped host interfaces in your FPGA IP components
 | Time to complete                  | 45 minutes
 
-> **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
@@ -51,7 +51,7 @@ When designing an IP component for an FPGA system, that system will often dictat
 
 ![](assets/basic_avhost.svg)
 
-The compiler will infer Avalon memory-mapped host interfaces for a design when the kernel includes one or more pointer arguments. As with scalar kernel arguments, pointer arguments can be passed to the kernel via a `conduit` interface or the component's control/status register (CSR). By default, pointer arguments will be passed to the IP component through the CSR. For more details on kernel arguments, see the sample [Component Interfaces Comparison](../component_interfaces_comparison). By default, the Intel® oneAPI DPC++/C++ Compiler will produce a kernel with a single Avalon memory-mapped host interface that will be shared amongst those pointers. 
+The compiler will infer Avalon memory-mapped host interfaces for a design when the kernel includes one or more pointer arguments. As with scalar kernel arguments, pointer arguments can be passed to the kernel via a `conduit` interface or the component's control/status register (CSR). By default, pointer arguments will be passed to the IP component through the CSR. For more details on kernel arguments, see the sample [Component Interfaces Comparison](../component_interfaces_comparison). By default, the HLS IP Gen Compiler will produce a kernel with a single Avalon memory-mapped host interface that will be shared amongst those pointers. 
 
 #### Example 1: A kernel with multiple pointer arguments
 (Code can be found under `part1_pointers`)

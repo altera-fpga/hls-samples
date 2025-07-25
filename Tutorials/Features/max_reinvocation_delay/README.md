@@ -10,17 +10,17 @@ This sample is an FPGA tutorial that explains how to use the `max_reinvocation_d
 
 ## Purpose
 
-This tutorial demonstrates how and when to apply the `max_reinvocation_delay` attribute to a loop in your program to direct the Intel® oneAPI DPC++/C++ Compiler to implement that loop with a specified maximum loop reinvocation delay. The loop reinvocation delay is the delay between launching the last iteration of a loop invocation and launching the first iteration of the next loop invocation.
+This tutorial demonstrates how and when to apply the `max_reinvocation_delay` attribute to a loop in your program to direct the HLS IP Gen Compiler to implement that loop with a specified maximum loop reinvocation delay. The loop reinvocation delay is the delay between launching the last iteration of a loop invocation and launching the first iteration of the next loop invocation.
 
 ## Prerequisites
 
 | Optimized for        | Description
 |:---                  |:---
-| OS                   | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware             | Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
-| Software             | Intel® oneAPI DPC++/C++ Compiler
+| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware             | Agilex® 5, Agilex® 7 and Arria® 10 FPGAs
+| Software             | HLS IP Gen Compiler
 
-> **Note**: Even though the Intel® oneAPI DPC++/C++ Compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen Compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition

@@ -6,13 +6,13 @@ SYCL*-compliant FPGA design.
 
 | Optimized for                     | Description
 |:---                               |:---
-| OS                                | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware                          | Agilex® 7, Agilex® 5, Arria® 10, and Stratix® 10 FPGAs
-| Software                          | Intel® oneAPI DPC++/C++ Compiler
+| OS                                | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware                          | Agilex® 5, Agilex® 7 and Arria® 10 FPGAs
+| Software                          | HLS IP Gen Compiler
 | What you will learn               | How and when to use the `mem_channel` buffer property and the `-Xsno-interleaving` flag
 | Time to complete                  | 30 minutes
 
-> **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
@@ -62,7 +62,7 @@ without worrying about where each buffer should be allocated. However, this
 configuration can be expensive in terms of FPGA resources because the global
 memory interconnect required to orchestrate the memory accesses across all the
 channels is complex. For more information about burst-interleaving, please
-refer to the [FPGA Optimization Guide for Intel® oneAPI Toolkits Developer Guide](https://software.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide).
+refer to the [HLS IP Gen Handbook](https://software.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide).
 
 The compiler allows you to avoid this area overhead by
 disabling burst-interleaving and assigning buffers to individual channels. There

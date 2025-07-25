@@ -1,16 +1,16 @@
 # `Platform Designer Standard` Sample
 
-This example design shows how to use an FPGA IP produced with the Intel® oneAPI DPC++/C++ Compiler with the Quartus® Prime Standard Edition.
+This example design shows how to use an FPGA IP produced with the HLS IP Gen Compiler with the Quartus® Prime Standard Edition.
 
 | Optimized for                     | Description
 |:---                               |:---
-| OS                                | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10 <br> Windows Server* 2019
+| OS                                | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
 | Hardware                          | This process applies to the Cyclone® V line of FPGAs, but the sample Quartus® Prime Standard Edition project targets the [Terasic DE1-SOC Development Board](https://de1-soc.terasic.com/)
-| Software                          | Intel® oneAPI DPC++/C++ Compiler <br> Quartus® Prime Standard Edition Version 22.3 or later
+| Software                          | HLS IP Gen Compiler
 | What you will learn               | How to integrate an RTL IP generated from a SYCL kernel with an Quartus® Prime Standard Edition
 | Time to complete                  | 1 hour
 
-> **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > To use the simulator flow, Quartus® Prime Standard Edition and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition

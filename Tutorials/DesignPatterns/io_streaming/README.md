@@ -37,11 +37,11 @@ You can also find more information about [troubleshooting build errors](/README.
 
 | Optimized for      | Description
 |:---                |:---
-| OS                 | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware           | Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
-| Software           | Intel® oneAPI DPC++/C++ Compiler
+| OS                 | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware           | Agilex® 5, Agilex® 7 and Arria® 10 FPGAs
+| Software           | HLS IP Gen Compiler
 
-> **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
@@ -62,7 +62,7 @@ In many of the other code samples designs, the FPGA device is treated as an acce
 
 ![offload](assets/offload.png)
 
-A key feature of FPGAs is their rich input/output capabilities (for example, Ethernet). Taking advantage of these capabilities within the oneAPI programming environment requires a different programming model than the accelerator model described in the previous section. In this model, which is illustrated in the figure below, we will create a oneAPI kernel (or kernels) where some of the kernels are connected to the FPGA IO via I/O pipes and the main data flow is *through* the FPGA device, rather than from CPU to FPGA and back.
+A key feature of FPGAs is their rich input/output capabilities (for example, Ethernet). Taking advantage of these capabilities within the SYCL programming environment requires a different programming model than the accelerator model described in the previous section. In this model, which is illustrated in the figure below, we will create a oneAPI kernel (or kernels) where some of the kernels are connected to the FPGA IO via I/O pipes and the main data flow is *through* the FPGA device, rather than from CPU to FPGA and back.
 
 There are 4 possible directions of data flow:
 
@@ -81,7 +81,7 @@ IO-pipes have the same interface API as inter-kernel pipes (see the **Pipes** (p
 
 For example, imagine that we want the oneAPI kernel to be able to receive UDP packets through the FPGA Ethernet interface. Implementing the necessary hardware to process the data coming from the Ethernet pins in oneAPI would be both extremely difficult and inefficient. Moreover, there are already many RTL solutions for doing this. So instead we implement this low-level logic with RTL in the BSP. We expose this flow of data as a much simpler I/O pipe interface to the processing kernels.
 
->**Note**: The *[I/O Pipes](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide/top/flags-attr-prag-ext/kernel-controls/pipes-extension/i-o-pipes.html)* topic of the *FPGA Optimization Guide for Intel® oneAPI Toolkits Developer Guide* contains more information on I/O pipe interface.
+>**Note**: The *[I/O Pipes](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide/top/flags-attr-prag-ext/kernel-controls/pipes-extension/i-o-pipes.html)* topic of the *HLS IP Gen Handbook* contains more information on I/O pipe interface.
 
 This example is illustrated in the figure below, where the BSP connects the Ethernet I/O pins to a MAC IP, the MAC IP to a UDP offload engine IP, and finally the UDP offload engine IP to an I/O pipe. This IO pipe can then be simply connected to the processing kernels. The details of these connections are abstracted from the oneAPI kernel developer. The figure below only shows an input I/O pipe. The process is similar for an output IO pipe, but the data flows in the opposite direction.
 

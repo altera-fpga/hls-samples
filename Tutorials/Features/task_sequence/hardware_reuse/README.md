@@ -19,11 +19,11 @@ In normal operation, the oneAPI FPGA compiler automatically in-lines repeated fu
 
 | Optimized for        | Description
 |:---                  |:---
-| OS                   | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware             | Agilex® 7, Arria® 10, and Stratix® 10 FPGAs
-| Software             | Intel® oneAPI DPC++/C++ Compiler
+| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware             | Agilex® 5, Agilex® 7 and Arria® 10 FPGAs
+| Software             | HLS IP Gen Compiler
 
-> **Note**: Even though the Intel® oneAPI DPC++/C++ compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > To use the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH environment variable setting:
 > - Questa*-Intel® FPGA Edition

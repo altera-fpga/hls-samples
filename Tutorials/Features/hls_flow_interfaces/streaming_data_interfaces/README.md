@@ -18,11 +18,11 @@ The concept of a pipe is an intuitive mechanism for specifying streaming data in
 
 | Optimized for        | Description
 |:---                  |:---
-| OS                   | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware             | Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
-| Software             | Intel® oneAPI DPC++/C++ Compiler
+| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware             | Agilex® 5, Agilex® 7 and Arria® 10 FPGAs
+| Software             | HLS IP Gen Compiler
 
-> **Note:** Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note:** Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
@@ -71,7 +71,7 @@ Each pipe is a class declaration of the templated `pipe` class. A pipe declarati
 
 > **Note**: Omitting a single property from the properties class instructs the compiler to assume the default value for that property, so you can just define the properties you would like to change from the default. Omitting the properties template parameter entirely instructs the compiler to assume the default values for all properties.
 
-Below is a summary of all relevant SYCL properties which can be applied to a `pipe` using the `properties` template parameter. Please note that this table is not complete; see the [FPGA Optimization Guide for Intel® oneAPI Toolkits](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/optimization-guide/current/host-pipe-declaration.html) for more information on how to use pipes in other applications.
+Below is a summary of all relevant SYCL properties which can be applied to a `pipe` using the `properties` template parameter. Please note that this table is not complete; see the [HLS IP Gen Handbook](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/optimization-guide/current/host-pipe-declaration.html) for more information on how to use pipes in other applications.
 
 
 #### Table 2. Properties used to Configure a Pipe to Implement a Streaming Data Interface

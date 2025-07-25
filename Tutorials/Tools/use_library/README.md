@@ -4,21 +4,21 @@ This FPGA tutorial demonstrates how to build SYCL device libraries from RTL sour
 
 | Area                  | Description
 |:---                   |:---
-| What you will learn   | How to integrate Verilog directly into your oneAPI program and emulate it using a C model, as well as pulling the RTL directly into your full system design.
+| What you will learn   | How to integrate Verilog directly into your SYCL program and emulate it using a C model, as well as pulling the RTL directly into your full system design.
 | Time to complete      | 30 minutes
 | Category              | Concepts and Functionality
 ## Purpose
 
-This FPGA tutorial demonstrates how to build SYCL device libraries from RTL sources and use them in your SYCL design. An RTL library is useful for embedding high performance FPGA code, handwritten in Verilog into your oneAPI program.
+This FPGA tutorial demonstrates how to build SYCL device libraries from RTL sources and use them in your SYCL design. An RTL library is useful for embedding high performance FPGA code, handwritten in Verilog into your SYCL program.
 
 ## Prerequisites
 | Optimized for                     | Description
 |:---                               |:---
-| OS                                | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware                          | Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
-| Software                          | Intel® oneAPI DPC++/C++ Compiler
+| OS                                | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware                          | Agilex® 5, Agilex® 7 and Arria® 10 FPGAs
+| Software                          | HLS IP Gen Compiler
 
-> **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
@@ -56,7 +56,7 @@ You can also find more information about [troubleshooting build errors](/README.
 
 This tutorial includes two designs, each in separate kernel. Both designs multiply two 27-bit inputs together to produce a 54-bit output. In `NativeMult27x27` functor, a 27x27 multiplication is described with native C++ code. 
 In `RtlMult27x27` functor, RTL code is used to customize a DSP block to perform the multiplication more optimally. You can observe the impact on area utilization and performance by comparing the two designs.
-This code sample demonstrates how to use a simple RTL library in a simple FPGA IP produced with the Intel® oneAPI DPC++/C++ Compiler, since the area changes in this sample are quite small. You can use the `fpga_crossgen` and `fpga_libtool` commands to generate RTL libraries for multiarchitecture binary kernel (full system) designs as well.
+This code sample demonstrates how to use a simple RTL library in a simple FPGA IP produced with the HLS IP Gen Compiler, since the area changes in this sample are quite small. You can use the `fpga_crossgen` and `fpga_libtool` commands to generate RTL libraries for multiarchitecture binary kernel (full system) designs as well.
 This graphic illustrates the Library Toolchain Creation Process:
 ![](assets/lib_toolchain.svg)
 
@@ -71,7 +71,7 @@ Files needed to create a SYCL target library from RTL source include:
 The RTL is used when compiling for hardware and simulation, and the C++ model is used when compiling for the FPGA emulator.
 After having created the library file, the function in the library can be called from the SYCL kernel, without the need to know the hardware design or implementation details on underlying functions in the library.
 
-Given a workable RTL module, one may need to apply some modifications in order to integrate it into oneAPI program.
+Given a workable RTL module, one may need to apply some modifications in order to integrate it into SYCL program.
 1. An RTL module must use a single Avalon® streaming input interface. Multiple input signals are allowed, but they must synchronize with a single ready/valid handshake.
 Your RTL library's interface must include a `clock` port, a `resetn` port, and a single Avalon® streaming interface input and single output port (that is: `ivalid`, `ovalid`, `iready`, `oready`). Your RTL module may have multiple input data signals, but only a single output.
 
@@ -99,7 +99,7 @@ To create a library from  source code, use the following steps:
    fpga_crossgen lib_rtl_spec.xml --cpp_model lib_rtl_model.cpp -o lib_rtl.obj
    ```
 
-   Note that generating an RTL library requires that an `xml` file and a C++ model be provided in addition to the Verilog source code. The RTL is used when compiling for the hardware whereas the C++ model is used when the oneAPI program is run on the FPGA emulator. Examine the tutorial source code and the comments in `use_library.cpp` for more details.
+   Note that generating an RTL library requires that an `xml` file and a C++ model be provided in addition to the Verilog source code. The RTL is used when compiling for the hardware whereas the C++ model is used when the SYCL program is run on the FPGA emulator. Examine the tutorial source code and the comments in `use_library.cpp` for more details.
 
    **Note**: When you use special datatypes (such as ac_int in this sample) in the C++ model, the compiler may warn about "incomplete type which could be incompatible with C". This warning can be disabled with the -Wno-return-type-c-linkage flag.
 

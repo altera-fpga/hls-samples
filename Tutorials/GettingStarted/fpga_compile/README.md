@@ -18,11 +18,11 @@ While SYCL* code can be compiled for CPU, GPU, or FPGA, compiling to FPGA is som
 
 | Optimized for        | Description
 |:---                  |:---
-| OS                   | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware             | Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
-| Software             | Intel® oneAPI DPC++/C++ Compiler
+| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware             | Agilex® 5, Agilex® 7 and Arria® 10 FPGAs
+| Software             | HLS IP Gen Compiler
 
-> **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
@@ -62,7 +62,7 @@ FPGAs differ from CPUs and GPUs in many interesting ways.
 
 Compared to CPU or GPU, generating a device image for FPGA hardware is a computationally intensive and time-consuming process. It is usual for an FPGA compile to take several hours to complete. For this reason, only ahead-of-time (or "offline") kernel compilation mode is supported for FPGA. The long compile time for FPGA hardware makes just-in-time (or "online") compilation impractical.
 
-Long compile times are detrimental to developer productivity. The Intel® oneAPI DPC++/C++ Compiler provides several mechanisms that enable developers targeting FPGAs to iterate quickly on their designs. By circumventing the time-consuming process of full FPGA compilation wherever possible, developers can enjoy the fast compile times familiar to CPU and GPU developers.
+Long compile times are detrimental to developer productivity. The HLS IP Gen Compiler provides several mechanisms that enable developers targeting FPGAs to iterate quickly on their designs. By circumventing the time-consuming process of full FPGA compilation wherever possible, developers can enjoy the fast compile times familiar to CPU and GPU developers.
 
 ### Multiarchitecture Binary versus IP Component
 
@@ -100,13 +100,13 @@ For this compilation type, your SYCL device code is optimized and converted into
 
 The optimization report contains significant information about how the compiler has transformed your device code into an FPGA design. The report includes visualizations of structures generated on the FPGA, performance and expected performance bottleneck information, and estimated resource utilization. Optimization reports are generated for the "optimization report", "simulator" and "hardware" compilation types.
 
-The [FPGA Optimization Guide for Intel® oneAPI Toolkits Developer Guide](https://software.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide/top/analyze-your-design.html) contains a chapter about how to analyze the reports generated after the FPGA early image and FPGA image.
+The [HLS IP Gen Handbook](https://software.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide/top/analyze-your-design.html) contains a chapter about how to analyze the reports generated after the FPGA early image and FPGA image.
 
 #### Simulator
 
 The FPGA simulator allows you to simulate the exact behavior of the synthesized kernel. Like emulation, you can run simulation on a system that does not have a target FPGA board installed. The simulator models a kernel much more accurately than the emulator, but it is much slower than the emulator.
 
-The Intel oneAPI DPC++/C++ Compiler links your design C++ test bench with an RTL-compiled version of your component that runs in an RTL simulator. You do not need to invoke any RTL simulator manually, but you can add the `-Xsghdl` flag to save the simulation waveform for later viewing.
+The HLS IP Gen Compiler links your design C++ test bench with an RTL-compiled version of your component that runs in an RTL simulator. You do not need to invoke any RTL simulator manually, but you can add the `-Xsghdl` flag to save the simulation waveform for later viewing.
 
 > **Note**: Running the simulation executable can take a long time if your device code is complex or if your test inputs are large. To save simulation time, use the smallest possible input.
 
@@ -150,7 +150,7 @@ This section includes a helpful list of commands and options to compile this des
 
 >**Note**: In this sample, the compiler is referred to as `icpx`. On Windows, you should use `icx-cl`.
 
-The [Intel® oneAPI Programming Guide](https://www.intel.com/content/www/us/en/docs/oneapi/programming-guide/current/fpga-compilation-flags.html) contains a chapter that explains the compiler options used in these examples.
+The [HLS IP Gen Handbook](https://www.intel.com/content/www/us/en/docs/oneapi/programming-guide/current/fpga-compilation-flags.html) contains a chapter that explains the compiler options used in these examples.
 
 #### Emulator
 
@@ -333,13 +333,13 @@ For part 1 of this tutorial, only the `fpga_emu` target is available as this reg
 
 ### Read the Reports
 
-In *part2*, *part3* and *part4*, after running the `report` target, the FPGA optimization report can be viewed using the Intel® oneAPI FPGA Report Main Menu:
+In *part2*, *part3* and *part4*, after running the `report` target, the FPGA optimization report can be viewed using the HLS IP Gen FPGA Report Main Menu:
 
-1. Open the Intel® oneAPI FPGA Report Main Menu (\<oneAPI FPGA installation directory>/share/lib/reports/html_report/report.html) in a supported browser*. If you cannot find the Intel® oneAPI FPGA Report Main Menu path, try running 'fpga_report'.
+1. Open the HLS IP Gen FPGA Report Main Menu (\<oneAPI FPGA installation directory>/share/lib/reports/html_report/report.html) in a supported browser*. If you cannot find the Intel® oneAPI FPGA Report Main Menu path, try running 'fpga_report'.
 ```
-<browser of choice> <oneAPI installation directory>/share/lib/reports/html_report/report.html
+<browser of choice> <HLS IP Gen Compiler installation directory>/share/lib/reports/html_report/report.html
 ```
-![The Intel® oneAPI FPGA Report Main Menu, which includes a recently opened section and a getting started section with import file buttons.](assets/report_main_menu.png)
+![The HLS IP Gen FPGA Report Main Menu, which includes a recently opened section and a getting started section with import file buttons.](assets/report_main_menu.png)
 
 2. Import your design's reporting data .zip file (vector_add.report.prj/reports/vector_add_report.zip)
 

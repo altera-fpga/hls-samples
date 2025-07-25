@@ -1,13 +1,13 @@
 # `Nios V` Sample
-The `Nios V` sample is a reference design that demonstrates how to simulate an FPGA IP produced with the Intel® oneAPI DPC++/C++ Compiler with a Nios® V softcore processor.
+The `Nios V` sample is a reference design that demonstrates how to simulate an FPGA IP produced with the HLS IP Gen Compiler with a Nios® V softcore processor.
 
 | Area                      | Description
 ---                         |---
-| What you will learn       | How to configure a Nios V system to interact with an FPGA IP produced with the Intel® oneAPI DPC++/C++ Compiler 
+| What you will learn       | How to configure a Nios V system to interact with an FPGA IP produced with the HLS IP Gen Compiler 
 | Time to complete          | ~30 minutes
 
 ## Purpose
-This FPGA reference design demonstrates a simple Direct Memory Access (DMA) module produced with the Intel® oneAPI DPC++/C++ Compiler, and how to use a Nio V softcore processor to interact with it.
+This FPGA reference design demonstrates a simple Direct Memory Access (DMA) module produced with the HLS IP Gen Compiler, and how to use a Nio V softcore processor to interact with it.
 
 ## Prerequisites
 
@@ -34,11 +34,11 @@ You can also find more information about [troubleshooting build errors](/README.
 
 | Optimized for                     | Description
 |:---                               |:---
-| OS                                | Ubuntu* 20.04 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware                          | Agilex® 7, Arria® 10, and Stratix® 10 FPGAs
-| Software                          | Intel® oneAPI DPC++/C++ Compiler<br> Quartus® Prime Pro Edition Version 23.1 or later
+| OS                                | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware                          | Agilex® 5, Agilex® 7 and Arria® 10 FPGAs
+| Software                          | HLS IP Gen Compiler
 
-> **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > To use the simulator flow, Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
@@ -87,13 +87,13 @@ The Nios V softcore processor is connected to the other IPs in this design using
 
 There are three important IPs in this system:
 
-1. **On-chip Memory** This on-chip RAM is shared between the Nios V/g softcore processor and the simple DMA accelerator FPGA IP produced with the Intel® oneAPI DPC++/C++ Compiler.
+1. **On-chip Memory** This on-chip RAM is shared between the Nios V/g softcore processor and the simple DMA accelerator FPGA IP produced with the HLS IP Gen Compiler.
 
-2. **Nios V/g softcore processor** This softcore processor executes a simple test program to exercise the simple DMA accelerator FPGA IP produced with the Intel® oneAPI DPC++/C++ Compiler.
+2. **Nios V/g softcore processor** This softcore processor executes a simple test program to exercise the simple DMA accelerator FPGA IP produced with the HLS IP Gen Compiler.
 
-3. **Simple DMA Accelerator** This FPGA IP is produced with the Intel® oneAPI DPC++/C++ Compiler
+3. **Simple DMA Accelerator** This FPGA IP is produced with the HLS IP Gen Compiler
 
-Although FPGA IP produced with the Intel® oneAPI DPC++/C++ Compiler does not support AXI4 interfaces, Platform Designer is able to generate an interconnect that supports both for you. 
+Although FPGA IP produced with the HLS IP Gen Compiler does not support AXI4 interfaces, Platform Designer is able to generate an interconnect that supports both for you. 
 
 
 ### Nios V Software Overview
@@ -125,7 +125,7 @@ See the comments in the [source code](software/simple_dma_test/src/simple_dma_te
 
 ### :warning: Synthesis Notes
 
-The focus of this design is on the interaction between the FPGA IP produced with the Intel® oneAPI DPC++/C++ Compiler, and a Nios® V softcore processor. In order to demonstrate this interaction as simply as possible, some design choices were made that would make this design impractical in a real system as it is written.
+The focus of this design is on the interaction between the FPGA IP produced with the HLS IP Gen Compiler, and a Nios® V softcore processor. In order to demonstrate this interaction as simply as possible, some design choices were made that would make this design impractical in a real system as it is written.
 
 1. This design does not have any timing constraints or pin assignments, so do not synthesize the design without including those first. This design contains a JTAG UART, so if it is ported to a board, ensure the JTAG I/O are constrained properly. The input reset path can be safely cut since the reset block inside the Platform Designer system will synchronize the reset for you.
 
@@ -228,7 +228,7 @@ You can manually follow the steps below, or run the `build_and_sim_testsystem.tc
 
 ### On both Linux* and Windows*
 
-5. Add the DMA IP to the Platform Designer system. The included `components.ipx` file shows Platform Designer where to look for FPGA IPs produced with the Intel® oneAPI DPC++/C++ Compiler. See the [Platform Designer tutorial](/Tutorials/Tools/platform_designer) for detailed instructions on how to add an FPGA IP to a Platform Designer system. Here are some specific directions for this example:
+5. Add the DMA IP to the Platform Designer system. The included `components.ipx` file shows Platform Designer where to look for FPGA IPs produced with the HLS IP Gen Compiler. See the [Platform Designer tutorial](/Tutorials/Tools/platform_designer) for detailed instructions on how to add an FPGA IP to a Platform Designer system. Here are some specific directions for this example:
     1. Change the HDL entity name to `simple_dma_accelerator` to match names used in the Nios V software.
     2. Connect the interrupt port to the Nios V interrupt receiver and assign its IRQ number to 1 (or any number besides 0 which is used by the UART)
     3. Connect the Nios V data host port to the IP component's `csr_ring_root_avs` port. Ensure the base address is assigned between `0x0010_0000` and `0x001F_FFFF`.

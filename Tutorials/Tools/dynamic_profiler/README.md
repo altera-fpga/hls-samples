@@ -6,15 +6,15 @@ This FPGA tutorial demonstrates how to use the Intel® FPGA Dynamic Profiler for
 
 | Optimized for                     | Description
 |:---                               |:---
-| OS                                | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15
-| Hardware                          | Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
-| Software                          | Intel® oneAPI DPC++/C++ Compiler
+| OS                                | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware                          | Agilex® 5, Agilex® 7 and Arria® 10 FPGAs
+| Software                          | HLS IP Gen Compiler
 | What you will learn               | About the Intel® FPGA Dynamic Profiler for DPC++ <br> How to set up and use this tool <br> A case study of using this tool to identify performance bottlenecks in pipes.
 | Time to complete                  | 15 minutes
 
 > **Note**: This sample has been tuned to show the results described on Arria 10 devices. While it compiles and runs on the other supported devices, the hardware profiling results may differ slighly from what is described below.
 
-> **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition
@@ -54,7 +54,7 @@ This FPGA tutorial demonstrates how to use the Intel® FPGA Dynamic Profiler for
 
 ###  Profiling Tools
 
-Intel® oneAPI provides two runtime profiling tools to help you analyze your SYCL design for FPGA:
+HLS IP Gen provides two runtime profiling tools to help you analyze your SYCL design for FPGA:
 
 1. The **Intel® FPGA Dynamic Profiler for DPC++** is a profiling tool used to collect fine-grained device side data during SYCL* kernel execution. When used within the Intel® VTune™ Profiler, some host side performance data is also collected. However, note that the VTune Profiler is not designed to collect detailed system level host-side data.
 
@@ -87,7 +87,7 @@ Once the run completes, the data is stored in a `profile.json` file and can be d
 
 #### Enabling Dynamic Profiling During Compilation
 
-The Intel® FPGA Dynamic Profiler for DPC++ comes as part of the Intel® oneAPI Base Toolkit.
+The Intel® FPGA Dynamic Profiler for DPC++ comes as part of the HLS IP Gen Base Toolkit.
 
 To instrument the kernel pipeline with performance counters, add the `-Xsprofile` flag to your FPGA hardware compile command.
 
@@ -102,11 +102,11 @@ There are two ways of obtaining data from a program containing performance count
     Instructions on installing, configure and opening the Intel® VTune™ Profiler can be found in the [Intel® VTune™ Profiler User Guide](https://software.intel.com/content/www/us/en/develop/documentation/vtune-help/top/installation.html). Further instructions on setting up the Dynamic Profiler via the CPU/FPGA Interaction View can be found in the [CPU/FPGA Interaction Analysis](https://software.intel.com/content/www/us/en/develop/documentation/vtune-help/top/analyze-performance/accelerators-group/cpu-fpga-interaction-analysis-preview.html) section of the Intel® VTune™ Profiler User Guide. To extract device performance counter data, please ensure the source for the FPGA profiling data is set to "AOCL Profiler".
 
 2. Run the design from the command line using the Profiler Runtime Wrapper.
-  The Profiler Runtime Wrapper comes as part of the Intel® oneAPI DPC++/C++ Compiler and can be run as follows:
+  The Profiler Runtime Wrapper comes as part of the HLS IP Gen Compiler and can be run as follows:
    ```
    aocl profile <executable>
    ```
-   More details and options can be found in the "[Invoke the Profiler Runtime Wrapper to Obtain Profiling Data](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide/top/analyze-your-design/analyze-the-fpga-image/intel-fpga-dynamic-profiler-for-dpc/obtain-profiling-data-during-runtime/invk-prof-rt-wrpr.html)" section of the oneAPI FPGA Optimization Guide.
+   More details and options can be found in the "[Invoke the Profiler Runtime Wrapper to Obtain Profiling Data](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide/top/analyze-your-design/analyze-the-fpga-image/intel-fpga-dynamic-profiler-for-dpc/obtain-profiling-data-during-runtime/invk-prof-rt-wrpr.html)" section of the HLS IP Gen Handbook.
 
     Upon execution completion, a `profile.json` file will have been generated. This file contains all of the data collected by the Dynamic Profiler. It can either be viewed manually or imported into the Intel® VTune™ Profiler, as explained in [Import Results and Traces into VTune Profiler GUI](https://www.intel.com/content/www/us/en/develop/documentation/vtune-help/top/analyze-performance/manage-result-files/importing-results-to-gui.html).
 
@@ -124,7 +124,7 @@ The CPU/FPGA Interaction viewpoint is comprised of four windows:
 
 ### Understanding the Performance Metrics
 
-For this tutorial, the focus will be on a few specific types of device metrics obtained by the Dynamic Profiler. For explanation and more information on other device metrics obtained by the Dynamic Profiler and the Intel® VTune™ Profiler please review the [FPGA Optimization Guide for Intel® oneAPI Toolkits Developer Guide](https://software.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide) and the [Intel® VTune™ Profiler User Guide](https://software.intel.com/content/www/us/en/develop/documentation/vtune-help/top.html).
+For this tutorial, the focus will be on a few specific types of device metrics obtained by the Dynamic Profiler. For explanation and more information on other device metrics obtained by the Dynamic Profiler and the Intel® VTune™ Profiler please review the [HLS IP Gen Handbook](https://software.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide) and the [Intel® VTune™ Profiler User Guide](https://software.intel.com/content/www/us/en/develop/documentation/vtune-help/top.html).
 
 For additional design scenario examples demonstrating how to use other performance data for optimization, refer to [Profiler Analyses of Example SYCL* Design Scenarios](https://software.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide/top/analyze-your-design/analyze-the-fpga-image/intel-fpga-dynamic-profiler-for-dpc/profiler-analyses-of-example-dpc-design-scenarios.html).
 
