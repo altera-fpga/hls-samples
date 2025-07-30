@@ -44,6 +44,8 @@ else()
       set(DEVICE_FLAG "A10")
     elseif(FPGA_DEVICE_NAME MATCHES ".*s10.*" OR FPGA_DEVICE_NAME MATCHES ".*stratix10.*")
       set(DEVICE_FLAG "S10")
+    elseif(FPGA_DEVICE_NAME MATCHES ".*cyclone10.*")
+      set(DEVICE_FLAG "Cyclone10")
     elseif(FPGA_DEVICE_NAME MATCHES ".*agilex.*")
       set(DEVICE_FLAG "Agilex7")
     endif()
@@ -51,8 +53,8 @@ endif()
 
 if(NOT DEFINED DEVICE_FLAG)
     message(FATAL_ERROR "An unrecognized or custom board was passed, but DEVICE_FLAG was not specified. \
-                         Please make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10 or \
-                         -DDEVICE_FLAG=Agilex7.")
+                         Please make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10, \
+                         -DDEVICE_FLAG=Cyclone10 or -DDEVICE_FLAG=Agilex7.")
 endif()
 
 # which query are we doing?
@@ -114,6 +116,15 @@ endif()
 if (DEVICE_FLAG MATCHES "A10")
     if(${QUERY} EQUAL 9 OR ${QUERY} EQUAL 11)
       message(FATAL_ERROR "Queries 9 and 11 are not supported on Arria 10 devices")
+    endif()
+endif()
+
+if (DEVICE_FLAG MATCHES "Cyclone10")
+    if(${QUERY} EQUAL 11)
+        set(SF_SMALL 1)
+        message(STATUS "Setting SF_SMALL=1 for Cyclone 10 so it will fit on the device.")
+    elseif(${QUERY} EQUAL 9)
+        message(FATAL_ERROR "Query 9 is not supported on Cyclone 10 devices.")
     endif()
 endif()
 

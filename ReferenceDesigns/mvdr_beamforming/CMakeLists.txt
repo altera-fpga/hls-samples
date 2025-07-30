@@ -49,6 +49,13 @@ else()
     endif()
 endif()
 
+string(TOLOWER ${FPGA_DEVICE} FPGA_DEVICE_NAME)
+if(FPGA_DEVICE_NAME MATCHES ".*cyclone.*")
+    message(WARNING "This design is too large for Cyclone devices. You may explicitly set -DNUM_SENSORS to a small \
+                     value (e.g., 4) (default is 8) that will fit on the device, but the outputs WILL NOT MATCH \
+                     THE EXPECTED OUTPUTS in the `data` folder.")
+endif()
+
 # check if the BSP has USM host allocations
 if((IS_BSP STREQUAL "0") OR FPGA_DEVICE MATCHES ".usm.*")
     set(ENABLE_USM "-DUSM_HOST_ALLOCATIONS")

@@ -54,7 +54,7 @@ You can also find more information about [troubleshooting build errors](/README.
 >
 > :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
-> **Note**: You'll need a large FPGA part to be able to fit the query 9 variant of this design
+> **Note**: You'll need a large FPGA part to be able to fit the query 9 variant of this design. Query 9 variant is not supported on Cyclone® 10 FPGA family.
 
 ### Performance
 

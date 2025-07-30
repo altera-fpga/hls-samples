@@ -44,6 +44,8 @@ else()
       set(DEVICE_FLAG "A10")
     elseif(FPGA_DEVICE_NAME MATCHES ".*s10.*" OR FPGA_DEVICE_NAME MATCHES ".*stratix10.*")
       set(DEVICE_FLAG "S10")
+    elseif(FPGA_DEVICE_NAME MATCHES ".*cyclone10.*")
+      set(DEVICE_FLAG "Cyclone10")
     elseif(FPGA_DEVICE_NAME MATCHES ".*agilex.*")
       set(DEVICE_FLAG "Agilex7")
     endif()
@@ -51,8 +53,8 @@ endif()
 
 if(NOT DEFINED DEVICE_FLAG)
     message(FATAL_ERROR "An unrecognized or custom board was passed, but DEVICE_FLAG was not specified. \
-                         Please make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10 or \
-                         -DDEVICE_FLAG=Agilex7.")
+                         Please make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10, \
+                         -DDEVICE_FLAG=Cyclone10 or -DDEVICE_FLAG=Agilex7.")
 endif()
 
 # Set design parameters according to the selected board
@@ -65,7 +67,13 @@ endif()
 if (DEFINED SET_INNER_UNROLL)
     set(INNER_UNROLL_V ${SET_INNER_UNROLL})
 else()
-    set(INNER_UNROLL_V 64)
+    if(DEVICE_FLAG MATCHES "Cyclone10")
+        message(STATUS "Setting INNER_UNROLL_V=2 for Cyclone10 devices to make the design \
+                        fit on the device.")
+        set(INNER_UNROLL_V 2)
+    else()
+        set(INNER_UNROLL_V 64)
+    endif()
 endif()
 
 if (DEFINED SET_OUTER_UNROLL_POW2)
@@ -80,6 +88,9 @@ if(DEVICE_FLAG MATCHES "A10")
 elseif(DEVICE_FLAG MATCHES "S10")
     # S10 parameters
     set(SEED "-Xsseed=3")
+elseif(DEVICE_FLAG MATCHES "Cyclone10")
+    # Cyclone10 parameters
+    set(SEED "-Xsseed=1")
 elseif(DEVICE_FLAG MATCHES "Agilex7")
     # Agilex 7
     set(SEED "-Xsseed=4")

@@ -45,6 +45,8 @@ else()
       set(DEVICE_FLAG "A10")
     elseif(FPGA_DEVICE_NAME MATCHES ".*s10.*" OR FPGA_DEVICE_NAME MATCHES ".*stratix10.*")
       set(DEVICE_FLAG "S10")
+    elseif(FPGA_DEVICE_NAME MATCHES ".*cyclone10.*")
+      set(DEVICE_FLAG "Cyclone10")
     elseif(FPGA_DEVICE_NAME MATCHES ".*agilex.*")
       set(DEVICE_FLAG "Agilex7")
     endif()
@@ -61,8 +63,8 @@ endif()
 
 if(NOT DEFINED DEVICE_FLAG)
     message(FATAL_ERROR "An unrecognized or custom board was passed, but DEVICE_FLAG was not specified. \
-                         Please make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10 or \
-                         -DDEVICE_FLAG=Agilex7.")
+                         Please make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10, \
+                         -DDEVICE_FLAG=Cyclone10 or -DDEVICE_FLAG=Agilex7.")
 endif()
 
 # This is a Windows-specific flag that enables error handling in host code
@@ -81,6 +83,9 @@ if(DEVICE_FLAG MATCHES "A10")
 elseif(DEVICE_FLAG MATCHES "S10")
     # S10 parameters
     set(FIXED_ITERATIONS 55)
+elseif(DEVICE_FLAG MATCHES "Cyclone10")
+    # Cyclone10 parameters
+    set(FIXED_ITERATIONS 50)
 elseif(DEVICE_FLAG MATCHES "Agilex7")
     # Agilex 7 parameters
     set(FIXED_ITERATIONS 55)

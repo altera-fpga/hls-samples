@@ -44,6 +44,8 @@ else()
       set(DEVICE_FLAG "A10")
     elseif(FPGA_DEVICE_NAME MATCHES ".*s10.*" OR FPGA_DEVICE_NAME MATCHES ".*stratix10.*")
       set(DEVICE_FLAG "S10")
+    elseif(FPGA_DEVICE_NAME MATCHES ".*cyclone10.*")
+      set(DEVICE_FLAG "Cyclone10")
     elseif(FPGA_DEVICE_NAME MATCHES ".*agilex.*")
       set(DEVICE_FLAG "Agilex7")
     endif()
@@ -59,8 +61,8 @@ endif()
 
 if(NOT DEFINED DEVICE_FLAG)
     message(FATAL_ERROR "An unrecognized or custom board was passed, but DEVICE_FLAG was not specified. \
-                         Please make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10 or \
-                         -DDEVICE_FLAG=Agilex7.")
+                         Please make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10, \
+                         -DDEVICE_FLAG=Cyclone10 or -DDEVICE_FLAG=Agilex7.")
 endif()
 
 # Prevent ignoring NaN values
@@ -84,6 +86,13 @@ elseif(DEVICE_FLAG MATCHES "S10")
     set(FIXED_ITERATIONS 44)
     set(CLOCK_TARGET -Xsclock=450MHz)
     set(SEED -Xsseed=5)
+elseif(DEVICE_FLAG MATCHES "Cyclone10")
+    # Cyclone10 parameters
+    set(MATRIX_DIMENSION 32)
+    set(COMPLEX 0)
+    set(FIXED_ITERATIONS 39)
+    set(CLOCK_TARGET -Xsclock=360MHz)
+    set(SEED -Xsseed=29)
 elseif(DEVICE_FLAG MATCHES "Agilex7")
     # Agilex 7 parameters
     set(MATRIX_DIMENSION 32)
@@ -92,7 +101,7 @@ elseif(DEVICE_FLAG MATCHES "Agilex7")
     set(CLOCK_TARGET -Xsclock=520MHz)
     set(SEED -Xsseed=5)
 else()
-    message(FATAL_ERROR "An incorrect DEVICE_FLAG was given. Make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10 or -DDEVICE_FLAG=Agilex7.")
+    message(FATAL_ERROR "An incorrect DEVICE_FLAG was given. Make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10, -DDEVICE_FLAG=Cyclone10 or -DDEVICE_FLAG=Agilex7.")
 endif()
 
 if(IGNORE_DEFAULT_SEED)

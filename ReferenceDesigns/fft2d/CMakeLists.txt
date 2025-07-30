@@ -44,20 +44,28 @@ endif()
 # compilation. 
 set(USER_FPGA_FLAGS ${USER_FPGA_FLAGS})
 
-set(LOGN "10")
+
+string(TOLOWER ${FPGA_DEVICE} FPGA_DEVICE_NAME)
+if(FPGA_DEVICE_NAME MATCHES ".*cyclone.*")
+    message(STATUS "Limiting LOGN and PARALLELISM for Cyclone devices so the design fits.\ 
+                    Note that manual overrides (-DSET_<>) still work.")
+    set(LOGN "4")
+    set(PARALLELISM "4")
+else()
+    set(LOGN "10")
+    set(PARALLELISM "8")
+endif()
+
 
 if(DEFINED SET_LOGN)
     set(LOGN ${SET_LOGN})
 endif()
 
-message(STATUS "LOGN=${LOGN}")
-
-set(PARALLELISM "8")
-
 if(DEFINED SET_PARALLELISM)
     set(PARALLELISM ${SET_PARALLELISM})
 endif()
 
+message(STATUS "LOGN=${LOGN}")
 message(STATUS "PARALLELISM=${PARALLELISM}")
 
 # Use cmake -DUSER_FLAGS=<flags> to set extra flags for general compilation.

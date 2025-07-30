@@ -25,6 +25,9 @@ constexpr int kDefaultFmax = 240;
 #elif defined(CycloneV)
 constexpr int kHighFmax = 280;
 constexpr int kDefaultFmax = 200;
+#elif defined(Cyclone10)
+constexpr int kHighFmax = 280;
+constexpr int kDefaultFmax = 180;
 #elif defined(S10)
 constexpr int kHighFmax = 540;
 constexpr int kDefaultFmax = 480;

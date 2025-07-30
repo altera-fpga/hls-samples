@@ -44,6 +44,8 @@ else()
       set(DEVICE_FLAG "A10")
     elseif(FPGA_DEVICE_NAME MATCHES ".*s10.*" OR FPGA_DEVICE_NAME MATCHES ".*stratix10.*")
       set(DEVICE_FLAG "S10")
+    elseif(FPGA_DEVICE_NAME MATCHES ".*cyclone10.*")
+      set(DEVICE_FLAG "Cyclone10")
     elseif(FPGA_DEVICE_NAME MATCHES ".*agilex.*")
       set(DEVICE_FLAG "Agilex7")
     endif()
@@ -59,8 +61,8 @@ endif()
 
 if(NOT DEFINED DEVICE_FLAG)
     message(FATAL_ERROR "An unrecognized or custom board was passed, but DEVICE_FLAG was not specified. \
-                         Please make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10 or \
-                         -DDEVICE_FLAG=Agilex7.")
+                         Please make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10, \
+                         -DDEVICE_FLAG=Cyclone10 or -DDEVICE_FLAG=Agilex7.")
 endif()
 
 # Increase the allowable constexpr steps for the front end. This allows the
@@ -111,6 +113,8 @@ else()
   if(DEVICE_FLAG MATCHES "A10")
     set(PIXELS_PER_CYCLE 2)
   elseif(DEVICE_FLAG MATCHES "S10")
+    set(PIXELS_PER_CYCLE 2)
+  elseif(DEVICE_FLAG MATCHES "Cyclone10")
     set(PIXELS_PER_CYCLE 2)
   elseif(DEVICE_FLAG MATCHES "Agilex7")
     set(PIXELS_PER_CYCLE 1)

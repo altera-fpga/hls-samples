@@ -42,6 +42,8 @@ else()
       set(DEVICE_FLAG "A10")
     elseif(FPGA_DEVICE_NAME MATCHES ".*s10.*" OR FPGA_DEVICE_NAME MATCHES ".*stratix10.*")
       set(DEVICE_FLAG "S10")
+    elseif(FPGA_DEVICE_NAME MATCHES ".*cyclone10.*")
+      set(DEVICE_FLAG "Cyclone10")
     elseif(FPGA_DEVICE_NAME MATCHES ".*agilex7.*")
       set(DEVICE_FLAG "Agilex7")
     elseif(FPGA_DEVICE_NAME MATCHES ".*agilex5.*")
@@ -53,7 +55,7 @@ endif()
 
 if(NOT DEFINED DEVICE_FLAG)
     message(FATAL_ERROR "An unrecognized or custom board was passed, but DEVICE_FLAG was not specified. \
-                         Please make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10, -DDEVICE_FLAG=CycloneV, \
+                         Please make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10, -DDEVICE_FLAG=Cyclone10, -DDEVICE_FLAG=CycloneV, \
                          -DDEVICE_FLAG=Agilex5, or -DDEVICE_FLAG=Agilex7.")
 endif()
 
