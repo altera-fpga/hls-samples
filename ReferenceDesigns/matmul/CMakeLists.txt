@@ -1,7 +1,7 @@
-# Direct CMake to use aclang rather than the default C++ compiler/linker on Linux
+# Direct CMake to use ahls rather than the default C++ compiler/linker on Linux
 # and icx-cl on Windows
 if(UNIX)
-    set(CMAKE_CXX_COMPILER aclang)
+    set(CMAKE_CXX_COMPILER ahls)
 else() # Windows
     include (CMakeForceCompiler)
     CMAKE_FORCE_CXX_COMPILER (icx-cl IntelDPCPP)

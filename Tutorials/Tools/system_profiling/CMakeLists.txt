@@ -1,7 +1,7 @@
-# Direct CMake to use aclang rather than the default C++ compiler/linker on Linux
+# Direct CMake to use ahls rather than the default C++ compiler/linker on Linux
 # and icx-cl on Windows
 if(UNIX)
-    set(CMAKE_CXX_COMPILER aclang)
+    set(CMAKE_CXX_COMPILER ahls)
 else() # Windows
     # This code sample does not currently support windows
     message(FATAL_ERROR "Error: This code sample cannot be configured to run on Windows!\
