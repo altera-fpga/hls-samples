@@ -26,8 +26,9 @@ using PipePropertiesT = decltype(sycl::ext::oneapi::experimental::properties(
     sycl::ext::intel::experimental::ready_latency<0>,
     sycl::ext::intel::experimental::bits_per_symbol<8>,
     sycl::ext::intel::experimental::uses_valid<true>,
+    sycl::ext::intel::experimental::uses_ready<true>,
     sycl::ext::intel::experimental::first_symbol_in_high_order_bits<true>,
-    sycl::ext::intel::experimental::protocol_avalon_streaming_uses_ready));
+    sycl::ext::intel::experimental::protocol_avalon_streaming));
 
 // Image streams
 using InPixelPipe = sycl::ext::intel::experimental::pipe<

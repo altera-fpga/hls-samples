@@ -76,13 +76,14 @@ Below is a summary of all relevant SYCL properties which can be applied to a `pi
 
 #### Table 2. Properties used to Configure a Pipe to Implement a Streaming Data Interface
 
-| Property                                | Default Value                          | Valid Values
-| ---                                     | ---                                    | ---
-| `ready_latency<int>`                    | 0                                      | non-negative integer
-| `bits_per_symbol<int>`                  | 8                                      | non-negative integer that divides the size of the data type
-| `uses_valid<bool>`                      | `true`                                 | boolean
-| `first_symbol_in_high_order_bits<bool>` | `true`                                 | boolean
-| `protocol`                              | `protocol_avalon_streaming_uses_ready` |`protocol_avalon_streaming` / `protocol_avalon_streaming_uses_ready`
+| Property                                | Default Value               | Valid Values
+| ---                                     | ---                         | ---
+| `ready_latency<int>`                    | 0                           | non-negative integer
+| `bits_per_symbol<int>`                  | 8                           | non-negative integer that divides the size of the data type
+| `uses_valid<bool>`                      | `true`                      | boolean
+| `uses_ready<bool>`                      | `true`                      | boolean
+| `first_symbol_in_high_order_bits<bool>` | `true`                      | boolean
+| `protocol`                              | `protocol_avalon_streaming` | `protocol_avalon_streaming` / `protocol_avalon_mm`
 
 See [this page](https://www.intel.com/content/www/us/en/docs/programmable/683091/current/st-interface-properties.html) for more information on the Avalon interface specifications.
 
@@ -101,8 +102,9 @@ using PipePropertiesT = decltype(sycl::ext::oneapi::experimental::properties(
     sycl::ext::intel::experimental::ready_latency<0>,
     sycl::ext::intel::experimental::bits_per_symbol<8>,
     sycl::ext::intel::experimental::uses_valid<true>,
+    sycl::ext::intel::experimental::uses_ready<true>,
     sycl::ext::intel::experimental::first_symbol_in_high_order_bits<true>,
-    sycl::ext::intel::experimental::protocol_avalon_streaming_uses_ready));
+    sycl::ext::intel::experimental::protocol_avalon_streaming));
 
 using FirstPipe = sycl::ext::intel::experimental::pipe<
     FirstPipeT,      // An identifier for the pipe

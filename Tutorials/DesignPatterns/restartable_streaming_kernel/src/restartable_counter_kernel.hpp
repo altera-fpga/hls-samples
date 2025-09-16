@@ -29,9 +29,7 @@ using OutputBeat =
 // StopPipe is mapped to the CSR. This way a kernel can be controlled by a
 // memory-mapped host while it executes.
 using CsrPipeProperties = decltype(oneapi_exp::properties(
-    intel_exp::protocol<
-        // Write-only, so no no need for protocol_name::avalon_mm_uses_ready
-        intel_exp::protocol_name::avalon_mm_uses_ready>));
+    intel_exp::protocol<intel_exp::protocol_name::avalon_mm>));
 using StopPipe = intel_exp::pipe<StopPipeID, bool, 0, CsrPipeProperties>;
 
 using StreamingPipeProperties =

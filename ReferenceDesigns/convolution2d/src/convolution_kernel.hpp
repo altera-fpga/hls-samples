@@ -57,23 +57,25 @@ using OutputImageStream =
 /////////////////////////////////////////////
 using CsrInProperties = decltype(sycl::ext::oneapi::experimental::properties(
     sycl::ext::intel::experimental::protocol<
-        // The `ready` signal is required for input CSR pipe. The host may check
-        // the `ready` register to ensure the kernel is ready for a new value.
-        sycl::ext::intel::experimental::protocol_name::avalon_mm_uses_ready>,
+        sycl::ext::intel::experimental::protocol_name::avalon_mm>,
     // Enabling the `valid` signal ensures that the kernel only consumes new
     // data after the host changes the CSR. The host must write a `1` to the
     // associated `...CHANNEL_VALID_REG` register.
-    sycl::ext::intel::experimental::uses_valid_on));
+    sycl::ext::intel::experimental::uses_valid_on,
+    // The `ready` signal is required for input CSR pipe. The host may check
+    // the `ready` register to ensure the kernel is ready for a new value.
+    sycl::ext::intel::experimental::uses_ready_on));
 
 using CsrOutProperties = decltype(sycl::ext::oneapi::experimental::properties(
     sycl::ext::intel::experimental::protocol<
-        // Disable the `ready` signal so the device can update this value
-        // without requiring the host to consent. Host doesn't care about
-        // possibly missing an update.
         sycl::ext::intel::experimental::protocol_name::avalon_mm>,
     // `valid` signal is required for output CSR pipe. Host may check it to
     // ensure the data is 'real'.
-    sycl::ext::intel::experimental::uses_valid_on));
+    sycl::ext::intel::experimental::uses_valid_on,
+    // Disable the `ready` signal so the device can update this value
+    // without requiring the host to consent. Host doesn't care about
+    // possibly missing an update.
+    sycl::ext::intel::experimental::uses_ready_off));
 
 class ID_StopCSR;
 using StopCSR =

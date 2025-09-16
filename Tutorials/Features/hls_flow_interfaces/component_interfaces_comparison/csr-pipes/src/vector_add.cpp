@@ -24,9 +24,10 @@ using InputPipeB =
     sycl::ext::intel::experimental::pipe<IDPipeB, int, 0, PipeProps>;
 
 using CsrOutProperties = decltype(sycl::ext::oneapi::experimental::properties(
+    // Host doesn't care about possibly missing an update, so no need for
+    // uses_ready<true>
+    sycl::ext::intel::experimental::uses_ready<false>,
     sycl::ext::intel::experimental::protocol<
-        // Host doesn't care about possibly missing an update, so no need for
-        // protocol_name::avalon_mm_uses_ready
         sycl::ext::intel::experimental::protocol_name::avalon_mm>));
 
 using OutputPipeC =
@@ -64,7 +65,7 @@ int main() {
     auto selector = sycl::ext::intel::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
     auto selector = sycl::ext::intel::fpga_selector_v;
-#else  // #if FPGA_EMULATOR
+#else // #if FPGA_EMULATOR
     auto selector = sycl::ext::intel::fpga_emulator_selector_v;
 #endif
 

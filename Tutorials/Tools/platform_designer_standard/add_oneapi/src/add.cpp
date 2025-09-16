@@ -15,6 +15,7 @@
 class OutputPipeID;
 
 using OutputPipeProps = decltype(sycl::ext::oneapi::experimental::properties(
+    sycl::ext::intel::experimental::uses_ready<false>,
     sycl::ext::intel::experimental::protocol<
         sycl::ext::intel::experimental::protocol_name::avalon_mm>));
 
