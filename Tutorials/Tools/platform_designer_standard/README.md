@@ -186,7 +186,7 @@ Follow these steps to compile and test the design:
 
       ![](assets/module-connections.png)
 
-      Don't forget to export the `irq_add` and `exception_add` signals. The provided top-level RTL file (`add.sv`) uses the generated IP. Following these naming conventions allows the IP to connect to this handwritten RTL.
+      Don't forget to export the `freeze_add`, `irq_add` and `exception_add` signals. The provided top-level RTL file (`add.sv`) uses the generated IP. Following these naming conventions allows the IP to connect to this handwritten RTL.
 
    4. Save the system by clicking `File` > `Save` and name it `add_kernel_wrapper.qsys`.
 

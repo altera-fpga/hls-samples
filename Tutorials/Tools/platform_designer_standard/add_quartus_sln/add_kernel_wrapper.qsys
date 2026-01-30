@@ -6,7 +6,7 @@
    version="1.0"
    description=""
    tags=""
-   categories="System" />
+   categories="" />
  <parameter name="bonusData"><![CDATA[bonusData 
 {
    element add_report_di_0
@@ -15,19 +15,6 @@
       {
          value = "2";
          type = "int";
-      }
-   }
-   element add_report_di_0.csr_ring_root_avs
-   {
-      datum _lockedAddress
-      {
-         value = "0";
-         type = "boolean";
-      }
-      datum baseAddress
-      {
-         value = "0";
-         type = "String";
       }
    }
    element clk_0
@@ -60,7 +47,7 @@
  <parameter name="hideFromIPCatalog" value="false" />
  <parameter name="lockedInterfaceDefinition" value="" />
  <parameter name="maxAdditionalLatency" value="1" />
- <parameter name="projectName" value="add.qpf" />
+ <parameter name="projectName" value="" />
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="0" />
  <parameter name="testBenchDutName" value="" />
@@ -74,13 +61,18 @@
    type="conduit"
    dir="end" />
  <interface
+   name="freeze_add"
+   internal="add_report_di_0.freeze"
+   type="conduit"
+   dir="end" />
+ <interface
    name="irq_add"
    internal="add_report_di_0.kernel_irqs"
    type="interrupt"
    dir="end" />
  <interface name="reset" internal="clk_0.clk_in_reset" type="reset" dir="end" />
  <module name="add_report_di_0" kind="add_report_di" version="1.0" enabled="1" />
- <module name="clk_0" kind="clock_source" version="23.1" enabled="1">
+ <module name="clk_0" kind="clock_source" version="24.1" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
   <parameter name="inputClockFrequency" value="0" />
@@ -89,7 +81,7 @@
  <module
    name="master_0"
    kind="altera_jtag_avalon_master"
-   version="23.1"
+   version="24.1"
    enabled="1">
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -102,27 +94,27 @@
  </module>
  <connection
    kind="avalon"
-   version="23.1"
+   version="24.1"
    start="master_0.master"
    end="add_report_di_0.csr_ring_root_avs">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
- <connection kind="clock" version="23.1" start="clk_0.clk" end="master_0.clk" />
+ <connection kind="clock" version="24.1" start="clk_0.clk" end="master_0.clk" />
  <connection
    kind="clock"
-   version="23.1"
+   version="24.1"
    start="clk_0.clk"
    end="add_report_di_0.clock" />
  <connection
    kind="reset"
-   version="23.1"
+   version="24.1"
    start="clk_0.clk_reset"
    end="master_0.clk_reset" />
  <connection
    kind="reset"
-   version="23.1"
+   version="24.1"
    start="clk_0.clk_reset"
    end="add_report_di_0.resetn" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
