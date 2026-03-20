@@ -47,8 +47,10 @@ else()
       set(DEVICE_FLAG "S10")
     elseif(FPGA_DEVICE_NAME MATCHES ".*cyclone10.*")
       set(DEVICE_FLAG "Cyclone10")
-    elseif(FPGA_DEVICE_NAME MATCHES ".*agilex.*")
+    elseif(FPGA_DEVICE_NAME MATCHES ".*agilex7.*")
       set(DEVICE_FLAG "Agilex7")
+    elseif(FPGA_DEVICE_NAME MATCHES ".*agilex5.*")
+      set(DEVICE_FLAG "Agilex5")
     endif()
 
     # Check if the target is a BSP
@@ -64,7 +66,7 @@ endif()
 if(NOT DEFINED DEVICE_FLAG)
     message(FATAL_ERROR "An unrecognized or custom board was passed, but DEVICE_FLAG was not specified. \
                          Please make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10, \
-                         -DDEVICE_FLAG=Cyclone10 or -DDEVICE_FLAG=Agilex7.")
+                         -DDEVICE_FLAG=Cyclone10, -DDEVICE_FLAG=Agilex7 or -DDEVICE_FLAG=Agilex5.")
 endif()
 
 # Prevent ignoring NaN values
@@ -102,7 +104,16 @@ elseif(DEVICE_FLAG MATCHES "Cyclone10")
     set(TILE_B 8)
     set(CLOCK_TARGET 360MHz)
     set(SEED "-Xsseed=7")
-elseif(DEVICE_FLAG MATCHES "Agilex")
+elseif(DEVICE_FLAG MATCHES "Agilex7")
+    # Agilex™ parameters
+    set(ROWS_A 64)
+    set(COMMON 64)
+    set(COLS_B 64)
+    set(TILE_A 8)
+    set(TILE_B 8)
+    set(CLOCK_TARGET 540MHz)
+    set(SEED "-Xsseed=5")
+elseif(DEVICE_FLAG MATCHES "Agilex5")
     # Agilex™ parameters
     set(ROWS_A 64)
     set(COMMON 64)
@@ -112,7 +123,7 @@ elseif(DEVICE_FLAG MATCHES "Agilex")
     set(CLOCK_TARGET 540MHz)
     set(SEED "-Xsseed=5")
 else()
-    message(FATAL_ERROR "An incorrect DEVICE_FLAG was given. Make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10, -DDEVICE_FLAG=Cyclone10 or -DDEVICE_FLAG=Agilex7.")
+    message(FATAL_ERROR "An incorrect DEVICE_FLAG was given. Make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10, -DDEVICE_FLAG=Cyclone10, -DDEVICE_FLAG=Agilex7 or -DDEVICE_FLAG=Agilex5.")
 endif()
 
 if(IGNORE_DEFAULT_SEED)
@@ -145,6 +156,11 @@ message(STATUS "SEED=${SEED}")
 # Use cmake -DUSER_FPGA_FLAGS=<flags> to set extra flags for FPGA backend
 # compilation. 
 set(USER_FPGA_FLAGS ${USER_FPGA_FLAGS};${SEED};-Xsclock=${CLOCK_TARGET})
+
+if(DEVICE_FLAG MATCHES "Agilex5")
+  # This design has better througput on Agilex5 with this optimization
+  set(USER_FPGA_FLAGS ${USER_FPGA_FLAGS};-Xsfast-loop-orchestration=on)
+endif()
 
 # Use cmake -DUSER_FLAGS=<flags> to set extra flags for general compilation.
 set(USER_FLAGS ${USER_FLAGS};${EXTRA_COMPILE_FLAG};-DROWS_A=${ROWS_A};-DCOMMON=${COMMON};-DCOLS_B=${COLS_B};-DTILE_A=${TILE_A};-DTILE_B=${TILE_B};${BSP_FLAG})

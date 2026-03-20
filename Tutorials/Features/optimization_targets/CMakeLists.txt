@@ -61,12 +61,20 @@ if(NOT DEFINED DEVICE_FLAG)
                          -DDEVICE_FLAG=Agilex5, or -DDEVICE_FLAG=Agilex7.")
 endif()
 
+# The manual revert step has to undo some optimizations of the -Xsoptimize flag.
+# Some of these optimizations are applied by default on only some devices,
+# so in our reversion we only apply them to the appropriate devices.
+# The sfc-exit-fifo-type flag resets the stall free cluster exit fifo from
+# a low-latency one the optimization flag selects.
+# The hyper-optimized-handshaking flag turns on hyperflex optimizations
+# for the devices on which it is on by default. This adds extra register stages
+# throughout the design, increasing fmax at the cost of higher latency and area.
 if(${DEVICE_FLAG} STREQUAL A10)
     set(MANUAL_REVERT_FLAGS "-Xssfc-exit-fifo-type=default")
 elseif(${DEVICE_FLAG} STREQUAL S10)
     set(MANUAL_REVERT_FLAGS "-Xshyper-optimized-handshaking=on -Xssfc-exit-fifo-type=default")
 elseif(${DEVICE_FLAG} STREQUAL Agilex5)
-    set(MANUAL_REVERT_FLAGS "-Xshyper-optimized-handshaking=on -Xssfc-exit-fifo-type=default")
+    set(MANUAL_REVERT_FLAGS "-Xssfc-exit-fifo-type=default")
 elseif(${DEVICE_FLAG} STREQUAL Agilex7)
     set(MANUAL_REVERT_FLAGS "-Xshyper-optimized-handshaking=on -Xssfc-exit-fifo-type=default")
 elseif(${DEVICE_FLAG} STREQUAL Cyclone10)

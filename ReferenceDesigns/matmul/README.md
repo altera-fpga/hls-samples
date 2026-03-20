@@ -109,6 +109,7 @@ The key optimization techniques used are as follows:
 1. Fully unrolling the loop over the matrix product to instantiate an array of individual PEs in hardware.
 2. Using the `fpga_reg` attribute to insert additional pipelining registers, a crucial step in the implementation of the systolic array structure of this design, which allows data to be passed from one PE to the next. The use of these registers both in the systolic array and in various other parts of the design improves the overall achievable frequency.
 3. Using an efficient memory banking scheme to generate high performance hardware.
+4. On Agilex5 devices, turn on an optimization called "fast-loop-orchestration" which allows the compiler to restructure the loops to improve II. This optimization is turned on by default on other device families. Note that on this design it does not apply to all of the loops, but it can still apply to several loops and improve performance.
 
 ### Comparison with a naïve approach
 
@@ -145,11 +146,12 @@ These results were gathered from targeting the Arria® 10 device family using th
 
 ### Compiler Flags Used
 
-| Flag              | Description
-|:---               |:---
-| `-Xshardware`     | Target FPGA hardware (as opposed to FPGA emulator)
-| `-Xsclock=360MHz` | The FPGA backend attempts to achieve 360 MHz
-| `-Xsseed`         | Specifies the Quartus® compile seed, to yield slightly higher fmax
+| Flag                              | Description
+|:---                               |:---
+| `-Xshardware`                     | Target FPGA hardware (as opposed to FPGA emulator)
+| `-Xsclock=360MHz`                 | The FPGA backend attempts to achieve 360 MHz
+| `-Xsseed`                         | Specifies the Quartus® compile seed, to yield slightly higher fmax
+| `-Xsfast-loop-orchestration=on`   | The FPGA backend attempts to restructure the loops more effectively (only applied on Agilex5)
 
 Additionaly, the cmake build system can be configured using the following parameters:
 

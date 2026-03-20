@@ -46,8 +46,10 @@ else()
       set(DEVICE_FLAG "S10")
     elseif(FPGA_DEVICE_NAME MATCHES ".*cyclone10.*")
       set(DEVICE_FLAG "Cyclone10")
-    elseif(FPGA_DEVICE_NAME MATCHES ".*agilex.*")
+    elseif(FPGA_DEVICE_NAME MATCHES ".*agilex7.*")
       set(DEVICE_FLAG "Agilex7")
+    elseif(FPGA_DEVICE_NAME MATCHES ".*agilex5.*")
+      set(DEVICE_FLAG "Agilex5")
     endif()
 
     # Check if the target is a BSP
@@ -62,7 +64,7 @@ endif()
 if(NOT DEFINED DEVICE_FLAG)
     message(FATAL_ERROR "An unrecognized or custom board was passed, but DEVICE_FLAG was not specified. \
                          Please make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10, \
-                         -DDEVICE_FLAG=Cyclone10 or -DDEVICE_FLAG=Agilex7.")
+                         -DDEVICE_FLAG=Cyclone10, -DDEVICE_FLAG=Agilex7 or -DDEVICE_FLAG=Agilex5.")
 endif()
 
 # Increase the allowable constexpr steps for the front end. This allows the
@@ -82,6 +84,8 @@ if(NOT DEFINED SEED)
   elseif(DEVICE_FLAG MATCHES "S10")
     set(SEED 2)
   elseif(DEVICE_FLAG MATCHES "Agilex7")
+    set(SEED 3)
+  elseif(DEVICE_FLAG MATCHES "Agilex5")
     set(SEED 3)
   else()
     set(SEED 4)
@@ -118,6 +122,8 @@ else()
     set(PIXELS_PER_CYCLE 2)
   elseif(DEVICE_FLAG MATCHES "Agilex7")
     set(PIXELS_PER_CYCLE 1)
+  elseif(DEVICE_FLAG MATCHES "Agilex5")
+    set(PIXELS_PER_CYCLE 1)
   else()
     message(WARNING "Unknown board: setting PIXELS_PER_CYCLE to 1")
     set(PIXELS_PER_CYCLE 1)
@@ -152,6 +158,11 @@ endif()
 # Use cmake -DUSER_FPGA_FLAGS=<flags> to set extra flags for FPGA backend
 # compilation. 
 set(USER_FPGA_FLAGS ${USER_FPGA_FLAGS};${SEED_FLAG})
+
+if(DEVICE_FLAG MATCHES "Agilex5")
+  # This design has better througput on Agilex5 with this optimization
+  set(USER_FPGA_FLAGS ${USER_FPGA_FLAGS};-Xsglobal-ring)
+endif()
 
 # Use cmake -DUSER_FLAGS=<flags> to set extra flags for general compilation.
 set(USER_FLAGS ${USER_FLAGS};${CONSTEXPR_STEPS};${FILTER_SIZE_FLAG};${PIXELS_PER_CYCLE_FLAG};${MAX_COLS_FLAG};${PIXEL_BITS_FLAG};${BSP_FLAG})
