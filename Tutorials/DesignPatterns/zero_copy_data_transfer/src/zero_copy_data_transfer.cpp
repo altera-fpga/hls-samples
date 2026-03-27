@@ -7,7 +7,7 @@
 #include <type_traits>
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "exception_handler.hpp"
 
@@ -49,11 +49,11 @@ int main(int argc, char* argv[]) {
   try {
     // device selector
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
     // create the device queue
@@ -88,10 +88,10 @@ int main(int argc, char* argv[]) {
     // annotated_arg class.
     Type *in_zero_copy = sycl::malloc_host<Type>(
         size, q,
-        sycl::ext::intel::experimental::property::usm::buffer_location(0));
+        sycl::ext::altera::experimental::property::usm::buffer_location(0));
     Type *out_zero_copy = sycl::malloc_host<Type>(
         size, q,
-        sycl::ext::intel::experimental::property::usm::buffer_location(0));
+        sycl::ext::altera::experimental::property::usm::buffer_location(0));
 #endif
     
     // ensure that we could allocate space for both the input and output

@@ -5,7 +5,7 @@
 #include "tuple.hpp"
 #include "unrolled_loop.hpp"
 
-using namespace sycl::ext::intel::experimental;
+using namespace sycl::ext::altera::experimental;
 using namespace sycl::ext::oneapi::experimental;
 
 constexpr int BL0 = 0;
@@ -156,7 +156,7 @@ void VectorReadPipeToDDR(
   // lives on the device.
   // Knowing this, the compiler won't generate hardware to
   // potentially get data from the host.
-  sycl::ext::intel::device_ptr<TT> vector_ptr_located(vector_ptr);
+  sycl::ext::altera::device_ptr<TT> vector_ptr_located(vector_ptr);
 #else
   // Device pointers are not supported when targeting an FPGA
   // family/part

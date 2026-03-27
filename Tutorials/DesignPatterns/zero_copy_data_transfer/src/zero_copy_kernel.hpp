@@ -5,7 +5,7 @@
 #include <vector>
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 using namespace sycl;
 using namespace std::chrono;
@@ -50,9 +50,11 @@ class Consumer;
 
 // pipes
 template <typename T>
-using ProducePipe = pipe<class ProducePipeClass, T>;
+using ProducePipe =
+    sycl::ext::altera::experimental::pipe<class ProducePipeClass, T>;
 template <typename T>
-using ConsumePipe = pipe<class ConsumePipeClass, T>;
+using ConsumePipe =
+    sycl::ext::altera::experimental::pipe<class ConsumePipeClass, T>;
 
 //
 // reads the input data from the hosts memory
@@ -69,14 +71,14 @@ event SubmitProducer(queue& q, T* in_data, size_t size) {
   // are in the location "1"
   sycl::ext::oneapi::experimental::annotated_arg h_in_data(
       in_data, sycl::ext::oneapi::experimental::properties{
-              sycl::ext::intel::experimental::buffer_location<0>});
+              sycl::ext::altera::experimental::buffer_location<0>});
 #endif
 
   return q.single_task<Producer>([=]() [[intel::kernel_args_restrict]] {
 #if defined(IS_BSP)
-    // using a sycl::ext::intel::host_ptr tells the compiler that this pointer lives in the
+    // using a sycl::ext::altera::host_ptr tells the compiler that this pointer lives in the
     // hosts address space
-    sycl::ext::intel::host_ptr<T> h_in_data(in_data);
+    sycl::ext::altera::host_ptr<T> h_in_data(in_data);
 #endif
 
     for (size_t i = 0; i < size; i++) {
@@ -118,14 +120,14 @@ event SubmitConsumer(queue& q, T* out_data, size_t size) {
   // are in the location "1"
   sycl::ext::oneapi::experimental::annotated_arg h_out_data(
       out_data, sycl::ext::oneapi::experimental::properties{
-              sycl::ext::intel::experimental::buffer_location<0>});
+              sycl::ext::altera::experimental::buffer_location<0>});
 #endif
 
   return q.single_task<Consumer>([=]() [[intel::kernel_args_restrict]] {
 #if defined(IS_BSP)
-    // using a sycl::ext::intel::host_ptr tells the compiler that this pointer lives in the
+    // using a sycl::ext::altera::host_ptr tells the compiler that this pointer lives in the
     // hosts address space
-    sycl::ext::intel::host_ptr<T> h_out_data(out_data);
+    sycl::ext::altera::host_ptr<T> h_out_data(out_data);
 #endif
 
     for (size_t i = 0; i < size; i++) {

@@ -1,5 +1,5 @@
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <iostream>
 
 #include "exception_handler.hpp"
@@ -50,9 +50,9 @@ int main(int argc, char* argv[]) {
 //  macro
 //  - the FPGA device (a real FPGA)
 #if FPGA_HARDWARE
-    auto selector = sycl::ext::intel::fpga_selector_v;
+    auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-    auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   // Variable ORed with result of each test

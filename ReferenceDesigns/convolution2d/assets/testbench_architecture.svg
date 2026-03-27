@@ -196,7 +196,7 @@
 					<v:ud v:nameU="DarkerColor" v:prompt="" v:val="VT5(#339933)"/>
 				</v:userDefs>
 				<title>Sheet.1035</title>
-				<desc>Pixel Beat (sycl::ext::intel::experimental::StreamingBeat)</desc>
+				<desc>Pixel Beat (sycl::ext::altera::experimental::StreamingBeat)</desc>
 				<g id="shape1036-8" v:mID="1036" v:groupContext="shape" v:layerMember="0">
 					<title>Sheet.1036</title>
 					<v:userDefs>
@@ -224,7 +224,7 @@
 					<v:textRect cx="153.142" cy="391.305" width="306.29" height="25.5118"/>
 					<text x="6" y="394.91" class="st2" v:langID="4105"><v:paragraph/><v:tabList/>Pixel Beat<tspan class="st3"
 								v:langID="1033"> </tspan><tspan class="st3" v:langID="1033">(</tspan><tspan class="st4"
-								v:langID="1033">sycl::ext::intel::experimental::StreamingBeat</tspan><tspan class="st3"
+								v:langID="1033">sycl::ext::altera::experimental::StreamingBeat</tspan><tspan class="st3"
 								v:langID="1033">)</tspan></text>				</g>
 			</g>
 		</g>
@@ -526,7 +526,7 @@
 					<v:ud v:nameU="DarkerColor" v:prompt="" v:val="VT5(#339933)"/>
 				</v:userDefs>
 				<title>Sheet.1079</title>
-				<desc>Pixel Beat (sycl::ext::intel::experimental::StreamingBeat)</desc>
+				<desc>Pixel Beat (sycl::ext::altera::experimental::StreamingBeat)</desc>
 				<g id="shape1080-46" v:mID="1080" v:groupContext="shape" v:layerMember="0">
 					<title>Sheet.1080</title>
 					<v:userDefs>
@@ -554,7 +554,7 @@
 					<v:textRect cx="153.142" cy="391.305" width="306.29" height="25.5118"/>
 					<text x="6" y="394.91" class="st2" v:langID="4105"><v:paragraph/><v:tabList/>Pixel Beat<tspan class="st3"
 								v:langID="1033"> </tspan><tspan class="st3" v:langID="1033">(</tspan><tspan class="st4"
-								v:langID="1033">sycl::ext::intel::experimental::StreamingBeat</tspan><tspan class="st3"
+								v:langID="1033">sycl::ext::altera::experimental::StreamingBeat</tspan><tspan class="st3"
 								v:langID="1033">)</tspan></text>				</g>
 			</g>
 		</g>

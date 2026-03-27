@@ -3,7 +3,7 @@
 
 #include <sycl/sycl.hpp>
 #include <sycl/ext/intel/ac_types/ac_int.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "../common/common.hpp"
 #include "constexpr_math.hpp"  // included from ../../../../include
@@ -290,9 +290,9 @@ sycl::event SubmitGzipMetadataReader(sycl::queue& q, int in_count,
     // lives on the device.
     // Knowing this, the compiler won't generate hardware to
     // potentially get data from the host.
-    sycl::ext::intel::device_ptr<GzipHeaderData> hdr_data(hdr_data_ptr);
-    sycl::ext::intel::device_ptr<int> crc(crc_ptr);
-    sycl::ext::intel::device_ptr<int> out_count(out_count_ptr);
+    sycl::ext::altera::device_ptr<GzipHeaderData> hdr_data(hdr_data_ptr);
+    sycl::ext::altera::device_ptr<int> crc(crc_ptr);
+    sycl::ext::altera::device_ptr<int> out_count(out_count_ptr);
 #else
     // Device pointers are not supported when targeting an FPGA 
     // family/part

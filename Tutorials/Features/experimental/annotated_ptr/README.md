@@ -66,7 +66,7 @@ struct DotProductIP {
 
 The address to each row of the weight matrix is transferred into the kernel via a host pipe. The kernel reads the row pointers of the weight matrix and then performs the dot product operation.
 ```c++
-using Pipe2DotProductIP = ext::intel::experimental::pipe<class MyPipeName1, float *>;
+using Pipe2DotProductIP = ext::altera::experimental::pipe<class MyPipeName1, float *>;
 ...
 float *p = MyPipe::read();
 

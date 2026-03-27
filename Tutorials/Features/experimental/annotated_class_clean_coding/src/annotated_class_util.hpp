@@ -26,10 +26,10 @@ namespace fpga_tools {
 //  using annotated_arg_t =
 //      sycl::ext::oneapi::experimental::annotated_arg<
 //          int *, decltype(sycl::ext::oneapi::experimental::properties{
-//                          sycl::ext::intel::experimental::buffer_location<1>,
-//                          sycl::ext::intel::experimental::dwidth<32>,
-//                          sycl::ext::intel::experimental::latency<0>,
-//                          sycl::ext::intel::experimental::read_write_mode_write,
+//                          sycl::ext::altera::experimental::buffer_location<1>,
+//                          sycl::ext::altera::experimental::dwidth<32>,
+//                          sycl::ext::altera::experimental::latency<0>,
+//                          sycl::ext::altera::experimental::read_write_mode_write,
 //                          sycl::ext::oneapi::experimental::alignment<4>})>;
 //
 // Furthermore, if you add the "-std=c++20" compiler flag, the type alias
@@ -37,10 +37,10 @@ namespace fpga_tools {
 //
 //  using annotated_arg_t = sycl::ext::oneapi::experimental::annotated_arg<
 //      int *, fpga_tools::properties_t<
-//                  sycl::ext::intel::experimental::buffer_location<1>,
-//                  sycl::ext::intel::experimental::dwidth<32>,
-//                  sycl::ext::intel::experimental::latency<0>,
-//                  sycl::ext::intel::experimental::read_write_mode_write,
+//                  sycl::ext::altera::experimental::buffer_location<1>,
+//                  sycl::ext::altera::experimental::dwidth<32>,
+//                  sycl::ext::altera::experimental::latency<0>,
+//                  sycl::ext::altera::experimental::read_write_mode_write,
 //                  sycl::ext::oneapi::experimental::alignment<4>>;
 //
 // 3. in the host code, replace the USM allocation call (e.g. malloc_shared,

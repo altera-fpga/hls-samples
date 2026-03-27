@@ -1,6 +1,6 @@
 // oneAPI headers
 #include <sycl/ext/intel/ac_types/ac_int.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "exception_handler.hpp"
@@ -17,7 +17,7 @@ struct StreamPipelinedIP {
 
   // Kernel properties method to configure the kernel to be a kernel with
   // streaming pipelined invocation interface.
-  // The property `sycl::ext::intel::experimental::pipelined` takes an optional
+  // The property `sycl::ext::altera::experimental::pipelined` takes an optional
   // template parameter that controls whether to pipeline the kernel. Valid
   // parameters are: -1: Pipeline the kernel, and automatically infer lowest
   // possible II at target fMAX. 0: Do not pipeline the kernel. N (N> 0):
@@ -25,8 +25,8 @@ struct StreamPipelinedIP {
   // is not specified, the default behaviour of -1 will be inferred.
   auto get(sycl::ext::oneapi::experimental::properties_tag) {
     return sycl::ext::oneapi::experimental::properties{
-        sycl::ext::intel::experimental::streaming_interface<>,
-        sycl::ext::intel::experimental::pipelined<>};
+        sycl::ext::altera::experimental::streaming_interface<>,
+        sycl::ext::altera::experimental::pipelined<>};
   }
 
   void operator()() const {
@@ -37,11 +37,11 @@ struct StreamPipelinedIP {
 
 int main(int argc, char *argv[]) {
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   bool passed = true;

@@ -1,5 +1,5 @@
 // oneAPI headers
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "exception_handler.hpp"
@@ -14,7 +14,7 @@ void LambdaStreamKernel(sycl::queue &q, int *input, int *output, int n) {
   // Create a properties object containing the kernel invocation interface
   // property 'streaming_interface_remove_downstream_stall'.
   sycl::ext::oneapi::experimental::properties kernel_properties{
-      sycl::ext::intel::experimental::
+      sycl::ext::altera::experimental::
           streaming_interface_remove_downstream_stall};
 
   // In the Lambda programming model, pass a properties object argument to
@@ -31,11 +31,11 @@ void LambdaStreamKernel(sycl::queue &q, int *input, int *output, int n) {
 
 int main(int argc, char *argv[]) {
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   bool passed = true;

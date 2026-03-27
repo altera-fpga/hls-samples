@@ -4,16 +4,17 @@
 #include <vector>
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "exception_handler.hpp"
 
 using namespace sycl;
 
-using ProducerToConsumerPipe = ext::intel::pipe< // Defined in the SYCL headers.
-    class ProducerConsumerPipeId,                // An identifier for the pipe.
-    int,                                         // The type of data in the pipe.
-    4>;                                          // The capacity of the pipe.
+using ProducerToConsumerPipe =
+    ext::altera::experimental::pipe<  // Defined in the SYCL headers.
+        class ProducerConsumerPipeId, // An identifier for the pipe.
+        int,                          // The type of data in the pipe.
+        4>;                           // The capacity of the pipe.
 
 // Forward declare the kernel names in the global scope.
 // This FPGA best practice reduces name mangling in the optimization reports.
@@ -105,11 +106,11 @@ int main(int argc, char *argv[]) {
   }
 
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   event producer_event, consumer_event;

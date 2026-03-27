@@ -1,5 +1,5 @@
 // oneAPI headers
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "exception_handler.hpp"
@@ -20,7 +20,7 @@ struct FunctorStreamIP {
   // to specify it to be a streaming kernel argument.
   sycl::ext::oneapi::experimental::annotated_arg<
       Point, decltype(sycl::ext::oneapi::experimental::properties{
-                 sycl::ext::intel::experimental::conduit})>
+                 sycl::ext::altera::experimental::conduit})>
       input;
 
   // A kernel with a streaming invocation interface can also independently
@@ -28,7 +28,7 @@ struct FunctorStreamIP {
   // property.
   sycl::ext::oneapi::experimental::annotated_arg<
       Point *, decltype(sycl::ext::oneapi::experimental::properties{
-                   sycl::ext::intel::experimental::register_map})>
+                   sycl::ext::altera::experimental::register_map})>
       output;
 
   // Without the annotation, kernel argument will be inferred to be streaming
@@ -40,7 +40,7 @@ struct FunctorStreamIP {
   // streaming invocation interface.
   auto get(sycl::ext::oneapi::experimental::properties_tag) {
     return sycl::ext::oneapi::experimental::properties{
-        sycl::ext::intel::experimental::
+        sycl::ext::altera::experimental::
             streaming_interface_accept_downstream_stall};
   }
 
@@ -61,11 +61,11 @@ struct FunctorStreamIP {
 
 int main(int argc, char *argv[]) {
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   bool passed = true;

@@ -6,7 +6,7 @@
 #define __MULTI_KERNEL_HPP__
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 using namespace sycl;
 
@@ -31,7 +31,7 @@ class C;
 template<typename T, typename InPipe>
 event SubmitProducer(queue &q, T* in_ptr, size_t size) {
   return q.single_task<P>([=]() [[intel::kernel_args_restrict]] {
-    sycl::ext::intel::host_ptr<T> in(in_ptr);
+    sycl::ext::altera::host_ptr<T> in(in_ptr);
     for (size_t i = 0; i < size; i++) {
       auto data = in[i];
       InPipe::write(data);
@@ -53,7 +53,7 @@ event SubmitProducer(queue &q, T* in_ptr, size_t size) {
 template<typename T, typename OutPipe>
 event SubmitConsumer(queue &q, T* out_ptr, size_t size) {
   return q.single_task<C>([=]() [[intel::kernel_args_restrict]] {
-    sycl::ext::intel::host_ptr<T> out(out_ptr);
+    sycl::ext::altera::host_ptr<T> out(out_ptr);
     for (size_t i = 0; i < size; i++) {
       auto data = OutPipe::read();
       *(out + i) = data;
@@ -93,11 +93,9 @@ event SubmitSinglePipeWorker(queue &q, size_t size) {
 // ... ========>| K0 |======>| K1 |======>| K2 |========> ...
 //              |----|       |----|       |----|
 //
-template<typename T, typename InPipe, typename OutPipe>
+template <typename T, typename InPipe, typename OutPipe, typename Pipe0,
+          typename Pipe1>
 std::vector<event> SubmitMultiKernelWorkers(queue &q, size_t size) {
-  // internal pipes between kernels
-  using Pipe0 = sycl::pipe<class Pipe0Class, T>;
-  using Pipe1 = sycl::pipe<class Pipe1Class, T>;
 
   // submit the kernels
   event e0 = SubmitSinglePipeWorker<K0, T, InPipe, Pipe0>(q, size);

@@ -120,7 +120,7 @@ You can see concrete examples of kernels that use register-mapped invocation int
 
 You can force your IP's `start` and `done` signals to appear as signals on your IP boundary by adding the `streaming_interface` kernel property.
 
-Using the property `sycl::ext::intel::experimental::streaming_interface<>` or `sycl::ext::intel::experimental::streaming_interface_accept_downstream_stall` configures a streaming invocation interface with a `ready_in` interface to allow down-stream components to backpressure. You can choose to remove the `ready_in` interface by using `sycl::ext::intel::experimental::streaming_interface<remove_downstream_stall>` or `sycl::ext::intel::experimental::streaming_interface_remove_downstream_stall` instead. If you omit the `streaming_interface` property, the compiler will configure your kernel with a register-mapped invocation interface. The syntax for declaring a kernel property is different depending on if you use the functor syntax or the lambda syntax, but the `streaming_interface` property is the same. 
+Using the property `sycl::ext::altera::experimental::streaming_interface<>` or `sycl::ext::altera::experimental::streaming_interface_accept_downstream_stall` configures a streaming invocation interface with a `ready_in` interface to allow down-stream components to backpressure. You can choose to remove the `ready_in` interface by using `sycl::ext::altera::experimental::streaming_interface<remove_downstream_stall>` or `sycl::ext::altera::experimental::streaming_interface_remove_downstream_stall` instead. If you omit the `streaming_interface` property, the compiler will configure your kernel with a register-mapped invocation interface. The syntax for declaring a kernel property is different depending on if you use the functor syntax or the lambda syntax, but the `streaming_interface` property is the same. 
 
 
 #### Functor Syntax
@@ -132,7 +132,7 @@ struct MyIP {
   ...
   auto get(sycl::ext::oneapi::experimental::properties_tag) {
       return sycl::ext::oneapi::experimental::properties {
-          sycl::ext::intel::experimental::streaming_interface<>
+          sycl::ext::altera::experimental::streaming_interface<>
       };
   }
   void operator()() const {
@@ -156,7 +156,7 @@ If you declare your kernel using the lambda syntax, you must declare your kernel
 
 ```c++
 sycl::ext::oneapi::experimental::properties kernel_properties {
-  sycl::ext::intel::experimental::streaming_interface<>,
+  sycl::ext::altera::experimental::streaming_interface<>,
 };
 
 q.single_task(kernel_properties, [=] {
@@ -172,14 +172,14 @@ SYCL* task kernels are non-pipelined by default, meaning the next kernel invocat
 |:--:                      |:--:
 | ![](assets/non-pipelined.png) | ![](assets/pipelined.png)
 
-The kernel property `sycl::ext::intel::experimental::pipelined` takes an optional template parameter that controls whether to pipeline the kernel. Valid parameters are:
+The kernel property `sycl::ext::altera::experimental::pipelined` takes an optional template parameter that controls whether to pipeline the kernel. Valid parameters are:
 - **-1**: Pipeline the kernel, and automatically infer lowest possible II at target fMAX.
 - **0**: Do not pipeline the kernel.
 - **N (N> 0)**: Pipeline the kernel, and force the II of the kernel to be N.
 
 If a parameter is not specified, the default parameter of `-1` will be inferred, so the compiler will make its best effort to achieve the lowest kernel II. 
 
-> **Note**: The `sycl::ext::intel::experimental::pipelined<>` property only supports kernels with a streaming invocation interface.
+> **Note**: The `sycl::ext::altera::experimental::pipelined<>` property only supports kernels with a streaming invocation interface.
 
 When you invoke a kernel with a pipelined streaming interface, you should only call the `wait()` blocking function after all kernel invocations have launched.
 
@@ -202,8 +202,8 @@ You can use the `sycl::ext::oneapi::experimental::annotated_arg` wrapper type to
 
 | Invocation Interface | Automatically Inferred Argument Interface | SYCL* Property
 |:--                   |:--                                        |:--
-| Register-mapped      | Register-mapped                           | `sycl::ext::intel::experimental::register_map`
-| Streaming            | Conduit                                   | `sycl::ext::intel::experimental::conduit`
+| Register-mapped      | Register-mapped                           | `sycl::ext::altera::experimental::register_map`
+| Streaming            | Conduit                                   | `sycl::ext::altera::experimental::conduit`
 
 
 You can add a `conduit` property to an `annotated_arg` like this:
@@ -212,7 +212,7 @@ You can add a `conduit` property to an `annotated_arg` like this:
 struct MyIP {
   sycl::ext::oneapi::experimental::annotated_arg<
     int, decltype(sycl::ext::oneapi::experimental::properties {
-                  sycl::ext::intel::experimental::conduit})>
+                  sycl::ext::altera::experimental::conduit})>
   arg1;
   void operator()() const {
     ...
@@ -235,7 +235,7 @@ struct MyIP {
 >   // have streaming kernel arguments, when annotated by 'conduit' property.
 >   sycl::ext::oneapi::experimental::annotated_arg<
 >     MyUInt5, decltype(sycl::ext::oneapi::experimental::properties{
->                   sycl::ext::intel::experimental::conduit})>
+>                   sycl::ext::altera::experimental::conduit})>
 >     n;
 > 
 >   // Without kernel invocation interface annotation, a register-mapped invocation

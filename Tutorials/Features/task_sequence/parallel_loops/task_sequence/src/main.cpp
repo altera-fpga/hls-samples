@@ -1,11 +1,13 @@
 #include <iostream>
 
 // oneAPI headers
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/experimental/task_sequence.hpp>
+#include <sycl/ext/altera/experimental/task_sequence.hpp>
 
 #include "exception_handler.hpp"
+
+namespace altera_exp = sycl::ext::altera::experimental;
 
 constexpr int kVectSize = 128;
 
@@ -19,49 +21,49 @@ constexpr size_t kPipeMinCapacity = 0;
 
 // Pipes 
 class IDPipeIn0;
-using PipeIn0 = sycl::ext::intel::experimental::pipe<
+using PipeIn0 = altera_exp::pipe<
     IDPipeIn0,        // An identifier for the pipe
     int,              // The type of data in the pipe
     kPipeMinCapacity  // The capacity of the pipe
     >;   
     
 class IDPipeIn1;
-using PipeIn1 = sycl::ext::intel::experimental::pipe<
+using PipeIn1 = altera_exp::pipe<
     IDPipeIn1,        // An identifier for the pipe
     int,              // The type of data in the pipe
     kPipeMinCapacity  // The capacity of the pipe
     >;
 
 class IDPipeAB;
-using PipeAB = sycl::ext::intel::pipe<
+using PipeAB = altera_exp::pipe<
     IDPipeAB,         // An identifier for the pipe
     int,              // The type of data in the pipe
     kPipeMinCapacity  // The capacity of the pipe
     >;
 
 class IDPipeBC;
-using PipeBC = sycl::ext::intel::pipe<
+using PipeBC = altera_exp::pipe<
     IDPipeBC,         // An identifier for the pipe
     int,              // The type of data in the pipe
     kPipeMinCapacity  // The capacity of the pipe
     >;
 
 class IDPipeCD;
-using PipeCD = sycl::ext::intel::pipe<
+using PipeCD = altera_exp::pipe<
     IDPipeCD,         // An identifier for the pipe
     int,              // The type of data in the pipe
     kPipeMinCapacity  // The capacity of the pipe
     >;
 
 class IDPipeAD;
-using PipeAD = sycl::ext::intel::pipe<
+using PipeAD = altera_exp::pipe<
     IDPipeAD,         // An identifier for the pipe
     int,              // The type of data in the pipe
     kPipeMinCapacity  // The capacity of the pipe
     >;
 
 class IDPipeOut;
-using PipeOut = sycl::ext::intel::experimental::pipe<
+using PipeOut = altera_exp::pipe<
     IDPipeOut,        // An identifier for the pipe
     int,              // The type of data in the pipe
     kPipeMinCapacity  // The capacity of the pipe
@@ -124,10 +126,10 @@ struct OptimizedKernel {
   int len;
 
   void operator()() const {
-    sycl::ext::intel::experimental::task_sequence<LoopA> task_a;
-    sycl::ext::intel::experimental::task_sequence<LoopB> task_b;
-    sycl::ext::intel::experimental::task_sequence<LoopC> task_c;
-    sycl::ext::intel::experimental::task_sequence<LoopD> task_d;
+    altera_exp::task_sequence<LoopA> task_a;
+    altera_exp::task_sequence<LoopB> task_b;
+    altera_exp::task_sequence<LoopC> task_c;
+    altera_exp::task_sequence<LoopD> task_d;
 
     task_a.async(len);
     task_b.async(len);
@@ -145,11 +147,11 @@ int main() {
     //  - the FPGA device (a real FPGA)
     //  - the simulator device
 #if FPGA_SIMULATOR
-    auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-    auto selector = sycl::ext::intel::fpga_selector_v;
+    auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-    auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
     sycl::queue q(selector, fpga_tools::exception_handler,

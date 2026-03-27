@@ -5,7 +5,7 @@
 #include <iomanip>
 #include <numeric>
 #include <random>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 #include <type_traits>
 
@@ -41,11 +41,11 @@ double SubmitImplicitKernel(sycl::queue &q, std::vector<T> &in,
       // whereas the pointer arguments in ExplicitKernel are specified to be in
       // buffer_location 1, when targeting an FPGA family/part.
       sycl::ext::oneapi::accessor_property_list location_of_buffer{
-          sycl::ext::intel::buffer_location<0>};
+          sycl::ext::altera::buffer_location<0>};
       sycl::accessor in_a(in_buf, h, sycl::read_only, location_of_buffer);
 
       sycl::ext::oneapi::accessor_property_list location_of_buffer_no_init{
-          sycl::no_init, sycl::ext::intel::buffer_location<0>};
+          sycl::no_init, sycl::ext::altera::buffer_location<0>};
       sycl::accessor out_a(out_buf, h, sycl::write_only,
                            location_of_buffer_no_init);
 
@@ -84,20 +84,20 @@ double SubmitExplicitKernel(sycl::queue &q, std::vector<T> &in,
   // Allocate the device memory
   T *in_ptr = sycl::malloc_device<T>(
       size, q,
-      sycl::ext::intel::experimental::property::usm::buffer_location(0));
+      sycl::ext::altera::experimental::property::usm::buffer_location(0));
   T *out_ptr = sycl::malloc_device<T>(
       size, q,
-      sycl::ext::intel::experimental::property::usm::buffer_location(0));
+      sycl::ext::altera::experimental::property::usm::buffer_location(0));
 #else
   // When targeting an FPGA family/part, use USM host or shared allocations
   // since USM device allocations are not supported. Here we use USM shared
   // allocation.
   T *in_ptr = sycl::malloc_host<T>(
       size, q,
-      sycl::ext::intel::experimental::property::usm::buffer_location(1));
+      sycl::ext::altera::experimental::property::usm::buffer_location(1));
   T *out_ptr = sycl::malloc_host<T>(
       size, q,
-      sycl::ext::intel::experimental::property::usm::buffer_location(1));
+      sycl::ext::altera::experimental::property::usm::buffer_location(1));
 #endif
 
   // ensure we successfully allocated the device memory
@@ -127,10 +127,10 @@ double SubmitExplicitKernel(sycl::queue &q, std::vector<T> &in,
   // buffer_location 1
   sycl::ext::oneapi::experimental::annotated_arg in_ptr_d(
       in_ptr, sycl::ext::oneapi::experimental::properties{
-                  sycl::ext::intel::experimental::buffer_location<1>});
+                  sycl::ext::altera::experimental::buffer_location<1>});
   sycl::ext::oneapi::experimental::annotated_arg out_ptr_d(
       out_ptr, sycl::ext::oneapi::experimental::properties{
-                   sycl::ext::intel::experimental::buffer_location<1>});
+                   sycl::ext::altera::experimental::buffer_location<1>});
 #endif
 
   // launch the computation kernel
@@ -143,8 +143,8 @@ double SubmitExplicitKernel(sycl::queue &q, std::vector<T> &in,
 #if defined(IS_BSP)
       // Explicitly create device pointers to inform the compiler that these
       // pointers point to device memory
-      sycl::ext::intel::device_ptr<T> in_ptr_d(in_ptr);
-      sycl::ext::intel::device_ptr<T> out_ptr_d(out_ptr);
+      sycl::ext::altera::device_ptr<T> in_ptr_d(in_ptr);
+      sycl::ext::altera::device_ptr<T> out_ptr_d(out_ptr);
 #endif
 
       for (size_t i = 0; i < size; i++) {
@@ -210,11 +210,11 @@ int main(int argc, char *argv[]) {
 
   try {
 #if FPGA_SIMULATOR
-    auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-    auto selector = sycl::ext::intel::fpga_selector_v;
+    auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-    auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
     // queue properties to enable profiling

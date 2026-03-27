@@ -1,4 +1,4 @@
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "exception_handler.hpp"
@@ -12,26 +12,26 @@ struct MultiMMIP {
   // Each annotated pointer is configured with a unique `buffer_location`,
   // resulting in three unique Avalon memory-mapped host interfaces.
   using XProps = decltype(sycl::ext::oneapi::experimental::properties{
-      sycl::ext::intel::experimental::buffer_location<kBL1>,
-      sycl::ext::intel::experimental::awidth<32>,
-      sycl::ext::intel::experimental::dwidth<32>,
-      sycl::ext::intel::experimental::latency<1>,
+      sycl::ext::altera::experimental::buffer_location<kBL1>,
+      sycl::ext::altera::experimental::awidth<32>,
+      sycl::ext::altera::experimental::dwidth<32>,
+      sycl::ext::altera::experimental::latency<1>,
       sycl::ext::oneapi::experimental::alignment<kAlignment>,
-      sycl::ext::intel::experimental::read_write_mode_read});
+      sycl::ext::altera::experimental::read_write_mode_read});
   using YProps = decltype(sycl::ext::oneapi::experimental::properties{
-      sycl::ext::intel::experimental::buffer_location<kBL2>,
-      sycl::ext::intel::experimental::awidth<32>,
-      sycl::ext::intel::experimental::dwidth<32>,
-      sycl::ext::intel::experimental::latency<1>,
+      sycl::ext::altera::experimental::buffer_location<kBL2>,
+      sycl::ext::altera::experimental::awidth<32>,
+      sycl::ext::altera::experimental::dwidth<32>,
+      sycl::ext::altera::experimental::latency<1>,
       sycl::ext::oneapi::experimental::alignment<kAlignment>,
-      sycl::ext::intel::experimental::read_write_mode_read});
+      sycl::ext::altera::experimental::read_write_mode_read});
   using ZProps = decltype(sycl::ext::oneapi::experimental::properties{
-      sycl::ext::intel::experimental::buffer_location<kBL3>,
-      sycl::ext::intel::experimental::awidth<32>,
-      sycl::ext::intel::experimental::dwidth<32>,
-      sycl::ext::intel::experimental::latency<1>,
+      sycl::ext::altera::experimental::buffer_location<kBL3>,
+      sycl::ext::altera::experimental::awidth<32>,
+      sycl::ext::altera::experimental::dwidth<32>,
+      sycl::ext::altera::experimental::latency<1>,
       sycl::ext::oneapi::experimental::alignment<kAlignment>,
-      sycl::ext::intel::experimental::read_write_mode_write});
+      sycl::ext::altera::experimental::read_write_mode_write});
 
   sycl::ext::oneapi::experimental::annotated_arg<int *, XProps> x;
   sycl::ext::oneapi::experimental::annotated_arg<int *, YProps> y;
@@ -48,11 +48,11 @@ struct MultiMMIP {
 
 int main(void) {
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   bool passed = true;
@@ -77,13 +77,13 @@ int main(void) {
     // aligned_alloc_shared API
     int *array_a = sycl::aligned_alloc_shared<int>(
         kAlignment, kN, q,
-        sycl::ext::intel::experimental::property::usm::buffer_location(kBL1));
+        sycl::ext::altera::experimental::property::usm::buffer_location(kBL1));
     int *array_b = sycl::aligned_alloc_shared<int>(
         kAlignment, kN, q,
-        sycl::ext::intel::experimental::property::usm::buffer_location(kBL2));
+        sycl::ext::altera::experimental::property::usm::buffer_location(kBL2));
     int *array_c = sycl::aligned_alloc_shared<int>(
         kAlignment, kN, q,
-        sycl::ext::intel::experimental::property::usm::buffer_location(kBL3));
+        sycl::ext::altera::experimental::property::usm::buffer_location(kBL3));
 
     assert(array_a);
     assert(array_b);

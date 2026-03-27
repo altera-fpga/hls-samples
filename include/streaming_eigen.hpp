@@ -170,10 +170,10 @@ struct StreamingEigen {
             // Delay data signals to create a vine-based data distribution
             // to lower signal fanout.
             pipe_read.template get<t>() =
-                sycl::ext::intel::fpga_reg(pipe_read.template get<t>());
+                sycl::ext::altera::fpga_reg(pipe_read.template get<t>());
           });
 
-          write_idx = sycl::ext::intel::fpga_reg(write_idx);
+          write_idx = sycl::ext::altera::fpga_reg(write_idx);
         });
       }
 
@@ -325,14 +325,14 @@ struct StreamingEigen {
 
 #pragma unroll
           for (size_t k = 0; k < kBanksForFanout; ++k) {
-            i_gt_0[k] = sycl::ext::intel::fpga_reg(i > 0);
-            i_lt_0[k] = sycl::ext::intel::fpga_reg(i < 0);
-            j_eq_i[k] = sycl::ext::intel::fpga_reg(j == i);
-            j_ge_0[k] = sycl::ext::intel::fpga_reg(j >= 0);
-            i_ge_0_j_ge_i[k] = sycl::ext::intel::fpga_reg(i >= 0 && j >= i);
-            j_eq_i_plus_1[k] = sycl::ext::intel::fpga_reg(j == i + 1);
+            i_gt_0[k] = sycl::ext::altera::fpga_reg(i > 0);
+            i_lt_0[k] = sycl::ext::altera::fpga_reg(i < 0);
+            j_eq_i[k] = sycl::ext::altera::fpga_reg(j == i);
+            j_ge_0[k] = sycl::ext::altera::fpga_reg(j >= 0);
+            i_ge_0_j_ge_i[k] = sycl::ext::altera::fpga_reg(i >= 0 && j >= i);
+            j_eq_i_plus_1[k] = sycl::ext::altera::fpga_reg(j == i + 1);
             if (j >= 0) {
-              s_or_ir_j[k] = sycl::ext::intel::fpga_reg(s_or_ir[j]);
+              s_or_ir_j[k] = sycl::ext::altera::fpga_reg(s_or_ir[j]);
             }
           }
 
@@ -630,7 +630,7 @@ struct StreamingEigen {
 #pragma unroll
         for (size_t k = 0; k < kLoopIterPerColumn; ++k) {
           get[k] = column_iter == k;
-          column_iter = sycl::ext::intel::fpga_reg(column_iter);
+          column_iter = sycl::ext::altera::fpga_reg(column_iter);
         }
 
         fpga_tools::NTuple<T, pipe_size> pipe_write;
@@ -641,7 +641,7 @@ struct StreamingEigen {
                   get[t] ? eigen_vectors_matrix_output
                                [sorted_indexes[li / kLoopIterPerColumn]]
                                [t * pipe_size + k]
-                         : sycl::ext::intel::fpga_reg(
+                         : sycl::ext::altera::fpga_reg(
                                pipe_write.template get<k>());
             }
           });

@@ -708,6 +708,10 @@ class LZReduction;
 template <int engineID>
 class StaticHuffman;
 template <int engineID>
+class acc_dist_channel_id;
+template <int engineID>
+class acc_dist_channel_last_id;
+template <int engineID>
 void SubmitGzipTasksSingleEngine(
     queue &q,
     size_t block_size,  // size of block to compress.
@@ -715,8 +719,10 @@ void SubmitGzipTasksSingleEngine(
     buffer<struct GzipOutInfo, 1> *gzip_out_buf,
     buffer<unsigned, 1> *result_crc, bool last_block, std::vector<event> &e_crc, std::vector<event> &e_lz,
     std::vector<event> &e_huff, int buffer_index) {
-  using acc_dist_channel = ext::intel::pipe<class some_pipe, struct DistLen>;
-  using acc_dist_channel_last = ext::intel::pipe<class some_pipe2, struct DistLen>;
+  using acc_dist_channel =
+      ext::altera::experimental::pipe<acc_dist_channel_id<engineID>, struct DistLen>;
+  using acc_dist_channel_last =
+      ext::altera::experimental::pipe<acc_dist_channel_last_id<engineID>, struct DistLen>;
 
   e_crc[buffer_index] = q.submit([&](handler &h) {
     auto accessor_isz = block_size;

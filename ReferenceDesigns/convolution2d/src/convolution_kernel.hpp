@@ -6,12 +6,16 @@
 #pragma once
 #include <stdint.h>
 
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "convolution_types.hpp"
 #include "linebuffer2d.hpp"
 #include "unrolled_loop.hpp"
+// clang-format off
+// Define namespace alias for easy reference.
+namespace altera_exp = sycl::ext::altera::experimental;
+namespace oneapi_exp = sycl::ext::oneapi::experimental;
 
 // The kernel version may be polled by an Avalon memory-mapped host that manages
 // this IP. Update this when you make changes to kernel code.
@@ -22,72 +26,62 @@ constexpr int kKernelVersion = 1;
 /////////////////////////////////////////////
 
 class ID_InStr;
-using InputImgStreamProperties =
-    decltype(sycl::ext::oneapi::experimental::properties(
-        sycl::ext::intel::experimental::bits_per_symbol<8>,
-        sycl::ext::intel::experimental::uses_valid<true>,
-        sycl::ext::intel::experimental::ready_latency<0>,
-        sycl::ext::intel::experimental::first_symbol_in_high_order_bits<true>));
-using InputImageStream =
-    sycl::ext::intel::experimental::pipe<ID_InStr, conv2d::RGBBeat, 0,
-                                         InputImgStreamProperties>;
+using InputImgStreamProperties = decltype(oneapi_exp::properties(
+    altera_exp::bits_per_symbol<8>,
+    altera_exp::uses_valid<true>,
+    altera_exp::ready_latency<0>,
+    altera_exp::first_symbol_in_high_order_bits<true>));
+using InputImageStream = altera_exp::pipe<ID_InStr, conv2d::RGBBeat, 0,
+                                   InputImgStreamProperties>;
 
 class ID_InStrGrey;
 using InputImageStreamGrey =
-    sycl::ext::intel::experimental::pipe<ID_InStrGrey, conv2d::GreyScaleBeat, 0,
-                                         InputImgStreamProperties>;
+    altera_exp::pipe<ID_InStrGrey, conv2d::GreyScaleBeat, 0,
+                     InputImgStreamProperties>;
 
 class ID_OutStr;
-using OutputImgStreamProperties =
-    decltype(sycl::ext::oneapi::experimental::properties(
-        sycl::ext::intel::experimental::bits_per_symbol<8>,
-        sycl::ext::intel::experimental::uses_valid<true>,
-        sycl::ext::intel::experimental::ready_latency<0>,
-        sycl::ext::intel::experimental::first_symbol_in_high_order_bits<true>));
-using OutputImageStreamGrey =
-    sycl::ext::intel::experimental::pipe<ID_OutStr, conv2d::GreyScaleBeat, 0,
-                                         OutputImgStreamProperties>;
+using OutputImgStreamProperties = decltype(oneapi_exp::properties(
+    altera_exp::bits_per_symbol<8>,
+    altera_exp::uses_valid<true>,
+    altera_exp::ready_latency<0>,
+    altera_exp::first_symbol_in_high_order_bits<true>));
+using OutputImageStreamGrey = altera_exp::pipe<ID_OutStr, conv2d::GreyScaleBeat,
+                                               0, OutputImgStreamProperties>;
 
-using OutputImageStream =
-    sycl::ext::intel::experimental::pipe<ID_OutStr, conv2d::RGBBeat, 0,
-                                         OutputImgStreamProperties>;
+using OutputImageStream = altera_exp::pipe<ID_OutStr, conv2d::RGBBeat, 0,
+                                    OutputImgStreamProperties>;
 
 /////////////////////////////////////////////
 // Define CSR locations that attach to pipes
 /////////////////////////////////////////////
-using CsrInProperties = decltype(sycl::ext::oneapi::experimental::properties(
-    sycl::ext::intel::experimental::protocol<
-        sycl::ext::intel::experimental::protocol_name::avalon_mm>,
+using CsrInProperties = decltype(oneapi_exp::properties(
+    altera_exp::protocol<altera_exp::protocol_name::avalon_mm>,
     // Enabling the `valid` signal ensures that the kernel only consumes new
     // data after the host changes the CSR. The host must write a `1` to the
     // associated `...CHANNEL_VALID_REG` register.
-    sycl::ext::intel::experimental::uses_valid_on,
+    altera_exp::uses_valid_on,
     // The `ready` signal is required for input CSR pipe. The host may check
     // the `ready` register to ensure the kernel is ready for a new value.
-    sycl::ext::intel::experimental::uses_ready_on));
+    altera_exp::uses_ready_on));
 
-using CsrOutProperties = decltype(sycl::ext::oneapi::experimental::properties(
-    sycl::ext::intel::experimental::protocol<
-        sycl::ext::intel::experimental::protocol_name::avalon_mm>,
+using CsrOutProperties = decltype(oneapi_exp::properties(
+    altera_exp::protocol<altera_exp::protocol_name::avalon_mm>,
     // `valid` signal is required for output CSR pipe. Host may check it to
     // ensure the data is 'real'.
-    sycl::ext::intel::experimental::uses_valid_on,
+    altera_exp::uses_valid_on,
     // Disable the `ready` signal so the device can update this value
     // without requiring the host to consent. Host doesn't care about
     // possibly missing an update.
-    sycl::ext::intel::experimental::uses_ready_off));
+    altera_exp::uses_ready_off));
 
 class ID_StopCSR;
-using StopCSR =
-    sycl::ext::intel::experimental::pipe<ID_StopCSR, bool, 0, CsrInProperties>;
+using StopCSR = altera_exp::pipe<ID_StopCSR, bool, 0, CsrInProperties>;
 
 class ID_BypassCSR;
-using BypassCSR = sycl::ext::intel::experimental::pipe<ID_BypassCSR, bool, 0,
-                                                       CsrInProperties>;
+using BypassCSR = altera_exp::pipe<ID_BypassCSR, bool, 0, CsrInProperties>;
 
 class ID_VersionCSR;
-using VersionCSR = sycl::ext::intel::experimental::pipe<ID_VersionCSR, int, 0,
-                                                        CsrOutProperties>;
+using VersionCSR = altera_exp::pipe<ID_VersionCSR, int, 0, CsrOutProperties>;
 
 /// @brief Handle pixels at the edge of the input image by reflecting them.
 /// @param[in] w_row current row in window
@@ -193,10 +187,9 @@ template <typename PipeIn, typename PipeOut>
 struct RGB2Grey {
   // Kernel properties method to configure the kernel to be a kernel with
   // streaming invocation interface.
-  auto get(sycl::ext::oneapi::experimental::properties_tag) {
-    return sycl::ext::oneapi::experimental::properties{
-        sycl::ext::intel::experimental::
-            streaming_interface_remove_downstream_stall};
+  auto get(oneapi_exp::properties_tag) {
+    return oneapi_exp::properties{
+        altera_exp::streaming_interface_remove_downstream_stall};
   }
   void operator()() const {
     // this loop is not necessary in hardware since I will pin the
@@ -312,10 +305,9 @@ template <typename PipeIn, typename PipeOut>
 struct Grey2RGB {
   // Kernel properties method to configure the kernel to be a kernel with
   // streaming invocation interface.
-  auto get(sycl::ext::oneapi::experimental::properties_tag) {
-    return sycl::ext::oneapi::experimental::properties{
-        sycl::ext::intel::experimental::
-            streaming_interface_remove_downstream_stall};
+  auto get(oneapi_exp::properties_tag) {
+    return oneapi_exp::properties{
+        altera_exp::streaming_interface_remove_downstream_stall};
   }
   void operator()() const {
     // this loop is not necessary in hardware since the `start` bit will be

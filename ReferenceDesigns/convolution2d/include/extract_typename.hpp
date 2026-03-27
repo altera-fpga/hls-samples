@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 
-#include <sycl/ext/intel/prototype/pipes_ext.hpp>
+#include <sycl/ext/altera/experimental/pipes_ext.hpp>
 
 template <typename T>
 struct ExtractValueType {

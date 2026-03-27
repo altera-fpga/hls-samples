@@ -2,7 +2,7 @@
 #include <stdint.h>
 
 #include <array>
-#include <sycl/ext/intel/prototype/pipes_ext.hpp>
+#include <sycl/ext/altera/experimental/pipes_ext.hpp>
 
 namespace conv2d {
 
@@ -64,10 +64,10 @@ using RGBPixelBundle = std::array<PixelRGB, kParallelPixels>;
 // A beat that may be transferred on a streaming interface, including sideband
 // signals and a payload of `GreyPixelBundle`.
 using GreyScaleBeat =
-    sycl::ext::intel::experimental::StreamingBeat<GreyPixelBundle, true, true>;
+    sycl::ext::altera::experimental::StreamingBeat<GreyPixelBundle, true, true>;
 
 // A beat that may be transferred on a streaming interface, including sideband
 // signals and a payload of `RGBPixelBundle`.
 using RGBBeat =
-    sycl::ext::intel::experimental::StreamingBeat<RGBPixelBundle, true, true>;
+    sycl::ext::altera::experimental::StreamingBeat<RGBPixelBundle, true, true>;
 }  // namespace conv2d

@@ -1,7 +1,7 @@
 #include <iostream>
 
 // oneAPI headers
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "exception_handler.hpp"
@@ -18,21 +18,21 @@ constexpr size_t kPipeMinCapacity = 0;
 
 // Pipes
 class IDPipeIn0;
-using PipeIn0 = sycl::ext::intel::experimental::pipe<
+using PipeIn0 = sycl::ext::altera::experimental::pipe<
     IDPipeIn0,       // An identifier for the pipe
     int,              // The type of data in the pipe
     kPipeMinCapacity  // The capacity of the pipe
     >;
 
 class IDPipeIn1;
-using PipeIn1 = sycl::ext::intel::experimental::pipe<
+using PipeIn1 = sycl::ext::altera::experimental::pipe<
     IDPipeIn1,       // An identifier for the pipe
     int,              // The type of data in the pipe
     kPipeMinCapacity  // The capacity of the pipe
     >;
 
 class IDPipeOut;
-using PipeOut = sycl::ext::intel::experimental::pipe<
+using PipeOut = sycl::ext::altera::experimental::pipe<
     IDPipeOut,       // An identifier for the pipe
     int,              // The type of data in the pipe
     kPipeMinCapacity  // The capacity of the pipe
@@ -94,11 +94,11 @@ int main() {
     //  - the FPGA device (a real FPGA)
     //  - the simulator device
 #if FPGA_SIMULATOR
-    auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-    auto selector = sycl::ext::intel::fpga_selector_v;
+    auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-    auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
     sycl::queue q(selector, fpga_tools::exception_handler,

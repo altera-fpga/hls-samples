@@ -8,7 +8,7 @@
 #include <vector>
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "exception_handler.hpp"
 
@@ -136,11 +136,11 @@ int main(int argc, char *argv[]) {
 
   // the device selector
 #if FPGA_SIMULATOR
-    auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-    auto selector = sycl::ext::intel::fpga_selector_v;
+    auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-    auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   // create the device queue
@@ -234,8 +234,8 @@ int main(int argc, char *argv[]) {
     // USM host or device allocations
     using KernelPtrType =
         typename std::conditional_t<kUseUSMHostAllocation, 
-                                    sycl::ext::intel::host_ptr<ValueT>,
-                                    sycl::ext::intel::device_ptr<ValueT>>;
+                                    sycl::ext::altera::host_ptr<ValueT>,
+                                    sycl::ext::altera::device_ptr<ValueT>>;
 
     // run the sort multiple times to increase the accuracy of the timing
     for (int i = 0; i < runs; i++) {
@@ -295,9 +295,9 @@ template <typename ValueT, typename IndexT, typename KernelPtrType>
 double FPGASort(queue &q, ValueT *in_ptr, ValueT *out_ptr, IndexT count) {
   // the input and output pipe for the sorter
   using SortInPipe =
-      sycl::ext::intel::pipe<SortInPipeID, sycl::vec<ValueT, kSortWidth>>;
+      sycl::ext::altera::experimental::pipe<SortInPipeID, sycl::vec<ValueT, kSortWidth>>;
   using SortOutPipe =
-      sycl::ext::intel::pipe<SortOutPipeID, sycl::vec<ValueT, kSortWidth>>;
+      sycl::ext::altera::experimental::pipe<SortOutPipeID, sycl::vec<ValueT, kSortWidth>>;
 
   // the sorter must sort a power of 2, so round up the requested count
   // to the nearest power of 2; we will pad the input to make sure the

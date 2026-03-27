@@ -23,10 +23,10 @@ class MemReadStream;
 // Pipe used between KernelSender and KernelReceiver -
 // ShimMetrics::KernelLaunchTest(queue &q) function
 using SendertoReceiverPipe =
-    sycl::ext::intel::pipe<        // Defined in the SYCL headers
-        class SenderReceiverPipe,  // An identifier for the pipe
-        unsigned int,              // The type of data in the pipe
-        1>;                        // The capacity of the pipe
+    sycl::ext::altera::experimental::pipe< // Defined in the SYCL headers
+        class SenderReceiverPipe,          // An identifier for the pipe
+        unsigned int,                      // The type of data in the pipe
+        1>;                                // The capacity of the pipe
 
 /////////////////////////////////
 // **** class ShimMetrics **** //

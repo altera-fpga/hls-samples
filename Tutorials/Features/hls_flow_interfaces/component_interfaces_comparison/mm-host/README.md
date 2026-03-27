@@ -21,10 +21,10 @@ A list of properties that can be used to customize `annotated_arg` can be found 
 ```cpp
 sycl::ext::oneapi::experimental::annotated_arg<
       int *, decltype(sycl::ext::oneapi::experimental::properties{
-                 sycl::ext::intel::experimental::buffer_location<1>,
-                 sycl::ext::intel::experimental::dwidth<32>,
-                 sycl::ext::intel::experimental::latency<0>,
-                 sycl::ext::intel::experimental::read_write_mode_read,
+                 sycl::ext::altera::experimental::buffer_location<1>,
+                 sycl::ext::altera::experimental::dwidth<32>,
+                 sycl::ext::altera::experimental::latency<0>,
+                 sycl::ext::altera::experimental::read_write_mode_read,
                  sycl::ext::oneapi::experimental::alignment<4>})>
       A_in;
 ```

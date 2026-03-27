@@ -2,7 +2,7 @@
 #define __LOOPBACKTEST_HPP__
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "FakeIOPipes.hpp"
 
@@ -64,10 +64,10 @@ bool RunLoopbackSystem(queue& q, size_t count) {
 #else
   // these are REAL IO pipes
   using ReadIOPipe = 
-    ext::intel::kernel_readable_io_pipe<LoopBackReadIOPipeID,
+    ext::altera::kernel_readable_io_pipe<LoopBackReadIOPipeID,
                                    T, kIOPipeDepth>;
   using WriteIOPipe =
-    ext::intel::kernel_writeable_io_pipe<LoopBackWriteIOPipeID,
+    ext::altera::kernel_writeable_io_pipe<LoopBackWriteIOPipeID,
                                     T, kIOPipeDepth>;
 #endif
   //////////////////////////////////////////////////////////////////////////////

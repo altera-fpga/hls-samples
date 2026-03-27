@@ -81,9 +81,9 @@ public:
       fpga_tools::UnrolledLoop<tile_a>([&](auto row) {
         fpga_tools::UnrolledLoop<tile_b>([&](auto col) {
           pipe_read_a.template get<row>() =
-              sycl::ext::intel::fpga_reg(pipe_read_a.template get<row>());
+              sycl::ext::altera::fpga_reg(pipe_read_a.template get<row>());
           pipe_read_b.template get<col>() =
-              sycl::ext::intel::fpga_reg(pipe_read_b.template get<col>());
+              sycl::ext::altera::fpga_reg(pipe_read_b.template get<col>());
           TT result = pipe_read_a.template get<row>() *
                       pipe_read_b.template get<col>() + accum[row][col];
           accum[row][col] = result;

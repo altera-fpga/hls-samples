@@ -143,7 +143,7 @@ struct VectorOp{
     // and dynamic allocations are not allowed.
     // Declare the task sequence object outside the for loop 
     // so that the hardware can be shared at the return point.
-    sycl::ext::intel::experimental::task_sequence<OpSqrt> task_a;
+    sycl::ext::altera::experimental::task_sequence<OpSqrt> task_a;
 
     for (int i = 0; i < len; i++){
       D3Vector item = InputPipeA::read();

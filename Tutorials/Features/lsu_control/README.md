@@ -81,7 +81,7 @@ For more details on LSU modifiers and LSU styles, refer to the *Memory Accesses*
 
 ### Introduction to the LSU Control Extension
 
-The class: ```ext::intel::lsu``` enables you to control the architecture of the LSU. The class has two member functions, `load()` and `store()`, which allow loading from and storing to a global pointer (via `sycl::multi_ptr` rather than raw pointer).
+The class: ```ext::altera::lsu``` enables you to control the architecture of the LSU. The class has two member functions, `load()` and `store()`, which allow loading from and storing to a global pointer (via `sycl::multi_ptr` rather than raw pointer).
 
 There are two steps to use the LSU control extension to optimize LSU behaviour:
 1. Get a `sycl::multi_ptr` representation of the memory you wish to access using the `get_multi_ptr<>()` function.
@@ -91,10 +91,10 @@ The table below summarizes the LSU control extension parameters. The parameters 
 
 |Control                              | Value                  | Default  | Supports
 |:---                                 |:---                    |:---      |:---
-|`ext::intel::burst_coalesce<B>`      | B is a Boolean         | false    | both load & store
-|`ext::intel::cache<N>`               | N is an integer >=  0  | 0        | only load
-|`ext::intel::statically_coalesce<B>` | B is a Boolean         | true     | both load & store
-|`ext::intel::prefetch<B>`            | B is a Boolean         | false    | only load
+|`ext::altera::burst_coalesce<B>`      | B is a Boolean         | false    | both load & store
+|`ext::altera::cache<N>`               | N is an integer >=  0  | 0        | only load
+|`ext::altera::statically_coalesce<B>` | B is a Boolean         | true     | both load & store
+|`ext::altera::prefetch<B>`            | B is a Boolean         | false    | only load
 
 If the default options are used, a pipelined LSU is implemented.
 
@@ -103,8 +103,8 @@ If the default options are used, a pipelined LSU is implemented.
 ```c++
 // Creating typedefs using the LSU controls class
 // for each combination of LSU options desired.
-using PrefetchingLSU = ext::intel::lsu<ext::intel::prefetch<true>,
-                                       ext::intel::statically_coalesce<false>>;
+using PrefetchingLSU = ext::altera::lsu<ext::altera::prefetch<true>,
+                                       ext::altera::statically_coalesce<false>>;
 // ...
 q.submit([&](handler &h) {
   h.single_task<Kernel>([=] {
@@ -130,9 +130,9 @@ In the tutorial, there are three kernels with the same body:
 
 |Kernel Name        | How it loads from the read accessor
 |:---               |:---
-| KernelPrefetch    | `ext::intel::lsu<ext::intel::prefetch<true>>`
-| KernelBurst       | `ext::intel::lsu<ext::intel::burst_coalesce<true>>`
-| KernelDefault     | directly loads data from read accessor, instead of using the `ext::intel::lsu` class
+| KernelPrefetch    | `ext::altera::lsu<ext::altera::prefetch<true>>`
+| KernelBurst       | `ext::altera::lsu<ext::altera::burst_coalesce<true>>`
+| KernelDefault     | directly loads data from read accessor, instead of using the `ext::altera::lsu` class
 
 The kernel design requests data from global memory in a contiguous manner. Therefore, both the prefetching LSU and the burst-coalesced LSU would allow the design to have high throughput. However, the prefetching LSU is highly optimized for such access patterns, especially in situations where we know, at compile time, that such access pattern exists. This will generally lead to significant area savings. As a result, between the two kernels, `KernelPrefetch` and `KernelBurst`, an improvement in area should be observed with `KernelPrefetch`. The kernel `KernelDefault` shows the same design without using the LSU controls extension. This kernel acts as both a baseline and illustrates the difference in syntax between using the LSU controls and not using them.
 

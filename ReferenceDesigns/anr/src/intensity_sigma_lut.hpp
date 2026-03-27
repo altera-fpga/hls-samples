@@ -2,7 +2,7 @@
 #define __INTENSITY_SIGMA_LUT_HPP__
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <type_traits>
 
 #include "anr_params.hpp"
@@ -18,10 +18,10 @@ class IntensitySigmaLUT {
 
 #if defined (IS_BSP)
   // construct from a device_ptr (for constructing from device memory)
-  IntensitySigmaLUT(sycl::ext::intel::device_ptr<float> ptr) {
+  IntensitySigmaLUT(sycl::ext::altera::device_ptr<float> ptr) {
     // use a pipelined LSU to load from device memory since we don't
     // care about the performance of the copy.
-    using PipelinedLSU = ext::intel::lsu<>;
+    using PipelinedLSU = ext::altera::lsu<>;
     for (int i = 0; i < lut_depth; i++) {
       data_[i] = PipelinedLSU::load(ptr + i);
     }

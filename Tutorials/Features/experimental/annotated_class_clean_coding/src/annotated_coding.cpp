@@ -1,4 +1,4 @@
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "annotated_class_util.hpp"
@@ -14,8 +14,8 @@ constexpr int kWidth = 256;
 // command.
 using annotated_arg_t = sycl::ext::oneapi::experimental::annotated_arg<
     int *, fpga_tools::properties_t<
-               sycl::ext::intel::experimental::buffer_location<kBL1>,
-               sycl::ext::intel::experimental::dwidth<kWidth>,
+               sycl::ext::altera::experimental::buffer_location<kBL1>,
+               sycl::ext::altera::experimental::dwidth<kWidth>,
                sycl::ext::oneapi::experimental::alignment<kAlignment>>>;
 
 struct MyIP {
@@ -56,7 +56,7 @@ bool RunWithUsmMalloc(sycl::queue &q) {
   // your host code and device code.
   int *array_a = sycl::aligned_alloc_shared<int>(
       kAlignment, kN, q,
-      sycl::ext::intel::experimental::property::usm::buffer_location(kBL1));
+      sycl::ext::altera::experimental::property::usm::buffer_location(kBL1));
 
   for (int i = 0; i < kN; i++) {
     array_a[i] = i;
@@ -92,11 +92,11 @@ bool RunWithAnnotatedAlloc(sycl::queue &q) {
 
 int main(void) {
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   bool passed = false;

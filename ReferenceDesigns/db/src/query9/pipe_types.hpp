@@ -3,12 +3,13 @@
 #pragma once
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "../db_utils/StreamingData.hpp"
 #include "../dbdata.hpp"
 
 using namespace sycl;
+namespace altera_exp = sycl::ext::altera::experimental;
 
 //
 // A single row of the PARTSUPPLIER table
@@ -246,27 +247,27 @@ using FinalPipeData =
 
 // pipes
 using LineItemPipe =
-    sycl::pipe<class LineItemPipeClass, LineItemMinimalRowPipeData>;
+    altera_exp::pipe<class LineItemPipeClass, LineItemMinimalRowPipeData>;
 
 using OrdersPipe = 
-    sycl::pipe<class OrdersPipeClass, OrdersRowPipeData>;
+    altera_exp::pipe<class OrdersPipeClass, OrdersRowPipeData>;
 
 using LineItemOrdersPipe =
-    sycl::pipe<class LineItemOrdersPipeClass, 
-              LineItemOrdersMinimalJoinedPipeData>;
+    altera_exp::pipe<class LineItemOrdersPipeClass, 
+                     LineItemOrdersMinimalJoinedPipeData>;
 
 using LineItemOrdersSortedPipe = 
-  sycl::pipe<class LineItemOrdersSortedPipeClass,
-              LineItemOrdersMinimalSortedPipeData>;
+    altera_exp::pipe<class LineItemOrdersSortedPipeClass,
+                     LineItemOrdersMinimalSortedPipeData>;
 
 using PartSupplierPartsPipe =
-  sycl::pipe<class PartSupplierPartsPipeClass,
-              SupplierPartSupplierJoinedPipeData>;
+    altera_exp::pipe<class PartSupplierPartsPipeClass,
+                     SupplierPartSupplierJoinedPipeData>;
 
 using PartSupplierPipe =
-    sycl::pipe<class PartSupplierPipeClass, PartSupplierRowPipeData>;
+    altera_exp::pipe<class PartSupplierPipeClass, PartSupplierRowPipeData>;
 
 using FinalPipe =
-    sycl::pipe<class FinalPipeClass, FinalPipeData>;
+    altera_exp::pipe<class FinalPipeClass, FinalPipeData>;
 
 #endif /* __PIPE_TYPES_H__ */

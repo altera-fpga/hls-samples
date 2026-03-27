@@ -9,10 +9,10 @@ By default, an un-decorated oneAPI kernel will have all its control signals and 
 ## Data Interface - CSR Pipe
 In this design, the inputs `InputPipeA` and `InputPipeB` are implemented as streaming interfaces using pipes, as in [Streaming Data](../pipes/). However, the output `OutputPipeC` is implemented to write a single vector sum to the IP component's CSR.
 
-To configure a host pipe to map to the CSR, set its protocol as `protocol_name::avalon_mm` (from `sycl::ext::intel::experimental` namespace).
+To configure a host pipe to map to the CSR, set its protocol as `protocol_name::avalon_mm` (from `sycl::ext::altera::experimental` namespace).
 
 Alternatively, you can use the following property shorthands:
-- `sycl::ext::intel::experimental::protocol_avalon_mm`
+- `sycl::ext::altera::experimental::protocol_avalon_mm`
 
 For more details on how to use host pipes in general, refer to the [Streaming Data](../pipes/) part of this code sample.
 

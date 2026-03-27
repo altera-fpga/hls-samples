@@ -2,7 +2,7 @@
 
 // oneAPI headers
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include "exception_handler.hpp"
 
 // Buffer locations for MM Host interfaces
@@ -17,29 +17,29 @@ class IDSimpleVAdd;
 struct SimpleVAddKernel {
   sycl::ext::oneapi::experimental::annotated_arg<
       int *, decltype(sycl::ext::oneapi::experimental::properties{
-                 sycl::ext::intel::experimental::buffer_location<kBL1>,
-                 sycl::ext::intel::experimental::dwidth<32>,
-                 sycl::ext::intel::experimental::latency<0>,
-                 sycl::ext::intel::experimental::read_write_mode_read,
+                 sycl::ext::altera::experimental::buffer_location<kBL1>,
+                 sycl::ext::altera::experimental::dwidth<32>,
+                 sycl::ext::altera::experimental::latency<0>,
+                 sycl::ext::altera::experimental::read_write_mode_read,
                  sycl::ext::oneapi::experimental::alignment<4>})>
       a_in;
 
   sycl::ext::oneapi::experimental::annotated_arg<
       int *, decltype(sycl::ext::oneapi::experimental::properties{
-                 sycl::ext::intel::experimental::buffer_location<kBL2>,
-                 sycl::ext::intel::experimental::dwidth<32>,
-                 sycl::ext::intel::experimental::latency<0>,
-                 sycl::ext::intel::experimental::read_write_mode_read,
+                 sycl::ext::altera::experimental::buffer_location<kBL2>,
+                 sycl::ext::altera::experimental::dwidth<32>,
+                 sycl::ext::altera::experimental::latency<0>,
+                 sycl::ext::altera::experimental::read_write_mode_read,
                  sycl::ext::oneapi::experimental::alignment<4>})>
                  
       b_in;
 
   sycl::ext::oneapi::experimental::annotated_arg<
       int *, decltype(sycl::ext::oneapi::experimental::properties{
-                 sycl::ext::intel::experimental::buffer_location<kBL3>,
-                 sycl::ext::intel::experimental::dwidth<32>,
-                 sycl::ext::intel::experimental::latency<0>,
-                 sycl::ext::intel::experimental::read_write_mode_write,
+                 sycl::ext::altera::experimental::buffer_location<kBL3>,
+                 sycl::ext::altera::experimental::dwidth<32>,
+                 sycl::ext::altera::experimental::latency<0>,
+                 sycl::ext::altera::experimental::read_write_mode_write,
                  sycl::ext::oneapi::experimental::alignment<4>})>
       c_out;
 
@@ -64,11 +64,11 @@ int main() {
     //  - the FPGA device (a real FPGA)
     //  - the simulator device
 #if FPGA_SIMULATOR
-    auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-    auto selector = sycl::ext::intel::fpga_selector_v;
+    auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-    auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
     // create the device queue
@@ -88,17 +88,17 @@ int main() {
     int *a = sycl::malloc_shared<int>(
         count, q,
         sycl::property_list{
-            sycl::ext::intel::experimental::property::usm::buffer_location(
+            sycl::ext::altera::experimental::property::usm::buffer_location(
                 kBL1)});
     int *b = sycl::malloc_shared<int>(
         count, q,
         sycl::property_list{
-            sycl::ext::intel::experimental::property::usm::buffer_location(
+            sycl::ext::altera::experimental::property::usm::buffer_location(
                 kBL2)});
     int *c = sycl::malloc_shared<int>(
         count, q,
         sycl::property_list{
-            sycl::ext::intel::experimental::property::usm::buffer_location(
+            sycl::ext::altera::experimental::property::usm::buffer_location(
                 kBL3)});
 
     for (int i = 0; i < count; i++) {

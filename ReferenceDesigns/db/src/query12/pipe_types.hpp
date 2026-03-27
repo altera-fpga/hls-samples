@@ -3,12 +3,13 @@
 #pragma once
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "../db_utils/StreamingData.hpp"
 #include "../dbdata.hpp"
 
 using namespace sycl;
+namespace altera_exp = sycl::ext::altera::experimental;
 
 //
 // A single row of the ORDERS table
@@ -109,20 +110,20 @@ using JoinedRowPipeData = StreamingData<JoinedRow, kLineItemJoinWindowSize>;
 
 // the pipes
 using OrdersProducerPipe =
-  pipe<class OrdersProducerPipeClass, OrdersRowPipeData>;
+  altera_exp::pipe<class OrdersProducerPipeClass, OrdersRowPipeData>;
 
 using LineItemProducerPipe =
-  pipe<class LineItemProducerPipeClass, LineItemRowPipeData>;
+  altera_exp::pipe<class LineItemProducerPipeClass, LineItemRowPipeData>;
 
 using JoinedProducerPipe =
-  pipe<class JoinedProducerPipeClass, JoinedRowPipeData>;
+  altera_exp::pipe<class JoinedProducerPipeClass, JoinedRowPipeData>;
 
 #ifdef PRECISE_TIMING
 using OrdersProducerStartPipe =
-  pipe<class OrdersProducerPipeStartClass, bool>;
+  altera_exp::pipe<class OrdersProducerPipeStartClass, bool>;
 
 using LineItemProducerStartPipe =
-  pipe<class LineItemProducerPipeStartClass, bool>;
+  altera_exp::pipe<class LineItemProducerPipeStartClass, bool>;
 
 #endif
 

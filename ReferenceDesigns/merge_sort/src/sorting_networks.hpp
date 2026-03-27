@@ -4,7 +4,7 @@
 #include <algorithm>
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 // Included from include/
 #include "constexpr_math.hpp"
@@ -110,7 +110,7 @@ event SortNetworkKernel(queue& q, ValueT* out_ptr, IndexT total_count,
     // This is only done in the case where we target a BSP as device 
     // pointers are not supported when targeting an FPGA family/part
 #if defined(IS_BSP)
-    sycl::ext::intel::device_ptr<ValueT> out(out_ptr);
+    sycl::ext::altera::device_ptr<ValueT> out(out_ptr);
 #else
     ValueT* out(out_ptr);
 #endif

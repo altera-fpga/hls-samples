@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include <sycl/ext/intel/ac_types/ac_int.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "memory_transfers.hpp"
@@ -12,7 +12,7 @@
 #include "streaming_matmul.hpp"
 
 #if not defined(IS_BSP)
-using sycl::ext::intel::experimental::property::usm::buffer_location;
+using sycl::ext::altera::experimental::property::usm::buffer_location;
 #endif
 
 // Forward declare the kernel and pipe names
@@ -90,10 +90,10 @@ void MatmulImpl(sycl::queue &q,            // Device queue
   using PipeDataC = fpga_tools::NTuple<TT, tile_a>;
 
   // Pipes to communicate the matrices between kernels
-  using PipeA = sycl::ext::intel::pipe<APipe, PipeDataA, 64>;
-  using PipeB = sycl::ext::intel::pipe<BPipe, PipeDataB, 64>;
-  using PipeC = sycl::ext::intel::pipe<CPipe, PipeDataC, 64>;
-  using PipeDone = sycl::ext::intel::pipe<DonePipe, bool, 64>;
+  using PipeA = sycl::ext::altera::experimental::pipe<APipe, PipeDataA, 64>;
+  using PipeB = sycl::ext::altera::experimental::pipe<BPipe, PipeDataB, 64>;
+  using PipeC = sycl::ext::altera::experimental::pipe<CPipe, PipeDataC, 64>;
+  using PipeDone = sycl::ext::altera::experimental::pipe<DonePipe, bool, 64>;
 
   // Producer kernel for matrix A
   auto feeder_a_event = q.single_task<FeederA>(

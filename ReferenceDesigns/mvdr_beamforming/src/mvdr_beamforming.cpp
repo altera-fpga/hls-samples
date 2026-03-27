@@ -9,7 +9,7 @@
 #include <fstream>
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "tuple.hpp"  // From the include directory
 #include "mvdr_complex.hpp"
@@ -106,10 +106,10 @@ struct WriteIOPipeID {
 };
 
 using DataInPipe =
-    ext::intel::kernel_readable_io_pipe<ReadIOPipeID, XrxPipeType, 512>;
+    ext::altera::kernel_readable_io_pipe<ReadIOPipeID, XrxPipeType, 512>;
 
 using DataOutPipe =
-    ext::intel::kernel_writeable_io_pipe<WriteIOPipeID, XrxPipeType, 512>;
+    ext::altera::kernel_writeable_io_pipe<WriteIOPipeID, XrxPipeType, 512>;
 #else
 // FAKE IO PIPES
 using DataProducer =
@@ -226,11 +226,11 @@ int main(int argc, char *argv[]) {
   try {
     // device selector
 #if FPGA_SIMULATOR
-    auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-    auto selector = sycl::ext::intel::fpga_selector_v;
+    auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-    auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
     // create the device queue

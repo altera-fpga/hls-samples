@@ -4,7 +4,7 @@
 #include <sycl/sycl.hpp>
 #include <chrono>
 #include <sycl/ext/intel/ac_types/ac_int.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "../common/byte_stacker.hpp"
 #include "../common/common.hpp"
@@ -63,10 +63,10 @@ std::vector<sycl::event> SubmitGzipDecompressKernels(
 
   // the inter-kernel pipes for the GZIP decompression engine
   using GzipMetadataToHuffmanPipe =
-      sycl::ext::intel::pipe<GzipMetadataToHuffmanPipeID,
+      sycl::ext::altera::experimental::pipe<GzipMetadataToHuffmanPipeID,
                              FlagBundle<ByteSet<1>>>;
   using HuffmanToLZ77Pipe =
-      sycl::ext::intel::pipe<HuffmanToLZ77PipeID, FlagBundle<GzipLZ77InputData>,
+      sycl::ext::altera::experimental::pipe<HuffmanToLZ77PipeID, FlagBundle<GzipLZ77InputData>,
                              kHuffmanToLZ77PipeDepth>;
 
   // submit the GZIP decompression kernels
@@ -81,7 +81,7 @@ std::vector<sycl::event> SubmitGzipDecompressKernels(
   // the design only needs a ByteStacker kernel when literals_per_cycle > 1
   if constexpr (literals_per_cycle > 1) {
     using LZ77ToByteStackerPipe =
-        sycl::ext::intel::pipe<LZ77ToByteStackerPipeID,
+        sycl::ext::altera::experimental::pipe<LZ77ToByteStackerPipeID,
                                FlagBundle<BytePack<literals_per_cycle>>>;
 
     auto lz77_event =
@@ -109,9 +109,9 @@ class InPipeId;
 class OutPipeId;
 
 // the input and output pipe
-using InPipe = sycl::ext::intel::pipe<InPipeId, ByteSet<1>>;
+using InPipe = sycl::ext::altera::experimental::pipe<InPipeId, ByteSet<1>>;
 using OutPipe =
-    sycl::ext::intel::pipe<OutPipeId, FlagBundle<BytePack<kLiteralsPerCycle>>>;
+    sycl::ext::altera::experimental::pipe<OutPipeId, FlagBundle<BytePack<kLiteralsPerCycle>>>;
 
 //
 // The GZIP decompressor. See ../common/common.hpp for more information.

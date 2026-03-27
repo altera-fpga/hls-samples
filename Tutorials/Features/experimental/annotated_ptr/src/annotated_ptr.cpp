@@ -1,13 +1,13 @@
 #include <iomanip>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "exception_handler.hpp"
 
 using Pipe2DotProductIP =
-    sycl::ext::intel::experimental::pipe<class MyPipeName1, float *>;
+    sycl::ext::altera::experimental::pipe<class MyPipeName1, float *>;
 using Pipe2AnnotatedPtrIP =
-    sycl::ext::intel::experimental::pipe<class MyPipeName2, float *>;
+    sycl::ext::altera::experimental::pipe<class MyPipeName2, float *>;
 
 constexpr int kBL1 = 1;
 constexpr int kBL2 = 2;
@@ -22,11 +22,11 @@ constexpr int kCols = 5;
 struct DotProductIP {
   sycl::ext::oneapi::experimental::annotated_arg<
       float *, decltype(sycl::ext::oneapi::experimental::properties{
-                   sycl::ext::intel::experimental::buffer_location<kBL2>})>
+                   sycl::ext::altera::experimental::buffer_location<kBL2>})>
       in_vec;
   sycl::ext::oneapi::experimental::annotated_arg<
       float *, decltype(sycl::ext::oneapi::experimental::properties{
-                   sycl::ext::intel::experimental::buffer_location<kBL1>})>
+                   sycl::ext::altera::experimental::buffer_location<kBL1>})>
       out_vec;
 
   void operator()() const {
@@ -49,11 +49,11 @@ struct DotProductIP {
 struct AnnotatedPtrIP {
   sycl::ext::oneapi::experimental::annotated_arg<
       float *, decltype(sycl::ext::oneapi::experimental::properties{
-                   sycl::ext::intel::experimental::buffer_location<kBL2>})>
+                   sycl::ext::altera::experimental::buffer_location<kBL2>})>
       in_vec;
   sycl::ext::oneapi::experimental::annotated_arg<
       float *, decltype(sycl::ext::oneapi::experimental::properties{
-                   sycl::ext::intel::experimental::buffer_location<kBL1>})>
+                   sycl::ext::altera::experimental::buffer_location<kBL1>})>
       out_vec;
 
   void operator()() const {
@@ -64,7 +64,7 @@ struct AnnotatedPtrIP {
       // set buffer location on p with annotated_ptr
       sycl::ext::oneapi::experimental::annotated_ptr<
           float, decltype(sycl::ext::oneapi::experimental::properties{
-                     sycl::ext::intel::experimental::buffer_location<kBL1>})>
+                     sycl::ext::altera::experimental::buffer_location<kBL1>})>
           mat{p};
 
       float sum = 0.0f;
@@ -93,11 +93,11 @@ int main() {
   bool success = true;
   try {
 #if FPGA_SIMULATOR
-    auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-    auto selector = sycl::ext::intel::fpga_selector_v;
+    auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-    auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
     sycl::queue q(selector, fpga_tools::exception_handler,
@@ -113,7 +113,7 @@ int main() {
     // will be written to each kernel through a pipe.
     float *weight = sycl::malloc_shared<float>(
         kRows * kCols, q,
-        sycl::ext::intel::experimental::property::usm::buffer_location(kBL1));
+        sycl::ext::altera::experimental::property::usm::buffer_location(kBL1));
     assert(weight);
     for (int i = 0; i < kRows * kCols; i++) {
       weight[i] = rand() % 10;
@@ -122,14 +122,14 @@ int main() {
     // allocate memory and initialize for input vector
     float *input_vec = sycl::malloc_shared<float>(
         kCols, q,
-        sycl::ext::intel::experimental::property::usm::buffer_location(kBL2));
+        sycl::ext::altera::experimental::property::usm::buffer_location(kBL2));
     assert(input_vec);
     for (int j = 0; j < kCols; j++) input_vec[j] = rand() % 10;
 
     // allocate memory and initialize for output vector
     float *output_vec = sycl::malloc_shared<float>(
         kRows, q,
-        sycl::ext::intel::experimental::property::usm::buffer_location(kBL1));
+        sycl::ext::altera::experimental::property::usm::buffer_location(kBL1));
     assert(output_vec);
     for (int i = 0; i < kRows; i++) output_vec[i] = 0.0f;
 

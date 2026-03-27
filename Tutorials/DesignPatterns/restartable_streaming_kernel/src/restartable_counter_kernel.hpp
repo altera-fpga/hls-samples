@@ -4,11 +4,11 @@
 #include <iostream>
 
 // oneAPI headers
-#include <sycl/ext/intel/fpga_extensions.hpp>
-#include <sycl/ext/intel/prototype/pipes_ext.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
+#include <sycl/ext/altera/experimental/pipes_ext.hpp>
 #include <sycl/sycl.hpp>
 
-namespace intel_exp = sycl::ext::intel::experimental;
+namespace altera_exp = sycl::ext::altera::experimental;
 namespace oneapi_exp = sycl::ext::oneapi::experimental;
 
 // Forward declare the pipe names in the global scope. This is an FPGA best
@@ -20,7 +20,7 @@ namespace restartable_counter {
 
 // use sideband signals to signal when a kernel has been reset
 using OutputBeat =
-    intel_exp::StreamingBeat<int,     // payload of this Avalon streaming
+    altera_exp::StreamingBeat<int,     // payload of this Avalon streaming
                                       // interface's data signal
                              true,    // enable startofpacket and endofpacket
                                       // signals
@@ -29,14 +29,14 @@ using OutputBeat =
 // StopPipe is mapped to the CSR. This way a kernel can be controlled by a
 // memory-mapped host while it executes.
 using CsrPipeProperties = decltype(oneapi_exp::properties(
-    intel_exp::protocol<intel_exp::protocol_name::avalon_mm>));
-using StopPipe = intel_exp::pipe<StopPipeID, bool, 0, CsrPipeProperties>;
+    altera_exp::protocol<altera_exp::protocol_name::avalon_mm>));
+using StopPipe = altera_exp::pipe<StopPipeID, bool, 0, CsrPipeProperties>;
 
 using StreamingPipeProperties =
-    decltype(oneapi_exp::properties(intel_exp::bits_per_symbol<32>));
+    decltype(oneapi_exp::properties(altera_exp::bits_per_symbol<32>));
 // OutputPipe maps to a streaming interface.
 using OutputPipe =
-    intel_exp::pipe<OutputPipeID, OutputBeat, 0, StreamingPipeProperties>;
+    altera_exp::pipe<OutputPipeID, OutputBeat, 0, StreamingPipeProperties>;
 
 struct RestartableCounter {
   // the kernel argument will be re-read each time the kernel is started.

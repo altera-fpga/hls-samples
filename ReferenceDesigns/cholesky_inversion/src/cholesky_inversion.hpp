@@ -4,7 +4,7 @@
 #include <sycl/sycl.hpp>
 #include <sycl/ext/intel/ac_types/ac_complex.hpp>
 #include <sycl/ext/intel/ac_types/ac_int.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <type_traits>
 #include <vector>
 
@@ -55,11 +55,11 @@ void CholeskyInversionImpl(
   using PipeType = fpga_tools::NTuple<TT, kNumElementsPerDDRBurst>;
 
   // Pipes to communicate the A and L matrices between kernels
-  using AMatrixPipe = sycl::ext::intel::pipe<APipe, PipeType, 3>;
+  using AMatrixPipe = sycl::ext::altera::experimental::pipe<APipe, PipeType, 3>;
   using LMatrixPipe =
-      sycl::ext::intel::pipe<LPipe, TT, kNumElementsPerDDRBurst * 4>;
+      sycl::ext::altera::experimental::pipe<LPipe, TT, kNumElementsPerDDRBurst * 4>;
   using IMatrixPipe =
-      sycl::ext::intel::pipe<IPipe, TT, kNumElementsPerDDRBurst * 4>;
+      sycl::ext::altera::experimental::pipe<IPipe, TT, kNumElementsPerDDRBurst * 4>;
 
   // Allocate FPGA DDR memory.
 #if defined (IS_BSP)

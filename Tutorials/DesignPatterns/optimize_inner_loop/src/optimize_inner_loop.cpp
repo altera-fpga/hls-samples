@@ -11,7 +11,7 @@
 #include <random>
 #include <type_traits>
 
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "exception_handler.hpp"
@@ -61,15 +61,15 @@ void SubmitKernels(std::vector<int> &in, int &res, double &kernel_time_ms) {
 
   // the device selector
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   // the pipe
-  using Pipe = pipe<PipeClass<version>, bool>;
+  using Pipe = sycl::ext::altera::experimental::pipe<PipeClass<version>, bool>;
 
   kernel_time_ms = 0.0;
   int size = in.size();

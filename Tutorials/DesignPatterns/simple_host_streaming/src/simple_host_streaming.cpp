@@ -11,7 +11,7 @@
 #include <utility>
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "exception_handler.hpp"
 
@@ -141,11 +141,11 @@ int main(int argc, char* argv[]) {
   try {
     // device selector
 #if FPGA_SIMULATOR
-    auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-    auto selector = sycl::ext::intel::fpga_selector_v;
+    auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-    auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
     // queue properties to enable profiling
@@ -424,8 +424,12 @@ void DoWorkSingleKernel(queue& q, T* in, T* out,
 //
 
 // the pipes used to produce/consume data
-using ProducePipe = pipe<class ProducePipeClass, Type>;
-using ConsumePipe = pipe<class ConsumePipeClass, Type>;
+using ProducePipe =
+    ext::altera::experimental::pipe<class ProducePipeClass, Type>;
+using ConsumePipe =
+    ext::altera::experimental::pipe<class ConsumePipeClass, Type>;
+using InternalPipe0 = ext::altera::experimental::pipe<class Pipe0Class, Type>;
+using InternalPipe1 = ext::altera::experimental::pipe<class Pipe1Class, Type>;
 
 template <typename T>
 void DoWorkMultiKernel(queue& q, T* in, T* out,
@@ -465,7 +469,9 @@ void DoWorkMultiKernel(queue& q, T* in, T* out,
     // this function is defined in 'multi_kernel.hpp'
     auto events = SubmitMultiKernelWorkers<T,
                                            ProducePipe,
-                                           ConsumePipe>(q, total_count);
+                                           ConsumePipe,
+                                           InternalPipe0,
+                                           InternalPipe1>(q, total_count);
 
     auto start = high_resolution_clock::now();
 

@@ -71,13 +71,13 @@ class FirstPipeT;
 class SecondPipeT;
 
 // two host pipes
-using FirstPipeInstance = cl::sycl::ext::intel::experimental::pipe<
+using FirstPipeInstance = cl::sycl::ext::altera::experimental::pipe<
     // Usual pipe parameters
     FirstPipeT, // An identifier for the pipe
     int,        // The type of data in the pipe
     8           // The capacity of the pipe
     >;
-using SecondPipeInstance = cl::sycl::ext::intel::experimental::pipe<
+using SecondPipeInstance = cl::sycl::ext::altera::experimental::pipe<
     // Usual pipe parameters
     SecondPipeT, // An identifier for the pipe
     int,         // The type of data in the pipe
@@ -207,8 +207,8 @@ Host pipe connections for a particular host pipe are inferred by the compiler fr
 In `hostpipes.cpp`, two host pipes are declared for transferring host-to-device data (`H2DPipe`) and device-to-host data (`D2HPipe`).
 
 ```c++
-using H2DPipe = cl::sycl::ext::intel::experimental::pipe<H2DPipeID, ValueT, kPipeMinCapacity>;
-using D2HPipe = cl::sycl::ext::intel::experimental::pipe<D2HPipeID, ValueT, kPipeMinCapacity>;
+using H2DPipe = cl::sycl::ext::altera::experimental::pipe<H2DPipeID, ValueT, kPipeMinCapacity>;
+using D2HPipe = cl::sycl::ext::altera::experimental::pipe<D2HPipeID, ValueT, kPipeMinCapacity>;
 ```
 
 These host pipes are used to transfer data to and from `SubmitLoopBackKernel`, which reads a data element from the H2DPipe (parameterized in the kernel template as `InHostPipe`), processes it using the `SomethingComplicated()` function (a placeholder example of offload computation), and writes it back to the host via `D2HPipe` (template parameter `OutHostPipes`).
@@ -355,13 +355,13 @@ In the main **System Viewer** pane, the pipe read and pipe write for the kernel 
 class H2DPipeID;
 class D2HPipeID;
 ...
-using H2DPipe = cl::sycl::ext::intel::experimental::pipe<
+using H2DPipe = cl::sycl::ext::altera::experimental::pipe<
    // Usual pipe parameters
    H2DPipeID,         // An identified for the pipe
    ...
    >;
 
-using D2HPipe = cl::sycl::ext::intel::experimental::pipe<
+using D2HPipe = cl::sycl::ext::altera::experimental::pipe<
    // Usual pipe parameters
    D2HPipeID,         // An identified for the pipe
    ...

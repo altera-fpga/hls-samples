@@ -3,7 +3,7 @@
 
 #include <sycl/ext/intel/ac_types/ac_complex.hpp>
 #include <sycl/ext/intel/ac_types/ac_int.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 #include <vector>
 #include "tuple.hpp"
@@ -17,8 +17,8 @@
 #include "memory_transfers.hpp"
 #include "usv_from_eigens.hpp"
 
-using namespace sycl::ext::intel::experimental;
-using namespace sycl::ext::oneapi::experimental;
+namespace altera_exp = sycl::ext::altera::experimental;
+namespace oneapi_exp = sycl::ext::oneapi::experimental;
 
 // Forward declare the kernel and pipe names
 // (This prevents unwanted name mangling in the optimization report.)
@@ -75,20 +75,23 @@ double SingularValueDecomposition(
 
   // pipes
   using PipeType = fpga_tools::NTuple<T, kNumElementsPerDDRBurst>;
+  using PipeProps =
+      decltype(oneapi_exp::properties{altera_exp::bits_per_symbol<0>});
 
-  using InputMatrixPipe = sycl::ext::intel::pipe<IDInputMatrixPipe, PipeType, 3>;
-  using InputMatrixPipe2 = sycl::ext::intel::pipe<IDInputMatrixPipe2, PipeType, 3>;
-  using CovarianceMatrixPipe = sycl::ext::intel::pipe<IDCovarianceMatrixPipe, PipeType, 3>;
-  using EigenValuesPipe = sycl::ext::intel::pipe<IDEigenValuesPipe, T, 3>;
-  using EigenVectorsPipe = sycl::ext::intel::pipe<IDEigenVectorsPipe, PipeType, 3>;
+  using InputMatrixPipe = altera_exp::pipe<IDInputMatrixPipe, PipeType, 3>;
+  using InputMatrixPipe2 = altera_exp::pipe<IDInputMatrixPipe2, PipeType, 3>;
+  using CovarianceMatrixPipe =
+      altera_exp::pipe<IDCovarianceMatrixPipe, PipeType, 3>;
+  using EigenValuesPipe = altera_exp::pipe<IDEigenValuesPipe, T, 3>;
+  using EigenVectorsPipe = altera_exp::pipe<IDEigenVectorsPipe, PipeType, 3>;
   using RankDeficientFlagPipe =
-      sycl::ext::intel::pipe<IDRankDeficientFlagPipe, ac_int<1, false>, 3>;
-  using UTempMatrixPipe = sycl::ext::intel::pipe<IDUTempMatrixPipe, PipeType, 3>;
-  using UMatrixPipe = sycl::ext::intel::pipe<IDUMatrixPipe, PipeType, 3>;
+      altera_exp::pipe<IDRankDeficientFlagPipe, ac_int<1, false>, 3, PipeProps>;
+  using UTempMatrixPipe = altera_exp::pipe<IDUTempMatrixPipe, PipeType, 3>;
+  using UMatrixPipe = altera_exp::pipe<IDUMatrixPipe, PipeType, 3>;
   using RMatrixPipe =
-      sycl::ext::intel::pipe<IDRMatrixPipe, T, kNumElementsPerDDRBurst * 4>;
-  using SMatrixPipe = sycl::ext::intel::pipe<IDSMatrixPipe, PipeType, 3>;
-  using VMatrixPipe = sycl::ext::intel::pipe<IDVMatrixPipe, PipeType, 3>;
+      altera_exp::pipe<IDRMatrixPipe, T, kNumElementsPerDDRBurst * 4>;
+  using SMatrixPipe = altera_exp::pipe<IDSMatrixPipe, PipeType, 3>;
+  using VMatrixPipe = altera_exp::pipe<IDVMatrixPipe, PipeType, 3>;
 
   // USM allocations
   T *input_matrix_device;
@@ -122,8 +125,9 @@ double SingularValueDecomposition(
 
 #if not defined (IS_BSP)
   constexpr int BL0 = 0;
-  using PtrAnn = annotated_ptr<T, decltype(properties{buffer_location<BL0>,
-		  				      dwidth<512>})>;
+  using PtrAnn = annotated_ptr<T, decltype(oneapi_exp::properties{
+      altera_exp::buffer_location<BL0>,
+      altera_exp::dwidth<512>})>;
   PtrAnn u_matrix_device_ptr(u_matrix_device);
   PtrAnn s_matrix_device_ptr(s_matrix_device);
   PtrAnn v_matrix_device_ptr(v_matrix_device);

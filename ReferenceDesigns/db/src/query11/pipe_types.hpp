@@ -3,12 +3,13 @@
 #pragma once
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "../db_utils/StreamingData.hpp"
 #include "../dbdata.hpp"
 
 using namespace sycl;
+namespace altera_exp = sycl::ext::altera::experimental;
 
 //
 // A single row of the PARTSUPPLIER table
@@ -100,12 +101,13 @@ using PartSupplierRowPipeData =
 using SupplierPartSupplierJoinedPipeData =
   StreamingData<SupplierPartSupplierJoined, kJoinWinSize>;
 
-
 // pipes
 using ProducePartSupplierPipe =
-  pipe<class ProducePartSupplierPipeClass, PartSupplierRowPipeData>;
-  
+    altera_exp::pipe<class ProducePartSupplierPipeClass,
+                     PartSupplierRowPipeData>;
+
 using PartSupplierPartsPipe =
-  pipe<class PartSupplierPartsPipeClass, SupplierPartSupplierJoinedPipeData>;
+    altera_exp::pipe<class PartSupplierPartsPipeClass,
+                     SupplierPartSupplierJoinedPipeData>;
 
 #endif /* __PIPE_TYPES_H__ */

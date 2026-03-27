@@ -128,10 +128,10 @@ struct StreamingCholesky {
             // Delay data signals to create a vine-based data distribution
             // to lower signal fanout.
             pipe_read.template get<t>() =
-                sycl::ext::intel::fpga_reg(pipe_read.template get<t>());
+                sycl::ext::altera::fpga_reg(pipe_read.template get<t>());
           });
 
-          write_idx = sycl::ext::intel::fpga_reg(write_idx);
+          write_idx = sycl::ext::altera::fpga_reg(write_idx);
         });
       }
 

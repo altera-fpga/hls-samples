@@ -6,21 +6,23 @@
 #include <iostream>
 
 // oneAPI headers
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "exception_handler.hpp"
 
+// Define namespace alias for easy reference.
+namespace altera_exp = sycl::ext::altera::experimental;
+namespace oneapi_exp = sycl::ext::oneapi::experimental;
+
 // use pipes to write into registers in the CSR address space
 class OutputPipeID;
 
-using OutputPipeProps = decltype(sycl::ext::oneapi::experimental::properties(
-    sycl::ext::intel::experimental::uses_ready<false>,
-    sycl::ext::intel::experimental::protocol<
-        sycl::ext::intel::experimental::protocol_name::avalon_mm>));
+using OutputPipeProps = decltype(oneapi_exp::properties(
+    altera_exp::uses_ready<false>,
+    altera_exp::protocol<altera_exp::protocol_name::avalon_mm>));
 
-using OutputPipe =
-    sycl::ext::intel::experimental::pipe<OutputPipeID, int, 0, OutputPipeProps>;
+using OutputPipe = altera_exp::pipe<OutputPipeID, int, 0, OutputPipeProps>;
 
 // Forward declare the kernel name in the global scope. This is an FPGA best
 // practice that reduces name mangling in the optimization reports.
@@ -45,11 +47,11 @@ int main() {
 //  - the FPGA device (a real FPGA)
 //  - the simulator device
 #if FPGA_SIMULATOR
-    auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-    auto selector = sycl::ext::intel::fpga_selector_v;
+    auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-    auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
     // create the device queue

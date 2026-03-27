@@ -97,7 +97,7 @@ struct SingleMMIP {
 };
 ```
 
-The following table describes the properties under `sycl::ext::intel::experimental` that can be used to customize how the pointer argument is passed to the component. Only one may be specified at a time. 
+The following table describes the properties under `sycl::ext::altera::experimental` that can be used to customize how the pointer argument is passed to the component. Only one may be specified at a time. 
 
 | Parameter                 | Description
 |---                        |---
@@ -106,7 +106,7 @@ The following table describes the properties under `sycl::ext::intel::experiment
 | `stable`                 | N/A | User guarantee that the pointer will not change between pipelined invocations of the kernel. The compiler uses this to further optimize the kernel.
 
 
-The following parameters are found under `sycl::ext::intel::experimental`, with the exception of `alignment` under `sycl::ext::oneapi::experimental`. They can be used to configure an IP component's Avalon memory-mapped host interfaces:
+The following parameters are found under `sycl::ext::altera::experimental`, with the exception of `alignment` under `sycl::ext::oneapi::experimental`. They can be used to configure an IP component's Avalon memory-mapped host interfaces:
 
 | Parameter                | Default Value | Description
 |---                       |---            |---
@@ -134,26 +134,26 @@ struct MultiMMIP {
   // Each annotated pointer is configured with a unique `buffer_location`,
   // resulting in three unique Avalon memory-mapped host interfaces.
   using XProps = decltype(sycl::ext::oneapi::experimental::properties{
-      sycl::ext::intel::experimental::buffer_location<kBL1>,
-      sycl::ext::intel::experimental::awidth<32>,
-      sycl::ext::intel::experimental::dwidth<32>,
-      sycl::ext::intel::experimental::latency<1>,
+      sycl::ext::altera::experimental::buffer_location<kBL1>,
+      sycl::ext::altera::experimental::awidth<32>,
+      sycl::ext::altera::experimental::dwidth<32>,
+      sycl::ext::altera::experimental::latency<1>,
       sycl::ext::oneapi::experimental::alignment<kAlignment>,
-      sycl::ext::intel::experimental::read_write_mode_read});
+      sycl::ext::altera::experimental::read_write_mode_read});
   using YProps = decltype(sycl::ext::oneapi::experimental::properties{
-      sycl::ext::intel::experimental::buffer_location<kBL2>,
-      sycl::ext::intel::experimental::awidth<32>,
-      sycl::ext::intel::experimental::dwidth<32>,
-      sycl::ext::intel::experimental::latency<1>,
+      sycl::ext::altera::experimental::buffer_location<kBL2>,
+      sycl::ext::altera::experimental::awidth<32>,
+      sycl::ext::altera::experimental::dwidth<32>,
+      sycl::ext::altera::experimental::latency<1>,
       sycl::ext::oneapi::experimental::alignment<kAlignment>,
-      sycl::ext::intel::experimental::read_write_mode_read});
+      sycl::ext::altera::experimental::read_write_mode_read});
   using ZProps = decltype(sycl::ext::oneapi::experimental::properties{
-      sycl::ext::intel::experimental::buffer_location<kBL3>,
-      sycl::ext::intel::experimental::awidth<32>,
-      sycl::ext::intel::experimental::dwidth<32>,
-      sycl::ext::intel::experimental::latency<1>,
+      sycl::ext::altera::experimental::buffer_location<kBL3>,
+      sycl::ext::altera::experimental::awidth<32>,
+      sycl::ext::altera::experimental::dwidth<32>,
+      sycl::ext::altera::experimental::latency<1>,
       sycl::ext::oneapi::experimental::alignment<kAlignment>,
-      sycl::ext::intel::experimental::read_write_mode_write});
+      sycl::ext::altera::experimental::read_write_mode_write});
 
   sycl::ext::oneapi::experimental::annotated_arg<int *, XProps> x;
   sycl::ext::oneapi::experimental::annotated_arg<int *, YProps> y;
@@ -186,20 +186,20 @@ The available memory bandwidth can be better used by coalescing the 32-bit wide 
 ```c++
 struct DDRIP {
   using ParamsBl1 = decltype(sycl::ext::oneapi::experimental::properties{
-      sycl::ext::intel::experimental::buffer_location<kBL1>,
-      sycl::ext::intel::experimental::maxburst<8>,
-      sycl::ext::intel::experimental::dwidth<256>,
+      sycl::ext::altera::experimental::buffer_location<kBL1>,
+      sycl::ext::altera::experimental::maxburst<8>,
+      sycl::ext::altera::experimental::dwidth<256>,
       sycl::ext::oneapi::experimental::alignment<kAlignment>,
-      sycl::ext::intel::experimental::awidth<32>,
-      sycl::ext::intel::experimental::latency<0>});
+      sycl::ext::altera::experimental::awidth<32>,
+      sycl::ext::altera::experimental::latency<0>});
 
   using ParamsBl2 = decltype(sycl::ext::oneapi::experimental::properties{
-      sycl::ext::intel::experimental::buffer_location<kBL2>,
-      sycl::ext::intel::experimental::maxburst<8>,
-      sycl::ext::intel::experimental::dwidth<256>,
+      sycl::ext::altera::experimental::buffer_location<kBL2>,
+      sycl::ext::altera::experimental::maxburst<8>,
+      sycl::ext::altera::experimental::dwidth<256>,
       sycl::ext::oneapi::experimental::alignment<32>,
-      sycl::ext::intel::experimental::awidth<kAlignment>,
-      sycl::ext::intel::experimental::latency<0>});
+      sycl::ext::altera::experimental::awidth<kAlignment>,
+      sycl::ext::altera::experimental::latency<0>});
 
   sycl::ext::oneapi::experimental::annotated_arg<int *, ParamsBl1> x;
   sycl::ext::oneapi::experimental::annotated_arg<int *, ParamsBl1> y;

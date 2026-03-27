@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 #include "exception_handler.hpp"
 
@@ -19,25 +19,25 @@ static constexpr int kAlignment = 4;
 struct SimpleDMA {
   using params1 = decltype(sycl::ext::oneapi::experimental::properties(
       // give this a unique Avalon memory-mapped host interface
-      sycl::ext::intel::experimental::buffer_location<kBL1>,
-      sycl::ext::intel::experimental::dwidth<32>,
-      sycl::ext::intel::experimental::awidth<32>,
-      sycl::ext::intel::experimental::maxburst<15>,
+      sycl::ext::altera::experimental::buffer_location<kBL1>,
+      sycl::ext::altera::experimental::dwidth<32>,
+      sycl::ext::altera::experimental::awidth<32>,
+      sycl::ext::altera::experimental::maxburst<15>,
       sycl::ext::oneapi::experimental::alignment<kAlignment>,
       // latency (choose 0-latency so that waitrequest will work)
-      sycl::ext::intel::experimental::latency<0>,
-      sycl::ext::intel::experimental::read_write_mode_read));
+      sycl::ext::altera::experimental::latency<0>,
+      sycl::ext::altera::experimental::read_write_mode_read));
 
   using params2 = decltype(sycl::ext::oneapi::experimental::properties(
       // give this a unique Avalon memory-mapped host interface
-      sycl::ext::intel::experimental::buffer_location<kBL2>,
-      sycl::ext::intel::experimental::dwidth<32>,
-      sycl::ext::intel::experimental::awidth<32>,
-      sycl::ext::intel::experimental::maxburst<15>,
+      sycl::ext::altera::experimental::buffer_location<kBL2>,
+      sycl::ext::altera::experimental::dwidth<32>,
+      sycl::ext::altera::experimental::awidth<32>,
+      sycl::ext::altera::experimental::maxburst<15>,
       sycl::ext::oneapi::experimental::alignment<kAlignment>,
       // latency (choose 0-latency so that waitrequest will work)
-      sycl::ext::intel::experimental::latency<0>,
-      sycl::ext::intel::experimental::read_write_mode_write));
+      sycl::ext::altera::experimental::latency<0>,
+      sycl::ext::altera::experimental::read_write_mode_write));
 
   // Struct members will be interpreted as kernel arguments. The pointers are
   // declared first since they are 64-bit types and won't get split up
@@ -72,11 +72,11 @@ int main() {
   //  - the FPGA device (a real FPGA)
   //  - the simulator device
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   // create the device queue
@@ -90,10 +90,10 @@ int main() {
 
   unsigned int *src = sycl::aligned_alloc_shared<unsigned int>(
       kAlignment, kLen, q,
-      sycl::ext::intel::experimental::property::usm::buffer_location(kBL1));
+      sycl::ext::altera::experimental::property::usm::buffer_location(kBL1));
   unsigned int *dest = sycl::aligned_alloc_shared<unsigned int>(
       kAlignment, kLen, q,
-      sycl::ext::intel::experimental::property::usm::buffer_location(kBL2));
+      sycl::ext::altera::experimental::property::usm::buffer_location(kBL2));
   unsigned int len = kLen;
 
   // ensure that shared pointers are successfully allocated

@@ -1,6 +1,6 @@
 // oneAPI headers
 #include <sycl/ext/intel/ac_types/ac_int.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "exception_handler.hpp"
@@ -18,7 +18,7 @@ struct FunctorRegMapIP {
   // it to be a register-mapped kernel argument.
   sycl::ext::oneapi::experimental::annotated_arg<
       int *, decltype(sycl::ext::oneapi::experimental::properties{
-                 sycl::ext::intel::experimental::register_map})>
+                 sycl::ext::altera::experimental::register_map})>
       input;
 
   // Without the annotation, kernel argument will be inferred to be
@@ -30,7 +30,7 @@ struct FunctorRegMapIP {
   // have streaming kernel arguments, when annotated by 'conduit' property.
   sycl::ext::oneapi::experimental::annotated_arg<
       MyUInt5, decltype(sycl::ext::oneapi::experimental::properties{
-                   sycl::ext::intel::experimental::conduit})>
+                   sycl::ext::altera::experimental::conduit})>
       n;
 
   // Without a kernel argument definition, the compiler will infer a
@@ -46,11 +46,11 @@ struct FunctorRegMapIP {
 
 int main(int argc, char *argv[]) {
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   bool passed = true;

@@ -8,7 +8,7 @@
 //
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/ext/intel/ac_types/ac_int.hpp>
 #include <limits>
 #include <type_traits>
@@ -290,7 +290,7 @@ std::vector<event> SubmitANRKernels(queue& q, int cols, int rows,
   // the internal pipe between the vertical and horizontal kernels
   using IntraPipeT =
       fpga_tools::DataBundle<DataForwardStruct, pixels_per_cycle>;
-  using IntraPipe = ext::intel::pipe<IntraPipeID, IntraPipeT>;
+  using IntraPipe = ext::altera::experimental::pipe<IntraPipeID, IntraPipeT>;
 
   // static asserts to validate template arguments
   static_assert(filter_size > 1);

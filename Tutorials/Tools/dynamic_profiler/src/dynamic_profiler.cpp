@@ -7,7 +7,7 @@
 */
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <cmath>
 #include <numeric>
 
@@ -18,12 +18,12 @@ using namespace sycl;
 // Two identical pipes to demonstrate the behaviour before
 // and after the design re-format
 using ProducerToConsumerBeforePipe =
-    ext::intel::pipe<                           // Defined in the SYCL headers.
-        class ProducerConsumerBeforePipe,  // An identifier for the pipe.
-        float,                             // The type of data in the pipe.
-        20>;                               // The capacity of the pipe.
+    ext::altera::experimental::pipe<      // Defined in the SYCL headers.
+        class ProducerConsumerBeforePipe, // An identifier for the pipe.
+        float,                            // The type of data in the pipe.
+        20>;                              // The capacity of the pipe.
 using ProducerToConsumerAfterPipe =
-    ext::intel::pipe<class ProducerConsumerAfterPipe, float, 20>;
+    ext::altera::experimental::pipe<class ProducerConsumerAfterPipe, float, 20>;
 
 // Forward declare the kernel names in the global scope.
 // This FPGA best practice reduces name mangling in the optimization report.
@@ -186,11 +186,11 @@ int main() {
 // Create queue, get platform and device
 
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
   std::cout << "\nThe Dynamic Profiler cannot be used in the emulator "
                "flow. Please compile to FPGA hardware or simulator flow "
                "to collect dynamic profiling data. \n\n";

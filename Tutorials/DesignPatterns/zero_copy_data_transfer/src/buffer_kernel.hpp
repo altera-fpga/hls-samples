@@ -5,7 +5,7 @@
 #include <vector>
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 using namespace sycl;
 using namespace std::chrono;
@@ -40,11 +40,11 @@ double SubmitBufferKernel(queue& q, std::vector<T>& in, std::vector<T>& out,
       // are in a location "1" whereas the pointers from ZeroCopyKernel
       // are in the location "0"
       sycl::ext::oneapi::accessor_property_list location_of_buffer{
-          ext::intel::buffer_location<1>};
+          ext::altera::buffer_location<1>};
       accessor in_a(in_buf, h, read_only, location_of_buffer);
 
       sycl::ext::oneapi::accessor_property_list location_of_buffer_no_init{
-          no_init, ext::intel::buffer_location<1>};
+          no_init, ext::altera::buffer_location<1>};
       accessor out_a(out_buf, h, write_only, location_of_buffer_no_init);
 #endif
 

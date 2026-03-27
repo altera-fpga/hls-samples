@@ -60,12 +60,12 @@ The `annotated_arg` class can be used to customize Avalon memory-mapped interfac
 Most oneAPI code assigns properties to an `annotated_arg` type using `decltype`. For example,
 ```c++
 using ArgProps = decltype(sycl::ext::oneapi::experimental::properties{
-      sycl::ext::intel::experimental::buffer_location<1>,
-      sycl::ext::intel::experimental::awidth<32>,
-      sycl::ext::intel::experimental::dwidth<256>,
+      sycl::ext::altera::experimental::buffer_location<1>,
+      sycl::ext::altera::experimental::awidth<32>,
+      sycl::ext::altera::experimental::dwidth<256>,
       sycl::ext::oneapi::experimental::alignment<32>,
-      sycl::ext::intel::experimental::maxburst<8>,
-      sycl::ext::intel::experimental::latency<0>});
+      sycl::ext::altera::experimental::maxburst<8>,
+      sycl::ext::altera::experimental::latency<0>});
 sycl::ext::oneapi::experimental::annotated_arg<int *, ArgProps> arg_x;
 ```
 
@@ -74,12 +74,12 @@ The header file "annotated_class_util.hpp" provides a type alias `properties_t` 
 #include "annotated_class_util.hpp"
 
 using ArgProps = fpga_tools::properties_t<
-      sycl::ext::intel::experimental::buffer_location<1>,
-      sycl::ext::intel::experimental::awidth<32>,
-      sycl::ext::intel::experimental::dwidth<256>,
+      sycl::ext::altera::experimental::buffer_location<1>,
+      sycl::ext::altera::experimental::awidth<32>,
+      sycl::ext::altera::experimental::dwidth<256>,
       sycl::ext::oneapi::experimental::alignment<32>,
-      sycl::ext::intel::experimental::maxburst<8>,
-      sycl::ext::intel::experimental::latency<0>>>;
+      sycl::ext::altera::experimental::maxburst<8>,
+      sycl::ext::altera::experimental::latency<0>>>;
 sycl::ext::oneapi::experimental::annotated_arg<int *, ArgProps> arg_x;
 ```
 
@@ -100,7 +100,7 @@ In the example, the device code defines a SYCL kernel functor that multiplies a 
 ```c++
 using annotated_arg_t= sycl::ext::oneapi::experimental::annotated_arg<
       int *, fpga_tools::properties_t<
-            sycl::ext::intel::experimental::buffer_location<0>,
+            sycl::ext::altera::experimental::buffer_location<0>,
             sycl::ext::oneapi::experimental::alignment<256>>>;
 
 struct MyIP {

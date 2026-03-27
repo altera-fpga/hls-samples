@@ -1,9 +1,13 @@
 #include <iostream>
-#include <sycl/ext/intel/fpga_extensions.hpp>
-#include <sycl/ext/intel/prototype/pipes_ext.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
+#include <sycl/ext/altera/experimental/pipes_ext.hpp>
 #include <sycl/sycl.hpp>
 
 #include "exception_handler.hpp"
+
+// Define namespace alias for easy reference.
+namespace altera_exp = sycl::ext::altera::experimental;
+namespace oneapi_exp = sycl::ext::oneapi::experimental;
 
 // limit pixel values to this value, or less
 constexpr int kThreshold = 200;
@@ -15,29 +19,29 @@ class OutStream;
 class Threshold;
 
 // StreamingBeat struct enables sideband signals in Avalon streaming interface
-using StreamingBeatT = sycl::ext::intel::experimental::StreamingBeat<
+using StreamingBeatT = altera_exp::StreamingBeat<
     unsigned char,  // type carried over this Avalon streaming interface's data
                     // signal
     true,           // enable startofpacket and endofpacket signals
     false>;         // disable the empty signal
 
 // Pipe properties
-using PipePropertiesT = decltype(sycl::ext::oneapi::experimental::properties(
-    sycl::ext::intel::experimental::ready_latency<0>,
-    sycl::ext::intel::experimental::bits_per_symbol<8>,
-    sycl::ext::intel::experimental::uses_valid<true>,
-    sycl::ext::intel::experimental::uses_ready<true>,
-    sycl::ext::intel::experimental::first_symbol_in_high_order_bits<true>,
-    sycl::ext::intel::experimental::protocol_avalon_streaming));
+using PipePropertiesT = decltype(oneapi_exp::properties(
+    altera_exp::ready_latency<0>,
+    altera_exp::bits_per_symbol<8>,
+    altera_exp::uses_valid<true>,
+    altera_exp::uses_ready<true>,
+    altera_exp::first_symbol_in_high_order_bits<true>,
+    altera_exp::protocol_avalon_streaming));
 
 // Image streams
-using InPixelPipe = sycl::ext::intel::experimental::pipe<
+using InPixelPipe = altera_exp::pipe<
     InStream,        // An identifier for the pipe
     StreamingBeatT,  // The type of data in the pipe
     0,               // The capacity of the pipe
     PipePropertiesT  // Customizable pipe properties
     >;
-using OutPixelPipe = sycl::ext::intel::experimental::pipe<
+using OutPixelPipe = altera_exp::pipe<
     OutStream,       // An identifier for the pipe
     StreamingBeatT,  // The type of data in the pipe
     0,               // The capacity of the pipe
@@ -72,11 +76,11 @@ struct ThresholdKernel {
 int main() {
   try {
 #if FPGA_SIMULATOR
-    auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-    auto selector = sycl::ext::intel::fpga_selector_v;
+    auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-    auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
     sycl::queue q(selector, fpga_tools::exception_handler);
 

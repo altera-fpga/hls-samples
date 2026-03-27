@@ -1,6 +1,6 @@
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
-#include <sycl/ext/intel/experimental/pipes.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
+#include <sycl/ext/altera/experimental/pipes.hpp>
 
 #include <algorithm>
 #include <iomanip>
@@ -21,14 +21,14 @@ class D2HPipeID;
 using ValueT = int;
 constexpr size_t kPipeMinCapacity = 8;
 
-using H2DPipe = sycl::ext::intel::experimental::pipe<
+using H2DPipe = sycl::ext::altera::experimental::pipe<
     // Usual pipe parameters
     H2DPipeID,         // An identifier for the pipe
     ValueT,            // The type of data in the pipe
     kPipeMinCapacity   // The capacity of the pipe
     >;
 
-using D2HPipe = sycl::ext::intel::experimental::pipe<
+using D2HPipe = sycl::ext::altera::experimental::pipe<
     // Usual pipe parameters
     D2HPipeID,         // An identifier for the pipe
     ValueT,            // The type of data in the pipe
@@ -48,11 +48,11 @@ ValueT SomethingComplicated(ValueT val) {
 
 int main(int argc, char* argv[]) {
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   bool passed = true;

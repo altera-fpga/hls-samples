@@ -96,7 +96,7 @@ You may wish to register your data in a memory-mapped register space.
 
 There are two ways you can do this:
 - Use (non-pointer) members of your functor. This is the default way to get data into your kernel as demonstrated in the [Naive Design](naive).
-- Use host pipes configured to use the `sycl::ext::intel::experimental::protocol_avalon_mm` protocol. Please review the [csr-pipes](csr-pipes/) example design.
+- Use host pipes configured to use the `sycl::ext::altera::experimental::protocol_avalon_mm` protocol. Please review the [csr-pipes](csr-pipes/) example design.
 
 ## Sample Structure
 There are 5 different example designs in this sample, all of which implement a simple vector addition. You can compare the C++ source code for each of these designs.

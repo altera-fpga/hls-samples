@@ -99,14 +99,14 @@ class FirstPipeT;
 // Pipe properties (listed here are the defaults; this achieves the same
 // behavior as not specifying any of these properties)
 using PipePropertiesT = decltype(sycl::ext::oneapi::experimental::properties(
-    sycl::ext::intel::experimental::ready_latency<0>,
-    sycl::ext::intel::experimental::bits_per_symbol<8>,
-    sycl::ext::intel::experimental::uses_valid<true>,
-    sycl::ext::intel::experimental::uses_ready<true>,
-    sycl::ext::intel::experimental::first_symbol_in_high_order_bits<true>,
-    sycl::ext::intel::experimental::protocol_avalon_streaming));
+    sycl::ext::altera::experimental::ready_latency<0>,
+    sycl::ext::altera::experimental::bits_per_symbol<8>,
+    sycl::ext::altera::experimental::uses_valid<true>,
+    sycl::ext::altera::experimental::uses_ready<true>,
+    sycl::ext::altera::experimental::first_symbol_in_high_order_bits<true>,
+    sycl::ext::altera::experimental::protocol_avalon_streaming));
 
-using FirstPipe = sycl::ext::intel::experimental::pipe<
+using FirstPipe = sycl::ext::altera::experimental::pipe<
     FirstPipeT,      // An identifier for the pipe
     int,             // The type of data in the pipe
     8,               // Minimum capacity of the pipe (buffer depth)
@@ -116,7 +116,7 @@ using FirstPipe = sycl::ext::intel::experimental::pipe<
 
 ### Avalon Streaming Sideband Signals
 
-Pipes support a subset of Avalon streaming sideband signals. You can add these to your pipe interface by using the special `StreamingBeat` structure provided by the `pipes_ext.hpp` header file (`sycl/ext/intel/prototype/pipes_ext.hpp`) as the `dataT` of your pipe. Only the `StreamingBeat` structure generates sideband signals when used with a pipe.
+Pipes support a subset of Avalon streaming sideband signals. You can add these to your pipe interface by using the special `StreamingBeat` structure provided by the `pipes_ext.hpp` header file (`sycl/ext/altera/experimental/pipes_ext.hpp`) as the `dataT` of your pipe. Only the `StreamingBeat` structure generates sideband signals when used with a pipe.
 
 The `StreamingBeat` structure is templated on three parameters, as summarized in Table 3.
 
@@ -133,11 +133,11 @@ The `StreamingBeat` structure is templated on three parameters, as summarized in
 The following example shows how to configure a `StreamingBeat` structure to use `sop`, `eop` and `empty` by setting the second and third template parameters to `true`. Using the `StreamingBeatT` type defined here in a pipe will result in `startofpacket`, `endofpacket`, and `empty` signals appearing on the resulting Avalon streaming interface.
 
 ```c++
-#include <sycl/ext/intel/prototype/pipes_ext.hpp>
+#include <sycl/ext/altera/experimental/pipes_ext.hpp>
 
 ...
 
-using StreamingBeatDataT = sycl::ext::intel::experimental::StreamingBeat<unsigned short, true, true>;
+using StreamingBeatDataT = sycl::ext::altera::experimental::StreamingBeat<unsigned short, true, true>;
 
 ...
 

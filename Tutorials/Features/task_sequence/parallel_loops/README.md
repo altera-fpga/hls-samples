@@ -186,10 +186,10 @@ struct OptimizedKernel {
   int len;
 
   void operator()() const {
-    sycl::ext::intel::experimental::task_sequence<LoopA> task_a;
-    sycl::ext::intel::experimental::task_sequence<LoopB> task_b;
-    sycl::ext::intel::experimental::task_sequence<LoopC> task_c;
-    sycl::ext::intel::experimental::task_sequence<LoopD> task_d;
+    sycl::ext::altera::experimental::task_sequence<LoopA> task_a;
+    sycl::ext::altera::experimental::task_sequence<LoopB> task_b;
+    sycl::ext::altera::experimental::task_sequence<LoopC> task_c;
+    sycl::ext::altera::experimental::task_sequence<LoopD> task_d;
 
     task_a.async(len);
     task_b.async(len);

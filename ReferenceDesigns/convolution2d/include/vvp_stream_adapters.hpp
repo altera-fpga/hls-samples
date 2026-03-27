@@ -8,7 +8,7 @@
 #include <string>
 
 // oneAPI headers
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "bmp_tools.hpp"  // BmpTools::PixelRGB definition

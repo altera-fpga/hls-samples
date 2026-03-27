@@ -12,17 +12,17 @@ Pipes are a first-in first-out (FIFO) buffer construct that provide links betwee
 ### Declaring a Pipe
 Each pipe is a declaration of the templated `pipe` class:
 ```cpp
-sycl::ext::intel::experimental::pipe<id, type, min_capacity, properties>;
+sycl::ext::altera::experimental::pipe<id, type, min_capacity, properties>;
 ```
 Detailed explanation for each parameters and a list of properties can be found in this dedicated [Streaming Data Interfaces](/Tutorials/Features/hls_flow_interfaces/streaming_data_interfaces) code sample.
 
 ### Example of Pipe Declaration
 ```cpp
 using PipeProps = decltype(sycl::ext::oneapi::experimental::properties(
-    sycl::ext::intel::experimental::ready_latency<0>));
+    sycl::ext::altera::experimental::ready_latency<0>));
 class ID_PipeA;
 using InputPipeA =
-    sycl::ext::intel::experimental::pipe<ID_PipeA, int, 0, PipeProps>;
+    sycl::ext::altera::experimental::pipe<ID_PipeA, int, 0, PipeProps>;
 ```
 
 ### Pipe API
