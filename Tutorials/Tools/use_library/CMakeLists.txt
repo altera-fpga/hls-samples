@@ -161,7 +161,7 @@ set(REPORT_LINK_FLAGS -Xshardware -Xstarget=${FPGA_DEVICE} ${USER_FPGA_FLAGS} -f
 set(SIMULATOR_COMPILE_FLAGS -Xssimulation -DFPGA_SIMULATOR)
 set(SIMULATOR_LINK_FLAGS -Xssimulation -Xsghdl -Xstarget=${FPGA_DEVICE} ${USER_FPGA_FLAGS} -reuse-exe=${CMAKE_BINARY_DIR}/${SIMULATOR_OUTPUT_NAME}${EXT})
 set(FPGA_COMPILE_FLAGS -DFPGA_HARDWARE)
-set(FPGA_LINK_FLAGS -Xshardware -Xstarget=${FPGA_DEVICE} ${USER_FPGA_FLAGS} -reuse-exe=${CMAKE_BINARY_DIR}/${FPGA_OUTPUT_NAME}${EXT} -fsycl-device-code-split=per_kernel)
+set(FPGA_LINK_FLAGS -Xshardware -Xstarget=${FPGA_DEVICE} ${USER_FPGA_FLAGS} -reuse-exe=${CMAKE_BINARY_DIR}/${FPGA_OUTPUT_NAME}${EXT})
 
 ###############################################################################
 ### Generate Library
