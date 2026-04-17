@@ -3,7 +3,7 @@
 
 #include <sycl/sycl.hpp>
 #include <sycl/ext/altera/fpga_extensions.hpp>
-#include <sycl/ext/intel/ac_types/ac_fixed.hpp>
+#include <sycl/ext/altera/ac_types/ac_fixed.hpp>
 #include <iostream>
 #include <fstream>
 #include <string>

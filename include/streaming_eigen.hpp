@@ -1,7 +1,7 @@
 #ifndef __STREAMING_EIGEN_HPP__
 #define __STREAMING_EIGEN_HPP__
 
-#include <sycl/ext/intel/ac_types/ac_int.hpp>
+#include <sycl/ext/altera/ac_types/ac_int.hpp>
 
 #include "constexpr_math.hpp"
 #include "tuple.hpp"

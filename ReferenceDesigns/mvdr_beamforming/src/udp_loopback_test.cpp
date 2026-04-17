@@ -9,7 +9,7 @@
 #include <sys/mman.h>
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/ac_types/ac_complex.hpp>
+#include <sycl/ext/altera/ac_types/ac_complex.hpp>
 #include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "tuple.hpp"

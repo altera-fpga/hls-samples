@@ -1,7 +1,7 @@
 #ifndef __PCA_HPP__
 #define __PCA_HPP__
 
-#include <sycl/ext/intel/ac_types/ac_int.hpp>
+#include <sycl/ext/altera/ac_types/ac_int.hpp>
 #include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 #include <vector>

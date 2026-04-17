@@ -3,7 +3,7 @@
 #include <chrono>
 #include <iomanip>
 #include <list>
-#include <sycl/ext/intel/ac_types/ac_complex.hpp>
+#include <sycl/ext/altera/ac_types/ac_complex.hpp>
 #include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "exception_handler.hpp"

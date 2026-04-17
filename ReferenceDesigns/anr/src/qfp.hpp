@@ -4,7 +4,7 @@
 #include <array>
 #include <limits>
 
-#include <sycl/ext/intel/ac_types/ac_int.hpp>
+#include <sycl/ext/altera/ac_types/ac_int.hpp>
 
 // Included from include/
 #include "constexpr_math.hpp"

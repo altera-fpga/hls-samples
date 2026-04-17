@@ -77,7 +77,7 @@ Here `W` is the width in bits and `S` is a bool indicating if the number is sign
 To use the `ac_int` type in your code, you must include the following header:
 
 ```cpp
-#include <sycl/ext/intel/ac_types/ac_int.hpp>
+#include <sycl/ext/altera/ac_types/ac_int.hpp>
 ```
 Additionally, you must pass the  `-qactypes` option to the `icpx` command on Linux or the `/Qactypes` option to the `icx-cl` command on Windows when compiling your SYCL program in order to ensure that the headers are correctly included. In this tutorial, this is done in `src/CMakeLists.txt`.
 

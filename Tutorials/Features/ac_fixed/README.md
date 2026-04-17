@@ -92,7 +92,7 @@ When creating an `ac_fixed` value, the created value may be less precise than th
 To use an `ac_fixed` type in your code, include the following header:
 
 ```cpp
-#include <sycl/ext/intel/ac_types/ac_fixed.hpp>
+#include <sycl/ext/altera/ac_types/ac_fixed.hpp>
 ```
 
 > **Important**: You must pass the  `-qactypes` option to the `icpx` command on Linux or the `/Qactypes` option to the `icx-cl` command on Windows when building your SYCL program in order to include `ac_types` header files on the include path and link against the AC type libraries. In this tutorial, the options are passed through the `src/CMakeLists.txt` file.
@@ -108,7 +108,7 @@ In contrast, the kernel `ConstructFromACFixed` in the function `TestConstructFro
 To use the `ac_fixed` math functions in your code, include the following header:
 
 ```cpp
-#include <sycl/ext/intel/ac_types/ac_fixed_math.hpp>
+#include <sycl/ext/altera/ac_types/ac_fixed_math.hpp>
 ```
 
 The functions `TestCalculateWithFloat` and `TestCalculateWithACFixed` in this tutorial design contain the kernels `CalculateWithFloat` and `CalculateWithACFixed` respectively. Both calculate the simple expression for some input `x`.

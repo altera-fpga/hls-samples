@@ -3,7 +3,7 @@
 
 #include <sycl/sycl.hpp>
 #include <chrono>
-#include <sycl/ext/intel/ac_types/ac_int.hpp>
+#include <sycl/ext/altera/ac_types/ac_int.hpp>
 #include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "../common/byte_stacker.hpp"
