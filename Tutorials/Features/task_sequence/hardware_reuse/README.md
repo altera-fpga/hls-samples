@@ -175,8 +175,6 @@ The 3 different example designs in this sample perform similar operations. You m
 > - `source <install-dir>/fpgavars.sh`
 > - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/fpgavars.sh ; exec csh'`
 
-Use these commands to run the design, depending on your OS.
-
 ### On Linux* Systems
 
 1. Change to the sample directory.
@@ -221,50 +219,6 @@ Use these commands to run the design, depending on your OS.
       make fpga
       ```
 
-### On Windows* Systems
-
-1. Change to the sample directory.
-2. Configure the build system for the Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" .. -DTYPE=<NAIVE/LOOP/TASK_SEQUENCE>
-   ```
-   >Use the appropriate `TYPE` parameter when running CMake to choose which design to compile:
-   >| Example                                      | Directory             | Type (-DTYPE=) |
-   >|----------------------------------------------|-----------------------|----------------|
-   >| Naive                                        | naive/                | `NAIVE`        |
-   >| Loop                                         | loop/                 | `LOOP`         |
-   >| Task sequence                                | task-sequence/        | `TASK_SEQUENCE`|
-   
-   > **Note**: You can override the default target by using the command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number> -DTYPE=<NAIVE/LOOP/TASK_SEQUENCE>
-   >  ```
-
-3. Compile the design. (The provided targets match the recommended development flow.)
-
-   1. Compile for emulation (fast compile time, targets emulated FPGA device).
-      ```
-      nmake fpga_emu
-      ```
-      >**Note**: Since this design uses host pipes, make sure that the emulator pipe depth behaviour is as intended. Set the environment variable `CL_CONFIG_CHANNEL_DEPTH_EMULATION_MODE` to `ignore-depth` for this design so that multiple writes can happen to the pipe without first having the contents read.
-      
-   2. Generate the optimization report. 
-      ```
-      nmake report
-      ```
-   3. Compile for simulation (fast compile time, targets simulator FPGA device).
-      ```
-      nmake fpga_sim
-      ```
-   4. Compile with Quartus place and route (To get accurate area estimate, longer compile time).
-      ```
-      nmake fpga
-      ```
-
-> **Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your ‘build’ directory in a shorter path, for example `C:\samples\build`.  You can then run cmake from that directory, and provide cmake with the full path to your sample directory.
-
 ### Read the Reports
 Locate `report.html` in the `naive.report.prj/reports/`, `naive_loop.report.prj/reports/` and `task_sequences.report.prj/reports/` directory.
 
@@ -308,22 +262,6 @@ System Viewer: Kernel system > 3ull>) > 3ull>).B1 > Cluster 3*
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./hw_reuse_naive.fpga_sim
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./hw_reuse_loop.fpga_sim
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./hw_reuse_tseq.fpga_sim 
-   ```
-
-### On Windows
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
-   ```
-   hw_reuse_naive.fpga_emu.exe
-   hw_reuse_loop.fpga_emu.exe
-   hw_reuse_tseq.fpga_emu.exe 
-   ```
-2. Run the sample on the FPGA simulator device.
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   hw_reuse_naive.fpga_sim.exe
-   hw_reuse_loop.fpga_sim.exe
-   hw_reuse_tseq.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
    ```
 
 ## Example Output

@@ -257,48 +257,6 @@ The 2 different example designs in this sample perform similar operations. You m
       make fpga
       ```
 
-### On Windows*
-
-1. Change to the sample directory.
-2. Configure the build system for the Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" .. -DTYPE=<NAIVE|TASK_SEQUENCE>
-   ```
-   >Use the appropriate `TYPE` parameter when running CMake to choose which design to compile:
-   >| Example                                      | Directory             | Type (-DTYPE=) |
-   >|----------------------------------------------|-----------------------|----------------|
-   >| Naive                                        | naive/                | `NAIVE`        |
-   >| Task sequence                                | task-sequence/        | `TASK_SEQUENCE`|
-   
-   > **Note**: You can override the default target by using the command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number> -DTYPE=<NAIVE|TASK_SEQUENCE>
-   >  ```
-
-3. Compile the design. (The provided targets match the recommended development flow.)
-
-   1. Compile for emulation (fast compile time, targets emulated FPGA device).
-      ```
-      nmake fpga_emu
-      ```
-      >**Note**: Since this design uses host pipes, make sure that the emulator pipe depth behaviour is as intended. Set the environment variable `CL_CONFIG_CHANNEL_DEPTH_EMULATION_MODE` to `ignore-depth` for this design so that multiple writes can happen to the pipe without first having the contents read.
-      
-   2. Generate the optimization report. 
-      ```
-      nmake report
-      ```
-   3. Compile for simulation (fast compile time, targets simulator FPGA device).
-      ```
-      nmake fpga_sim
-      ```
-   4. Compile with Quartus place and route (To get accurate area estimate, longer compile time).
-      ```
-      nmake fpga
-      ```
-
-> **Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your ‘build’ directory in a shorter path, for example `C:\samples\build`.  You can then run cmake from that directory, and provide cmake with the full path to your sample directory.
 ### Read the Reports
 
 Locate `report.html` in the `naive.report.prj/reports/` and `task_sequences.report.prj/reports/` directory.
@@ -320,21 +278,6 @@ Navigate to **Loop Analysis** (Throughput Analysis > Loop Analysis). In this vie
    ```
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./naive.fpga_sim
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./task_sequences.fpga_sim 
-   ```
-
-### On Windows
-
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
-   ```
-   naive.fpga_emu.exe
-   task_sequences.fpga_emu.exe 
-   ```
-2. Run the sample on the FPGA simulator.
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   naive.fpga_sim.exe
-   task_sequences.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
    ```
 
 ## Example Output

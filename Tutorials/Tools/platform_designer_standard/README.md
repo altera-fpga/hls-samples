@@ -6,7 +6,7 @@ This example design shows how to use an FPGA IP produced with the HLS IP Gen Com
 |:---                               |:---
 | OS                                | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
 | Hardware                          | This process applies to the Cyclone® V line of FPGAs, but the sample Quartus® Prime Standard Edition project targets the [Terasic DE1-SOC Development Board](https://de1-soc.terasic.com/)
-| Software                          | HLS IP Gen Compiler
+| Software                          | HLS IP Gen Compiler <br> Quartus® Prime Standard Edition Version 25.1 or later
 | What you will learn               | How to integrate an RTL IP generated from a SYCL kernel with an Quartus® Prime Standard Edition
 | Time to complete                  | 1 hour
 
@@ -101,16 +101,6 @@ Follow these steps to compile and test the design:
    $> cd ..
    ```
 
-   Windows:
-
-   ```bash
-   > mkdir build
-   > cd build
-   > cmake -G "NMake Makefiles" ../add_oneapi
-   > nmake report
-   > cd ..
-   ```
-
 2. **From the same terminal**, prepare a project directory called `add_quartus` for the Quartus® Prime project and copy the source files `add.sv` and `jtag.sdc` from the `starting_files` directory into it. Then launch the Quartus® Prime Standard Edition GUI, and create a new Quartus® Prime project using the 'New Project' wizard.
 
    > **Note**: You may confirm your Quartus® Prime project settings by comparing with the sample Quartus® Prime project included in the `add_quartus_sln` directory.
@@ -122,15 +112,6 @@ Follow these steps to compile and test the design:
    $> cp -r starting_files/* add_quartus/
    $> cd add_quartus
    $> quartus
-   ```
-
-   Windows:
-   
-   ```bash
-   > mkdir add_quartus
-   > ROBOCOPY starting_files/ add_quartus/ /S /NFL /NDL
-   > cd add_quartus
-   > quartus.exe
    ```
 
    1. Set the project directory to be the `add_quartus` directory.
@@ -158,13 +139,6 @@ Follow these steps to compile and test the design:
    ```bash
    $> cd .. # navigate to build root if not there already
    $> cp -r build/add.report.prj/ add_quartus/
-   ```
-
-   Windows:
-
-   ```bash
-   > cd .. # navigate to build root if not there already
-   > ROBOCOPY build\add.report.prj\ add_quartus\add.report.prj\ /S /NFL /NDL
    ```
 
 4. Create the Platform Designer system.
@@ -232,12 +206,6 @@ Follow these steps to compile and test the design:
    $> cp add_quartus/output_files/add.sof system_console
    ```
 
-   Windows:
-
-   ```bash
-   > xcopy add_quartus\output_files\add.sof system_console /Y
-   ```
-
 You may also build the SOF using the pre-generated Quartus® Prime project in the `add_quartus_sln` directory by executing the included `build_system.tcl` script. This script has been verified against the latest version of Quartus® Prime Standard Edition software available at the time of writing (23.1). The script and pre-generated project may not work with other versions of Quartus® Prime.
 
    Linux:
@@ -246,14 +214,6 @@ You may also build the SOF using the pre-generated Quartus® Prime project in th
    mkdir build_pd_system
    cd build_pd_system
    quartus_sh -t ../build_system.tcl
-   ```
-
-   Windows:
-
-   ```bash
-   mkdir build_pd_system
-   cd build_pd_system
-   quartus_sh -t ..\build_system.tcl
    ```
 
 ### Additional Documentation

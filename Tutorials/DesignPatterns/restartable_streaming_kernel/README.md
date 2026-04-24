@@ -117,8 +117,6 @@ Any data written to the `OutputPipe` between the host code writing a `true` to `
 > - `source <install-dir>/fpgavars.sh`
 > - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/fpgavars.sh ; exec csh'`
 
-Use these commands to run the design, depending on your OS.
-
 ### On a Linux\* System
 
 This design uses CMake to generate a build script for GNU/make.
@@ -133,7 +131,7 @@ This design uses CMake to generate a build script for GNU/make.
    cmake ..
    ```
 
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    >
    > ```
    > cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
@@ -158,67 +156,6 @@ This design uses CMake to generate a build script for GNU/make.
       make fpga
       ```
 
-### On a Windows\* System
-
-This design uses CMake to generate a build script for `nmake`.
-
-1. Change to the sample directory.
-
-2. Configure the build system for the Agilex® 7 device family, which is the default.
-
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" ..
-   ```
-
-   You can create a debuggable binary by setting `CMAKE_BUILD_TYPE` to `Debug`:
-
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" .. -DCMAKE_BUILD_TYPE=Debug
-   ```
-
-   If you want to use the `report`, `fpga_sim`, or `fpga` flows, you should switch the `CMAKE_BUILD_TYPE` back to `Release``:
-
-   ```
-   cmake -G "NMake Makefiles" .. -DCMAKE_BUILD_TYPE=Release
-   ```
-
-   > **Note**: You can change the default target by using the command:
-   >
-   > ```
-   > cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
-   > ```
-
-
-
-3. Compile the design. (The provided targets match the recommended development flow.)
-
-   1. Compile for emulation (fast compile time, targets emulated FPGA device).
-      ```
-      nmake fpga_emu
-      ```
-   2. Generate the optimization report. 
-      ```
-      nmake report
-      ```
-   3. Compile for simulation (fast compile time, targets simulator FPGA device).
-      ```
-      nmake fpga_sim
-      ```
-   4. Compile with Quartus place and route (To get accurate area estimate, longer compile time).
-      ```
-      nmake fpga
-      ```
-
-   > **Note**: If you encounter any issues with long paths when compiling under Windows\*, you may have to create your 'build' directory in a shorter path, for example `C:\samples\build`. You can then run cmake from that directory, and provide cmake with the full path to your sample directory, for example:
-   >
-   > ```
-   > C:\samples\build> cmake -G "NMake Makefiles" C:\long\path\to\code\sample\CMakeLists.txt
-   > ```
-
 ## Run the `restartable_streaming_kernel` Executable
 
 ### On Linux
@@ -230,19 +167,6 @@ This design uses CMake to generate a build script for `nmake`.
 2. Run the sample on the FPGA simulator device.
    ```
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./restartable.fpga_sim
-   ```
-
-### On Windows
-
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
-   ```
-   restartable.fpga_emu.exe
-   ```
-2. Run the sample on the FPGA simulator device.
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   restartable.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
    ```
 
 ## Example Output

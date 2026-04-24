@@ -111,8 +111,6 @@ Now all the global memory accesses are assigned to a specific buffer location, i
 > - `source <install-dir>/fpgavars.sh`
 > - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/fpgavars.sh ; exec csh'`
 
-Use these commands to run the design, depending on your OS.
-
 ### On a Linux* System
 This design uses CMake to generate a build script for GNU/make.
 
@@ -134,28 +132,6 @@ This design uses CMake to generate a build script for GNU/make.
 	| Optimization Report | `make report`
 	| FPGA Simulator      | `make fpga_sim`
 	| FPGA Hardware       | `make fpga`
-
-### On a Windows* System
-This design uses CMake to generate a build script for  `nmake`.
-
-1. Change to the sample directory.
-
-2. Configure the build system for the Agilex® 7 device family, which is the default.
-
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" ..
-   ```
-   
-3. Compile the design with the generated `Makefile`. The following build targets are provided, matching the recommended development flow:
-
-	| Compilation Type    | Command (Windows)
-	|:---                 |:---
-	| FPGA Emulator       | `nmake fpga_emu`
-	| Optimization Report | `nmake report`
-	| FPGA Simulator      | `nmake fpga_sim`
-	| FPGA Hardware       | `nmake fpga`
 
 
 ### Read the Reports
@@ -181,18 +157,6 @@ By clicking on the *DotProductIP* kernel, you can verify that using the unannota
    ```
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./annotated_ptr.fpga_sim
    ```
-### On Windows
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
-   ```
-   annotated_ptr.fpga_emu.exe
-   ```
-2. Run the sample on the FPGA simulator device.
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   annotated_ptr.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
-   ```
-
 ## Example Output
 
 ```

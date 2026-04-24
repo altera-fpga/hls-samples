@@ -1,11 +1,11 @@
 
 # `Fast Recompile` Sample
 
-This sample is an FPGA tutorial that demonstrates how to separate program compilation host code and device code to save development time. You should read the `fpga_compile` sample information and review the sample code before this one.
+This sample is an FPGA tutorial that demonstrates how to save compile time when you modify only your test-bench code.  You should read the `fpga_compile` sample information and review the sample code before this one.
 
 | Area                 | Description
 |:---                  |:---
-| What you will learn  | Why to separate host and device code compilation in your FPGA project. <br> How to use the `-reuse-exe` and device link methods. <br> Which method to choose for your project.
+| What you will learn  | <br> How to use the `-reuse-exe` method to save time when compiling for FPGA simulation.
 | Time to complete     | 15 minutes
 | Category             | Getting Started
 
@@ -15,14 +15,9 @@ HLS IP Gen Compiler only supports ahead-of-time (AoT) compilation for FPGA, whic
 
 When targeting an FPGA family/part, no FPGA executable is generated. So this sample is really meant to be used when targeting a device with a BSP where an FPGA executable would be produced.
 
->**Note**: Throughout the sample, the compiler is referred to by the Linux* invocation: `icpx`. On Windows*, use `icx-cl` instead.
+>**Note**: Throughout the sample, the compiler is referred to by the Linux* invocation: `icpx`.
 
-The compiler provides two different mechanisms to separate device code and host code compilation.
-
-- Passing the `-reuse-exe=<exe_name>` flag to `icpx` instructs the compiler to attempt to reuse the existing FPGA device image.
-- The more explicit "device link" method requires you to separate the host and device code into separate files. When a code change only applies to host-only files, an FPGA device image is not regenerated.
-
-This tutorial explains both mechanisms and the pros and cons of each. The included code sample demonstrates the device link method but does **not** demonstrate the use of the `-reuse-exe` flag.
+Passing the `-reuse-exe=<exe_name>` flag to `icpx` instructs the compiler to attempt to reuse the existing FPGA device image.
 
 ## Prerequisites
 
@@ -64,15 +59,8 @@ flowchart LR
 Find more information about how to navigate this part of the code samples in the [FPGA top-level README.md](/README.md).
 You can also find more information about [troubleshooting build errors](/README.md#troubleshooting), [links to selected documentation](/README.md#documentation), and more.
 
-## Key Implementation Details
 
-The sample illustrates the following important concepts.
-
-- Why to separate host and device code compilation in your FPGA project
-- How to use the `-reuse-exe` and device link methods
-- Which method to choose for your project
-
-### Using the `-reuse-exe` Flag
+## Using the `-reuse-exe` Flag
 
 If the device code and options affecting the device have not changed since the previous compilation, passing the `-reuse-exe=<exe_name>` flag to `icpx` instructs the compiler to extract the compiled FPGA binary from the existing executable and package it into the new executable, saving the device compilation time.
 
@@ -80,78 +68,21 @@ Some examples are shown below.
 
 ```
 # Initial compilation
-icpx -fintelfpga <files.cpp> -o out.fpga -Xshardware
+icpx -fintelfpga <files.cpp> -o out.fpga_sim -Xssimulation -DFPGA_SIMULATOR
 ```
 
-The initial compilation generates an FPGA device image, which takes several hours. Next, make changes to the host code.
+The initial compilation generates an FPGA device image. Next, make changes to the host code.
 
 ```
 # Subsequent recompilation
-icpx -fintelfpga <files.cpp> -o out.fpga -reuse-exe=out.fpga -Xshardware
+icpx -fintelfpga <files.cpp> -o out.fpga_sim -reuse-exe=out.fpga_sim -Xssimulation -DFPGA_SIMULATOR
 ```
 
-If `out.fpga` does not exist, `-reuse-exe` is ignored and the FPGA device image is regenerated. This will always be the case the first time a project is compiled.
+If `out.fpga_sim` does not exist, `-reuse-exe` is ignored and the FPGA device image is regenerated. This will always be the case the first time a project is compiled.
 
-If `out.fpga` is found, the compiler checks whether any changes affecting the FPGA device code have been made since the last compilation. If no such changes are detected, the compiler reuses the existing FPGA binary, and only the host code is recompiled. The recompilation process takes a few minutes. Note that the device code is partially re-compiled (similar to a report flow compile) to check that the FPGA binary can safely be reused.
+If `out.fpga_sim` is found, the compiler checks whether any changes affecting the FPGA device code have been made since the last compilation. If no such changes are detected, the compiler reuses the existing FPGA binary, and only the host code is recompiled. The recompilation process takes a few minutes. Note that the device code is partially re-compiled (similar to a report flow compile) to check that the FPGA binary can safely be reused.
 
-If `out.fpga` is found but the compiler cannot prove that the FPGA device code will yield a result identical to the last compilation, a warning is printed and the FPGA device code is fully recompiled. Since the compiler checks must be conservative, spurious recompilations can sometimes occur when using `-reuse-exe`.
-
-### Using the Device Link Method
-
-The program accompanying this tutorial is separated into two files, `host.cpp` and `kernel.cpp`. Only the `kernel. cpp` file contains device code.
-
-In the normal compilation process, FPGA device image generation happens at link time. As a result, any change to either `host.cpp` or `kernel.cpp` will trigger an FPGA device image's regeneration.
-
-```
-# normal compile command
-icpx -fintelfpga host.cpp kernel.cpp -Xshardware -o link.fpga
-```
-
-The following image shows the compilation process.
-
-![](assets/normal_compile.png)
-
-If you want to iterate on the host code and avoid long compile time for your FPGA device, consider using a device link to separate device and host compilation:
-
-```
-# device link command
-icpx -fintelfpga -fsycl-link=image <input files> [options]
-```
-
-The compilation is a 3-step process:
-
-1. Compile the device code.
-   ```
-   icpx -fintelfpga -fsycl-link=image kernel.cpp -o dev_image.a -Xshardware
-   ```
-   Input files should include all source files that contain device code. This step may take several hours.
-
-2. Compile the host code.
-   ```
-   icpx -fintelfpga host.cpp -c -o host.o
-   ```
-   Input files should include all source files that only contain host code. This takes seconds.
-
-3. Create the device link.
-   ```
-   icpx -fintelfpga host.o dev_image.a -o fast_recompile.fpga
-   ```
-   The input should have N (N >= 0) host object files *(.o)* and one device image file *(.a)*. This takes seconds.
-
-**NOTE:** You only need to perform steps 2 and 3 when modifying host-only files.
-
-The following image shows the device link compilation process.
-
-![](assets/device_link.png)
-
-### Determining Which Method to Use
-
-Of the two methods described, `-reuse-exe` is easier to use. It also allows you to keep your host and device code as single source, which is preferred for small programs.
-
-For larger and more complex projects, the device link method has the advantage of giving you complete control over the compiler's behavior.
-
-- When using `-reuse-exe`, the compiler recompiles the code partially and then analyzes the device code to ensure that it is unchanged. This takes several minutes for larger designs. Compiling separate files does not require the extra time.
-- When using `-reuse-exe`, you may occasionally encounter a "false positive" where the compiler wrongly believes that it must recompile your device code. In a single source file, the device and host code are coupled, so some changes to the host code **can** change the compiler approach to the device code. The compiler will always behave conservatively and trigger a full recompilation if it cannot prove that reusing the previous FPGA binary is safe. Compiling separate files eliminates this possibility.
+If `out.fpga_sim` is found but the compiler cannot prove that the FPGA device code will yield a result identical to the last compilation, a warning is printed and the FPGA device code is fully recompiled. Since the compiler checks must be conservative, spurious recompilations can sometimes occur when using `-reuse-exe`.
 
 ## Build the `Fast Recompile` Tutorial
 
@@ -171,121 +102,24 @@ For larger and more complex projects, the device link method has the advantage o
    cd build
    cmake ..
    ```
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    >  ```
    >  cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
    >  ```
-   >
-   > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-   >  ```
-   >  cmake .. -DFPGA_DEVICE=<board-support-package>:<board-variant>
-   >  ```
-  > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-  > ```
-  > $> aoc -list-boards
-  > Board list:
-  >   <board-variant>
-  >      Board Package: <path/to/board/package>/board-support-package
-  >   <board-variant2>
-  >      Board Package: <path/to/board/package>/board-support-package
-  > ```
-   >
-   > You will only be able to run an executable on the FPGA if you specified a BSP.
 
-3. Compile the design. (The provided targets match the recommended development flow.)
-
-   1. Compile and run for emulation (fast compile time, targets emulates an FPGA device).
-      ```
-      make fpga_emu
-      ```
-   2. Compile for simulation (fast compile time, targets simulated FPGA device).
+3. Compile for simulation.
       ```
       make fpga_sim
       ```
-   3. Compile and run on FPGA hardware (longer compile time, targets an FPGA device).
-      ```
-      make fpga
-      ```
 
-### On Windows*
-
-1. Change to the sample directory.
-2. Build the program for the Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" ..
-   ```
-   > **Note**: You can change the default target by using the command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
-   >  ```
-   >
-   > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<board-support-package>:<board-variant>
-   >  ```
-  > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-  > ```
-  > $> aoc -list-boards
-  > Board list:
-  >   <board-variant>
-  >      Board Package: <path/to/board/package>/board-support-package
-  >   <board-variant2>
-  >      Board Package: <path/to/board/package>/board-support-package
-  > ```
-   >
-   > You will only be able to run an executable on the FPGA if you specified a BSP.
-
-3. Compile the design. (The provided targets match the recommended development flow.)
-
-   1. Compile for emulation (fast compile time, targets emulated FPGA device).
-      ```
-      nmake fpga_emu
-      ```
-   2. Compile for simulation (fast compile time, targets simulated FPGA device, reduced problem size).
-      ```
-      nmake fpga_sim
-      ```
-   3. Compile for FPGA hardware (longer compile time, targets FPGA device):
-      ```
-      nmake fpga
-      ```
-> **Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your 'build' directory in a shorter path, for example c:\samples\build.  You can then run cmake from that directory, and provide cmake with the full path to your sample directory, for example:
->
->  ```
-  > C:\samples\build> cmake -G "NMake Makefiles" C:\long\path\to\code\sample\CMakeLists.txt
->  ```
 ## Run the `Fast Recompile` Sample
 
 ### On Linux
 
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU):
-   ```
-   ./fast_recompile.fpga_emu
-   ```
-2. Run the sample on the FPGA simulator device:
+1. Run the sample on the FPGA simulator device:
    ```
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./fast_recompile.fpga_sim
    ```
-3. Run the sample on the FPGA device (only if you ran `cmake` with `-DFPGA_DEVICE=<board-support-package>:<board-variant>`):
-   ```
-   ./fast_recompile.fpga
-   ```
-
-### On Windows
-
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU):
-   ```
-   fast_recompile.fpga_emu.exe
-   ```
-2. Run the sample on the FPGA simulator device:
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   fast_recompile.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
-   ```
-> **Note**: Hardware runs are not supported on Windows.
 
 ## Example Output
 
@@ -293,7 +127,7 @@ For larger and more complex projects, the device link method has the advantage o
 PASSED: results are correct
 ```
 
-Try modifying `host.cpp` to produce a different output message. Then, perform a host-only recompile via the device link method to see how quickly the design is recompiled.
+Try modifying `host.cpp` to produce a different output message. Then, run `make fpga_sim` again to see how quickly the design is recompiled.
 
 ## License
 

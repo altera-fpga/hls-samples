@@ -123,26 +123,10 @@ size of the cache is `512*4 bytes = 2048 bytes`, and so, the flag
    where `X` is:
    - `CACHE_ENABLED`
    - `CACHE_DISABLED`
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    >  ```
    >  cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
    >  ```
-   >
-   > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-   >  ```
-   >  cmake .. -DFPGA_DEVICE=<board-support-package>:<board-variant>
-   >  ```
-  > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-  > ```
-  > $> aoc -list-boards
-  > Board list:
-  >   <board-variant>
-  >      Board Package: <path/to/board/package>/board-support-package
-  >   <board-variant2>
-  >      Board Package: <path/to/board/package>/board-support-package
-  > ```
-   >
-   > You will only be able to run an executable on the FPGA if you specified a BSP.
 
 3. Compile the design. (The provided targets match the recommended development flow.)
 
@@ -163,62 +147,6 @@ size of the cache is `512*4 bytes = 2048 bytes`, and so, the flag
       make fpga
       ```
 
-### On Windows*
-
-1. Change to the sample directory.
-2. Build the program for the Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" .. -DPART=<X>
-   ```
-   where `X` is:
-   - `CACHE_ENABLED`
-   - `CACHE_DISABLED`
-   > **Note**: You can change the default target by using the command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
-   >  ```
-   >
-   > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<board-support-package>:<board-variant>
-   >  ```
-  > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-  > ```
-  > $> aoc -list-boards
-  > Board list:
-  >   <board-variant>
-  >      Board Package: <path/to/board/package>/board-support-package
-  >   <board-variant2>
-  >      Board Package: <path/to/board/package>/board-support-package
-  > ```
-   >
-   > You will only be able to run an executable on the FPGA if you specified a BSP.
-
-3. Compile the design. (The provided targets match the recommended development flow.)
-
-   1. Compile for emulation (fast compile time, targets emulated FPGA device).
-      ```
-      nmake fpga_emu
-      ```
-   2. Generate the optimization report. (See [Read the Reports](#read-the-reports) below for information on finding and understanding the reports.)
-      ```
-      nmake report
-      ```
-   3. Compile for simulation (fast compile time, targets simulated FPGA device, reduced problem size).
-      ```
-      nmake fpga_sim
-      ```
-   4. Compile for FPGA hardware (longer compile time, targets FPGA device):
-      ```
-      nmake fpga
-      ```
-> **Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your 'build' directory in a shorter path, for example c:\samples\build.  You can then run cmake from that directory, and provide cmake with the full path to your sample directory, for example:
->
->  ```
-  > C:\samples\build> cmake -G "NMake Makefiles" C:\long\path\to\code\sample\CMakeLists.txt
->  ```
 ## Read the Reports
 
 Locate the `report.html` files of each build (with and without the cache enabled).
@@ -244,29 +172,6 @@ cache has been created.
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./read_only_cache.fpga_sim
    ```
    > **Note**: Although the circuit for the read-only cache is implemented in simulation, one cannot see consistent performance increases with the cache enabled, as each clock cycle in the simulator does not have a consistent latency as it does in the hardware. For this reason here is just a single executable for this flow.
-
-3. Run the sample on the FPGA device (only if you ran `cmake` with `-DFPGA_DEVICE=<board-support-package>:<board-variant>`).
-   ```
-   ./read_only_cache.fpga
-   ```
-
-### On Windows
-
- 1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
-    ```
-    read_only_cache.fpga_emu.exe
-    ```
-    > **Note**: The read-only cache is not implemented in emulation. The `-Xsread-only-cache-size<N>` flag does not impact the emulator in any way, which is why we only have a single executable for this flow.
-
-2. Run the sample on the FPGA simulation device (two executables should be generated).
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   read_only_cache.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
-   ```
-   > **Note**: Although the circuit for the read-only cache is implemented in simulation, one cannot see consistent performance increases with the cache enabled, as each clock cycle in the simulator does not have a consistent latency as it does in the hardware. For this reason here is just a single executable for this flow.
-
-> **Note**: Hardware runs are not supported on Windows.
 
 ## Example Output
 

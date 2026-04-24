@@ -165,7 +165,7 @@ $> quartus_sh -t build_and_sim_testsystem.tcl
    cmake ..
    ```
 
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    >  ```
    >  cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
    >  ```
@@ -180,48 +180,6 @@ $> quartus_sh -t build_and_sim_testsystem.tcl
 
    Continue to Step 5 below.
 
-### On Windows*
-
-1. Enable the Nios V build tools:
-
-```bash
-$> <QUARTUS_INSTALL_DIR>\niosv\bin\niosv-shell.exe
-```
-
-You can manually follow the steps below, or run the `build_and_sim_testsystem.tcl` script:
-
-```bash
-> quartus_sh.exe -t build_and_sim_testsystem.tcl
-```
-
-2. Change to the sample directory (`kernels/simple_dma`)
-
-3. Configure the build system for the Arria® 10 device family, which is the default.
-
-   ```
-   mkdir build
-   cd build
-   cmake .. -G "NMake Makefiles"
-   ```
-
-   > **Note**: You can change the default target by using the command:
-   >  ```
-   >  cmake .. -G "NMake Makefiles" -DFPGA_DEVICE=<FPGA device family or FPGA part number>
-   >  ```
-
-4. Compile the DMA IP. Generate an IP component and optimization report:
-
-      ```
-      nmake report
-      ```
-
-   You can emulate and simulate this design as well, but that is not necessary for this procedure. 
-   
-   Continue to Step 5 below.
-
-### On both Linux* and Windows*
-
-5. Add the DMA IP to the Platform Designer system. The included `components.ipx` file shows Platform Designer where to look for FPGA IPs produced with the HLS IP Gen Compiler. See the [Platform Designer tutorial](/Tutorials/Tools/platform_designer) for detailed instructions on how to add an FPGA IP to a Platform Designer system. Here are some specific directions for this example:
     1. Change the HDL entity name to `simple_dma_accelerator` to match names used in the Nios V software.
     2. Connect the interrupt port to the Nios V interrupt receiver and assign its IRQ number to 1 (or any number besides 0 which is used by the UART)
     3. Connect the Nios V data host port to the IP component's `csr_ring_root_avs` port. Ensure the base address is assigned between `0x0010_0000` and `0x001F_FFFF`.
@@ -252,8 +210,6 @@ You can manually follow the steps below, or run the `build_and_sim_testsystem.tc
 
 ## Run the `Nios V` Executable
 
-### On both Linux* and Windows*
-
 1. Navigate to the `/simulation_files` directory
 
 2. Run the simulation script (this happens automatically if you use `build_and_sim_testsystem.tcl`):
@@ -280,14 +236,6 @@ You can manually follow the steps below, or run the `build_and_sim_testsystem.tc
     vsim -view simulation_files/vsim.wlf -do simulation_files/wave.do
     ```
 
-
->**Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to copy this code sample (that is, the contents of the `niosv` direcotry) to a directory with a shorter path, for example `C:\niosv`. You can then run the `build_and_sim_testsystem.tcl` script from that directory, for example:
->
-> ```
-> :: Shared 'include' directory contains "exception_handler.hpp".
-> SET "INCLUDE=C:\long\path\to\code\sample\..\..\include;%INCLUDE%"
-> C:\niosv> quartus_sh.exe -t build_and_sim_testsystem.tcl
-> ```
 ## License
 
 Code samples are licensed under the MIT license. See [License.txt](/License.txt) for details.

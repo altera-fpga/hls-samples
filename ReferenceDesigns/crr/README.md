@@ -155,28 +155,10 @@ This design measures the FPGA performance to determine how many assets can be pr
    cmake ..
    ```
 
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    >  ```
    >  cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
    >  ```
-   >
-   > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-   >  ```
-   >  cmake .. -DFPGA_DEVICE=<board-support-package>:<board-variant>
-   >  ```
-   > The build system will try to infer the FPGA family from the BSP name.
-   > If it can't, an extra option needs to be passed to `cmake`: `-DDEVICE_FLAG=[A10|S10|Agilex7]` 
-   > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-   > ```
-   > $> aoc -list-boards
-   > Board list:
-   >   <board-variant>
-   >      Board Package: <path/to/board/package>/board-support-package
-   >   <board-variant2>
-   >      Board Package: <path/to/board/package>/board-support-package
-   > ```
-   >
-   > You will only be able to run an executable on the FPGA if you specified a BSP.
 
 3. Compile the design. (The provided targets match the recommended development flow.)
 
@@ -195,60 +177,6 @@ This design measures the FPGA performance to determine how many assets can be pr
        make fpga
        ```
 
-### On Windows*
-
-1. Change to the sample directory.
-2. Configure the build system for the Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" ..
-   ```
-
-   > **Note**: You can change the default target by using the command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
-   >  ```
-   >
-   > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<board-support-package>:<board-variant>
-   >  ```
-   > The build system will try to infer the FPGA family from the BSP name.
-   > If it can't, an extra option needs to be passed to `cmake`: `-DDEVICE_FLAG=[A10|S10|Agilex7]` 
-   > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-   > ```
-   > $> aoc -list-boards
-   > Board list:
-   >   <board-variant>
-   >      Board Package: <path/to/board/package>/board-support-package
-   >   <board-variant2>
-   >      Board Package: <path/to/board/package>/board-support-package
-   > ```
-   >
-   > You will only be able to run an executable on the FPGA if you specified a BSP.
-
-3. Compile the design. (The provided targets match the recommended development flow.)
-
-   1. Compile for emulation (fast compile time, targets emulated FPGA device).
-      ```
-      nmake fpga_emu
-      ```
-   2. Generate the HTML performance report.
-      ```
-      nmake report
-      ```
-      The report resides at `<project name>.a.prj/reports/report.html`.
-
-   3. Compile for FPGA hardware (longer compile time, targets FPGA device).
-      ```
-      nmake fpga
-      ```
-> **Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your 'build' directory in a shorter path, for example `c:\samples\build`. You can then run cmake from that directory, and provide cmake with the full path to your sample directory, for example:
->
->  ```
-  > C:\samples\build> cmake -G "NMake Makefiles" C:\long\path\to\code\sample\CMakeLists.txt
->  ```
 ## Run the `CRR Binomial Tree` Program
 
 ### On Linux
@@ -264,29 +192,6 @@ This design measures the FPGA performance to determine how many assets can be pr
    ```
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./crr.fpga_sim <input_file> [-o=<output_file>]
    ```
-3. Run the sample on the FPGA device (only if you ran `cmake` with `-DFPGA_DEVICE=<board-support-package>:<board-variant>`).
-   ```
-   ./crr.fpga <input_file> [-o=<output_file>]
-   ```
-
-### On Windows
-
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
-   ```
-   crr.fpga_emu.exe <input_file> [-o=<output_file>]
-   ```
-   where:
-   - `<input_file>` is an **optional** argument to specify the input data file name. The default input file is `/data/ordered_inputs.csv`.
-   - `-o=<output_file>`  is an **optional** argument to  specify the name of the output file. The default name of the output file is `ordered_outputs.csv`.
-2. Run the sample on the FPGA simulator.
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   crr.fpga_sim.exe <input_file> [-o=<output_file>]
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
-   ```
-
-> **Note**: Hardware runs are not supported on Windows.
-
 ## Example Output
 
 ```

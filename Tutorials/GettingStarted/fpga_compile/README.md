@@ -64,11 +64,9 @@ Compared to CPU or GPU, generating a device image for FPGA hardware is a computa
 
 Long compile times are detrimental to developer productivity. The HLS IP Gen Compiler provides several mechanisms that enable developers targeting FPGAs to iterate quickly on their designs. By circumventing the time-consuming process of full FPGA compilation wherever possible, developers can enjoy the fast compile times familiar to CPU and GPU developers.
 
-### Multiarchitecture Binary versus IP Component
+### Generating and Testing an IP Component
 
-In the FPGA multiarchitecture binary generation flow, you can generate an executable host application and accelerator for a PCIe FPGA board if you have a compatible board support package (BSP).
-
-In the FPGA IP component generation flow, you can generate an IP component that you can import into an Quartus® Prime project. You can generate an IP by targeting your compilation to a supported FPGA device family or part number (for example, `Agilex 7` or `AGFA014R24B1E1V`) instead of a named board.
+In the FPGA IP component generation flow, you can generate an IP component that you can import into an Quartus® Prime project. You can generate an IP by targeting your compilation to a supported FPGA device family or part number (for example, `Agilex 7` or `AGFA014R24B1E1V`).
 
 The FPGA IP component generation flow does not generate any FPGA accelerated executable, only RTL (Register Transfer Level) IP component files. The host application is treated only as a test bench that exercises and validates your IP component in emulation and simulation.
 
@@ -79,9 +77,9 @@ The four types of FPGA compilation are summarized in the table below.
 | Target              | Expected Time  | Output              | Description
 |:---                 |:---            |:---                 |:---
 | Emulator            | Seconds        | x86-64 binary       | Compiles the FPGA device code to the CPU. Use the Intel® FPGA Emulation Platform for OpenCL™ software to verify your SYCL code’s functional correctness.
-| Optimization Report | Minutes        | RTL + FPGA reports  | Compiles the FPGA device code to RTL and generates an optimization report that describes the structures generated on the FPGA, identifies performance bottlenecks, and estimates resource utilization. This report will include the interfaces defined in your selected Board Support Package.
+| Optimization Report | Minutes        | RTL + FPGA reports  | Compiles the FPGA device code to RTL and generates an optimization report that describes the structures generated on the FPGA, identifies performance bottlenecks, and estimates resource utilization.
 | Simulator          | Minutes         | RTL + FPGA reports + x86-64 binary    | Compiles the FPGA device code to RTL and generates a simulation test bench. Use the Questa*-Intel® FPGA Edition simulator to verify your design.
-| FPGA Hardware      | Multiple Hours  | Quartus Place & Route (Multiarchitecture binary) + FPGA reports + x86-64 host binary                                                  | Compiles the FPGA device code to RTL and compiles the generated RTL using Quartus® Prime. If you specified a BSP with `FPGA_DEVICE`, this will generate an FPGA image that you can run on the corresponding accelerator board.
+| FPGA Hardware      | Multiple Hours  | Quartus Place & Route + FPGA reports                                                  | Compiles the FPGA device code to RTL and compiles the generated RTL using Quartus® Prime.
 
 The typical FPGA development workflow is to iterate in each of these stages, refining the code using the feedback provided by that stage. You can avoid long compile times by relying on emulation and the optimization report whenever possible.
 
@@ -114,11 +112,9 @@ The HLS IP Gen Compiler links your design C++ test bench with an RTL-compiled ve
 
 The generated Verilog RTL is mapped onto the FPGA hardware resources by the Quartus® Prime software. The estimated performance and resource utilization is therefore much more accurate than the estimates obtained in the optimization report compilation type.
 
-If you compile a multiarchitecture binary, the resulting binary will include an FPGA hardware image (also referred to as a bitstream) that is executable on an FPGA accelerator card with a supported BSP. The compiler will interface your design with the BSP, and your host application will make the system calls to launch kernels on the FPGA.
+Note that the compilation result is **not** executable. IP components are compiled in isolation and not interfaced with other components on the FPGA. The purpose of this compilation flow is to get accurate resource utilization and performance data for IP components.
 
-If you compile an IP component, the compilation result is **not** executable. IP components are compiled in isolation and not interfaced with other components on the FPGA. The purpose of this compilation flow is to get accurate resource utilization and performance data for IP components.
-
-This compilation process takes hours, although it may be faster if you generate a re-usable IP component.
+This compilation process can take hours.
 
 ### Device Selectors
 
@@ -148,7 +144,7 @@ int main() {
 
 This section includes a helpful list of commands and options to compile this design for the FPGA emulator, generate the FPGA early image optimization reports, and compile for FPGA hardware.
 
->**Note**: In this sample, the compiler is referred to as `icpx`. On Windows, you should use `icx-cl`.
+>**Note**: In this sample, the compiler is referred to as `icpx`.
 
 The [HLS IP Gen Handbook](https://www.intel.com/content/www/us/en/docs/oneapi/programming-guide/current/fpga-compilation-flags.html) contains a chapter that explains the compiler options used in these examples.
 
@@ -165,7 +161,7 @@ icpx -fintelfpga -DFPGA_EMULATOR -I../../../../include vector_add.cpp -o vector_
 # FPGA early image (with optimization report):
 icpx -fintelfpga -DFPGA_HARDWARE -I../../../../include vector_add.cpp -Xshardware -fsycl-link=early -Xstarget=Agilex7 -o vector_add_report.a
 ```
-Use the`-Xstarget` flag to target a supported board, a device family, or a specific FPGA part number.
+Use the`-Xstarget` flag to target a device family, or a specific FPGA part number.
 
 #### Simulator
 
@@ -173,7 +169,7 @@ Use the`-Xstarget` flag to target a supported board, a device family, or a speci
 # FPGA simulator image:
 icpx -fintelfpga -DFPGA_SIMULATOR -I../../../../include vector_add.cpp -Xssimulation -Xstarget=Agilex7 -Xsghdl -o vector_add_sim.fpga_sim
 ```
-Through `-Xstarget`, you can target an explicit board, a device family, or an FPGA part number.
+Through `-Xstarget`, you can target a device family, or an FPGA part number.
 
 #### FPGA Hardware
 
@@ -181,7 +177,7 @@ Through `-Xstarget`, you can target an explicit board, a device family, or an FP
 # FPGA hardware image:
 icpx -fintelfpga -DFPGA_HARDWARE -I../../../../include vector_add.cpp -Xshardware -Xstarget=Agilex7 -o vector_add.fpga
 ```
-Through `-Xstarget`, you can target an explicit board, a device family, or an FPGA part number.
+Through `-Xstarget`, you can target a device family, or an FPGA part number.
 
 `-DFPGA_EMULATOR`, `-DFPGA_SIMULATOR`, `-DFPGA_HARDWARE` are options that add a preprocessor define that invokes the emulator/simulator/FPGA device selector in this sample (see code snippet above).
 
@@ -189,7 +185,6 @@ Through `-Xstarget`, you can target an explicit board, a device family, or an FP
 
 There are 4 parts to this tutorial located in the 3 sub-folders. Together, they demonstrate how you can migrate an algorithm from vanilla C++ code to SYCL for FPGA. Note that you may also choose to use a functor with buffers, or a function with USM.
 
-> **Note**: SYCL USM allocations, used in `part2` and `part3` of this tutorial, are only supported on FPGA boards that have a USM capable BSP or when targeting an FPGA family/part number.
 
 #### Part 1: C++
 
@@ -237,68 +232,15 @@ Part 4 shows the vector addition in SYCL* C++ with a 'function' coding style and
    - `-DPART=2`: Compile `part2_dpcpp_functor_usm`
    - `-DPART=3`: Compile `part3_dpcpp_lambda_usm`
    - `-DPART=4`: Compile `part4_dpcpp_lambda_buffers`
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    >  ```
    >  cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number> -DPART=<X>
-   >  ```
-   >
-   > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-   >  ```
-   >  cmake .. -DFPGA_DEVICE=<board-support-package>:<board-variant> -DPART=<X>
-   >  ```
-  > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-  > ```
-  > $> aoc -list-boards
-  > Board list:
-  >   <board-variant>
-  >      Board Package: <path/to/board/package>/board-support-package
-  >   <board-variant2>
-  >      Board Package: <path/to/board/package>/board-support-package
-  > ```
-   >
-   > You will only be able to run an executable on the FPGA if you specified a BSP.
-
-#### On Windows*
-
-1. Change to the sample directory.
-
-2. Build the program for the Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" .. -DPART=<X>
-   ```
-   where `-DPART=<X>` is:
-   - `-DPART=1`: Compile `part1_cpp`
-   - `-DPART=2`: Compile `part2_dpcpp_functor_usm`
-   - `-DPART=3`: Compile `part3_dpcpp_lambda_usm`
-   - `-DPART=4`: Compile `part4_dpcpp_lambda_buffers`
-   > **Note**: You can change the default target by using the command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number> -DPART=<X>
-   >  ```
-   >
-   > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<board-support-package>:<board-variant> -DPART=<X>
-   >  ```
-  > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-  > ```
-  > $> aoc -list-boards
-  > Board list:
-  >   <board-variant>
-  >      Board Package: <path/to/board/package>/board-support-package
-  >   <board-variant2>
-  >      Board Package: <path/to/board/package>/board-support-package
-  > ```
-   >
-   > You will only be able to run an executable on the FPGA if you specified a BSP.
 
 ### Build the Parts
 
 After using CMake to generate build artifacts, you can build specific targets. This project can build 4 targets.
 
-The `fpga_emu`, `fpga_sim`, and `fpga` targets produce binaries that you can run. The executables will be called `vector_add.fpga_emu`, `vector_add.fpga_sim`, and `vector_add.fpga`. The `fpga` target will produce an executable binary if you create a multiarchitecture binary kernel.
+The `fpga_emu` and `fpga_sim` targets produce binaries that you can run. The executables will be called `vector_add.fpga_emu`, and `vector_add.fpga_sim`.
 
 For part 1 of this tutorial, only the `fpga_emu` target is available as this regular C++ code only  target a CPU.
 
@@ -312,17 +254,6 @@ For part 1 of this tutorial, only the `fpga_emu` target is available as this reg
    | Optimization Report | `make report`
    | FPGA Simulator      | `make fpga_sim`
    | FPGA Hardware       | `make fpga`
-
-#### On Windows
-
-1. Compile the design using `nmake`.
-
-   | Compilation Type    | Command (Windows)
-   |:---                 |:---
-   | FPGA Emulator       | `nmake fpga_emu`
-   | Optimization Report | `nmake report`
-   | FPGA Simulator      | `nmake fpga_sim`
-   | FPGA Hardware       | `nmake fpga`
 
 ### Read the Reports
 
@@ -354,24 +285,6 @@ Browse the reports that were generated for the `VectorAdd` kernel's FPGA early i
    ```
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./vector_add.fpga_sim
    ```
-3. Run the sample on the FPGA device (only if you ran `cmake` with `-DFPGA_DEVICE=<board-support-package>:<board-variant>`):
-   ```
-   ./vector_add.fpga
-   ```
-
-### On Windows
-
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU):
-   ```
-   vector_add.fpga_emu.exe
-   ```
-2. Run the sample on the FPGA simulator device (the kernel executes in a simulator):
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   vector_add.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
-   ```
-> **Note**: Hardware runs are not supported on Windows.
 
 ## Example Output
 

@@ -244,7 +244,7 @@ This design uses CMake to generate a build script for GNU/make.
    - `PART3` for `part3_hosts`
    - `PART4` for `part4_ddr_hosts`
    
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    >  ```
    >  cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number> -DTYPE=<TYPE>
    >  ```
@@ -267,49 +267,6 @@ This design uses CMake to generate a build script for GNU/make.
       make fpga
       ```
 
-### On Windows*
-
-1. Change to the sample directory.
-
-2. Configure the build system for the Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" .. -DTYPE=<TYPE>
-   ```
-
-   where `<TYPE>` is: 
-   - `PART1` for `part1_pointers`
-   - `PART2` for `part2_single_host`
-   - `PART3` for `part3_hosts`
-   - `PART4` for `part4_ddr_hosts`
-
-   > **Note**: You can change the default target by using the command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number> -DTYPE=<TYPE>
-   >  ```
-3. Compile the design using `nmake`.
-   1. Compile for emulation (fast compile time, targets emulated FPGA device).
-      ```
-      nmake fpga_emu
-      ```
-   2. Compile for simulation (fast compile time, targets simulator FPGA device):
-      ```
-      nmake fpga_sim
-      ```
-   3. Generate HTML performance report. (See [Read the Reports](#read-the-reports) below for information on finding and understanding the reports.)
-      ```
-      nmake report
-      ```
-   4. Compile for FPGA hardware (longer compile time, targets FPGA device).
-      ```
-      nmake fpga
-      ```
-   > **Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your 'build' directory in a shorter path, for example c:\samples\build.  You can then run cmake from that directory, and provide cmake with the full path to your sample directory, for example:
->
->  ```
-  > C:\samples\build> cmake -G "NMake Makefiles" C:\long\path\to\code\sample\CMakeLists.txt
->  ```
 ## Examining the Generated RTL
 Locate `mmhost_partx_report_di_inst.v` in the `build/mmhost_partx.report.prj/` directory and open it with a text editor. This file demonstrates how to instantiate your IP component using Verilog or System Verilog code.
 
@@ -335,20 +292,6 @@ Observe how the 32-bit LSUs are now coalesced, after unrolling the for-loop.
 2. Run the sample on the FPGA simulator device (the kernel executes in a simulator):
    ```
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./mmhost_partx.fpga_sim
-   ```
-
-### On Windows
-
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU):
-   ```
-   mmhost_partx.fpga_emu.exe
-   ```
-
-2. Run the sample on the FPGA simulator device (the kernel executes in a simulator):
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   mmhost_partx.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
    ```
 
 ### Example of Output

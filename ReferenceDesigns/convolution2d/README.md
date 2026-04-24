@@ -39,7 +39,7 @@ You can also find more information about [troubleshooting build errors](/README.
 
 | Optimized for      | Description
 |:---                |:---
-| OS                 | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| OS                 | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8/9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
 | Hardware           | Agilex® 5, Agilex® 7 and Arria® 10 FPGAs
 | Software           | HLS IP Gen Compiler
 
@@ -321,8 +321,6 @@ bool TestTinyFrameOnStencil(sycl::queue q, bool print_debug_info) {
 > - `source <install-dir>/fpgavars.sh`
 > - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/fpgavars.sh ; exec csh'`
 
-Use these commands to run the design, depending on your OS.
-
 ### On a Linux* System
 This design uses CMake to generate a build script for GNU/make.
 
@@ -336,7 +334,7 @@ This design uses CMake to generate a build script for GNU/make.
    cmake ..
    ```
 
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    > ```
    > cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
    > ```
@@ -358,44 +356,6 @@ This design uses CMake to generate a build script for GNU/make.
 
 >**Note**: Since this design uses host pipes, make sure that the emulator pipe depth behaviour is as intended. Set the environment variable `CL_CONFIG_CHANNEL_DEPTH_EMULATION_MODE` to `ignore-depth` for this design so that multiple writes can happen to the pipe without first having the contents read.
 
-### On a Windows* System
-This design uses CMake to generate a build script for  `nmake`.
-
-1. Change to the sample directory.
-
-2. Configure the build system for the Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" ..
-   ```
-
-   > **Note**: You can change the default target by using the command:
-   > ```
-   > cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
-   > ```
-
-   > **Note**: The performance table above was produced by compiling with the `-DTEST_CONV2D_ISOLATED=1` compiler flag.
-   > ```
-   > cmake -G "NMake Makefiles" .. -DTEST_CONV2D_ISOLATED=1 -DUSER_FPGA_FLAGS="-Xsclock=600MHz"
-   > ```
-
-3. Compile the design through the generated `Makefile`. The following build targets are provided, matching the recommended development flow:
-
-   | Compilation Type    | Command (Windows)
-   |:---                 |:---
-   | FPGA Emulator       | `nmake fpga_emu`
-   | Optimization Report | `nmake report`
-   | FPGA Simulator      | `nmake fpga_sim`
-   | FPGA Hardware       | `nmake fpga`
-
-   > **Note**: Since this design uses host pipes, make sure that the emulator pipe depth behaviour is as intended. Set the environment variable `CL_CONFIG_CHANNEL_DEPTH_EMULATION_MODE` to `ignore-depth` for this design so that multiple writes can happen to the pipe without first having the contents read.
-   
-   If you encounter any issues with long paths when compiling under Windows*, you may have to create your 'build' directory in a shorter path, for example c:\samples\build.  You can then run cmake from that directory, and provide cmake with the full path to your sample directory, for example:
->
->  ```
-  > C:\samples\build> cmake -G "NMake Makefiles" C:\long\path\to\code\sample\CMakeLists.txt
->  ```
 ## Run the `convolution2d` Executable
 
 ### On Linux
@@ -407,22 +367,10 @@ This design uses CMake to generate a build script for  `nmake`.
    ```
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./conv.fpga_sim
    ```
-### On Windows
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
-   ```
-   conv.fpga_emu.exe
-   ```
-2. Run the sample on the FPGA simulator device.
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   conv.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
-   ```
-
 ## Example Output
 
 ```
-Running on device: Intel(R) FPGA Emulation Device
+Running on device: Altera(R) FPGA Emulation Device
 
 **********************************
 Check a sequence of good frames... 

@@ -173,28 +173,10 @@ board.
    - `-DPART=INTERLEAVING`
    - `-DPART=NO_INTERLEAVING`
 
-  > **Note**: You can change the default target by using the command:
+  > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
   >  ```
   >  cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
   >  ``` 
-  >
-  > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command: 
-  >  ```
-  >  cmake .. -DFPGA_DEVICE=<board-support-package>:<board-variant>
-  >  ``` 
-  > The build system will try to infer the FPGA family from the BSP name.
-  > If it can't, an extra option needs to be passed to `cmake`: `-DDEVICE_FLAG=[A10|S10|CycloneV|Agilex5|Agilex7]` 
-  > **Note**: You **must** set `FPGA_DEVICE` to point to a BSP in order to build this sample. You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-  > ```
-  > $> aoc -list-boards
-  > Board list:
-  >   <board-variant>
-  >      Board Package: <path/to/board/package>/board-support-package
-  >   <board-variant2>
-  >      Board Package: <path/to/board/package>/board-support-package
-  > ```
-  >
-  > You will only be able to run an executable on the FPGA if you specified a BSP.
 
 2. Compile the design through the generated `Makefile`. The following build
    targets are provided, matching the recommended development flow:
@@ -216,72 +198,6 @@ board.
      make fpga
      ```
 
-### On a Windows* System
-
-1. Generate the `Makefile` by running `cmake`.
-  ```
-  mkdir build
-  cd build
-  ```
-  To compile for the default target (the Agilex® device family), run `cmake` using the command:
-  ```
-  cmake -G "NMake Makefiles" .. -DPART=<X>
-  ```
-   where `-DPART=<X>` is:
-   - `-DPART=INTERLEAVING`
-   - `-DPART=NO_INTERLEAVING`
-
-  > **Note**: You can change the default target by using the command:
-  >  ```
-  >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
-  >  ``` 
-  >
-  > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command: 
-  >  ```
-  >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<board-support-package>:<board-variant>
-  >  ``` 
-  > The build system will try to infer the FPGA family from the BSP name.
-  > If it can't, an extra option needs to be passed to `cmake`: `-DDEVICE_FLAG=[A10|S10|CycloneV|Agilex5|Agilex7]` 
-  > **Note**: You **must** set `FPGA_DEVICE` to point to a BSP in order to build this sample.You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-  > ```
-  > $> aoc -list-boards
-  > Board list:
-  >   <board-variant>
-  >      Board Package: <path/to/board/package>/board-support-package
-  >   <board-variant2>
-  >      Board Package: <path/to/board/package>/board-support-package
-  > ```
-  >
-  > You will only be able to run an executable on the FPGA if you specified a BSP.
-
-2. Compile the design through the generated `Makefile`. The following build
-   targets are provided, matching the recommended development flow:
-
-   * Compile for emulation (fast compile time, targets emulated FPGA device):
-     ```
-     nmake fpga_emu
-     ```
-   * Generate the optimization report:
-     ```
-     nmake report
-     ```
-   * Compile for simulation (fast compile time, targets simulated FPGA device, reduced data size):
-     ```
-     nmake fpga_sim
-     ```
-   * Compile for FPGA hardware (longer compile time, targets FPGA device):
-     ```
-     nmake fpga
-     ```
-
-> **Note**: If you encounter any issues with long paths when compiling under
-Windows*, you may have to create your 'build' directory in a shorter path, for
-example c:\samples\build.  You can then run cmake from that directory, and
-provide cmake with the full path to your sample directory, for example:
->
->  ```
-  > C:\samples\build> cmake -G "NMake Makefiles" C:\long\path\to\code\sample\CMakeLists.txt
->  ```
 ## Examining the Reports
 After generating the reports of both parts of the sample, locate the `report.html` files in the `mem_channel.report.prj` directories. Open the reports in 
 Chrome*, Firefox*, Edge*, or Internet Explorer*. In the "Summary" tab, locate
@@ -295,28 +211,20 @@ significantly lower than the case where burst-interleaving is enabled.
 
  1. Run the sample on the FPGA emulator (the kernel executes on the CPU):
      ```
-     ./mem_channel.fpga_emu     (Linux)
-     mem_channel.fpga_emu.exe   (Windows)
+     ./mem_channel.fpga_emu
      ```
     Note that the `mem_channel` property and the `-Xsno-interleaving` flag have
     no impact on the emulator which is why we only have a single executable for
     this flow.
 2. Run the sample on the FPGA simulator device (the kernel executes on the CPU):
-  * On Linux
     ```bash
     CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./mem_channel.fpga_sim
     ```
-  * On Windows
-    ```bash
-    set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-    mem_channel.fpga_sim.exe
-    set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
-    ```
+
     Note that the `mem_channel` property and the `-Xsno-interleaving` flag have
     no impact on the simulator which is why we only have a single executable for
     this flow.
 
-> **Note**: Hardware runs are not supported on Windows.
 
 ### Example of Output
 

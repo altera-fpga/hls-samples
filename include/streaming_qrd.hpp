@@ -220,10 +220,10 @@ struct StreamingQRD {
 
       // a local copy of a_{i+1} that is used across multiple j iterations
       // for the computation of pip1 and p
-      TT a_ip1[rows];
+      TT a_ip1[rows] = {{0}};
       // a local copy of a_ip1 that is used across multiple j iterations
       // for the computation of a_j
-      TT a_i[rows];
+      TT a_i[rows] = {{0}};
       // Depending on the context, will contain:
       // -> -s[j]: for all the iterations to compute a_j
       // -> ir: for one iteration per j iterations to compute Q_i
@@ -273,15 +273,14 @@ struct StreamingQRD {
         // All the control signals are precomputed and replicated
         // kFanoutReduction times to reduce fanout
         bool j_eq_i[kBanksForFanout], i_gt_0[kBanksForFanout],
-            i_ge_0_j_ge_i[kBanksForFanout], j_eq_i_plus_1[kBanksForFanout],
-            i_lt_0[kBanksForFanout], j_ge_0[kBanksForFanout];
+            j_eq_i_plus_1[kBanksForFanout], i_lt_0[kBanksForFanout],
+            j_ge_0[kBanksForFanout];
 
         fpga_tools::UnrolledLoop<kBanksForFanout>([&](auto k) {
           i_gt_0[k] = sycl::ext::altera::fpga_reg(i > 0);
           i_lt_0[k] = sycl::ext::altera::fpga_reg(i < 0);
           j_eq_i[k] = sycl::ext::altera::fpga_reg(j == i);
           j_ge_0[k] = sycl::ext::altera::fpga_reg(j >= 0);
-          i_ge_0_j_ge_i[k] = sycl::ext::altera::fpga_reg(i >= 0 && j >= i);
           j_eq_i_plus_1[k] = sycl::ext::altera::fpga_reg(j == i + 1);
           if (j >= 0) {
             s_or_ir_j[k] = sycl::ext::altera::fpga_reg(s_or_ir[j]);
@@ -317,6 +316,9 @@ struct StreamingQRD {
           }
         });
 
+        // Tmp column used to save partial results and force coalesced stores
+        column_tuple tmp_column;
+
         fpga_tools::UnrolledLoop<rows>([&](auto k) {
           // find which fanout bank this unrolled iteration is going to use
           constexpr auto fanout_bank_idx = k / kFanoutReduction;
@@ -338,27 +340,30 @@ struct StreamingQRD {
             col1[k] = prod_lhs * prod_rhs + add;
           }
 
-          // Store Q_i in q_result and the modified a_j in a_compute
-          // To reduce the amount of control, q_result and a_compute
-          // are both written to for each iteration of i>=0 && j>=i
-          // In fact:
-          // -> q_result could only be written to at iterations i==j
-          // -> a_compute could only be written to at iterations
-          //    j!=i && i>=0
-          // The extra writes are harmless as the locations written to
-          // are either going to be:
-          // -> overwritten for the matrix Q (q_result)
-          // -> unused for the a_compute
-          if (i_ge_0_j_ge_i[fanout_bank_idx] && j_ge_0[fanout_bank_idx]) {
-            q_result[j].template get<k>() = col1[k];
-            a_compute[j].template get<k>() = col1[k];
-          }
+          // Save partial results for a_compute and q_result
+          tmp_column.template get<k>() = col1[k];
 
           // Store a_{i+1} for subsequent iterations of j
           if (j_eq_i_plus_1[fanout_bank_idx]) {
             a_ip1[k] = col1[k];
           }
         });
+
+        // Store Q_i in q_result and the modified a_j in a_compute
+        // To reduce the amount of control, q_result and a_compute
+        // are both written to for each iteration of i>=0 && j>=i
+        // In fact:
+        // -> q_result could only be written to at iterations i==j
+        // -> a_compute could only be written to at iterations
+        //    j!=i && i>=0
+        // The extra writes are harmless as the locations written to
+        // are either going to be:
+        // -> overwritten for the matrix Q (q_result)
+        // -> unused for the a_compute
+        if (i >= 0 && j >= i && j >= 0) {
+          q_result[j] = tmp_column;
+          a_compute[j] = tmp_column;
+        }
 
         // Perform the dot product <a_{i+1},a_{i+1}> or <a_{i+1}, a_j>
         TT p_ij{0.0};
@@ -465,13 +470,14 @@ struct StreamingQRD {
           column_iter = sycl::ext::altera::fpga_reg(column_iter);
         });
 
+        fpga_tools::NTuple<TT, rows> q_result_entry =
+            q_result[li / kLoopIterPerColumn];
         fpga_tools::NTuple<TT, pipe_size> pipe_write;
         fpga_tools::UnrolledLoop<kLoopIterPerColumn>([&](auto t) {
           fpga_tools::UnrolledLoop<pipe_size>([&](auto k) {
             if constexpr (t * pipe_size + k < rows) {
               pipe_write.template get<k>() =
-                  get[t] ? q_result[li / kLoopIterPerColumn]
-                               .template get<t * pipe_size + k>()
+                  get[t] ? q_result_entry.template get<t * pipe_size + k>()
                          : sycl::ext::altera::fpga_reg(
                                pipe_write.template get<k>());
             }

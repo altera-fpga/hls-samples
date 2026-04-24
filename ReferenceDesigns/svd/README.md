@@ -50,7 +50,7 @@ You can also find more information about [troubleshooting build errors](/README.
 | Hardware             | Agilex® 5, Agilex® 7 and Arria® 10 FPGAs
 | Software             | HLS IP Gen Compiler
 
-> **Note**: Even though the Intel DPC++/C++ OneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
 > - Questa*-Intel® FPGA Edition

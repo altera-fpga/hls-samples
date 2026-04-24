@@ -1,6 +1,6 @@
 # `Streaming Data Interfaces` Sample
 
-This FPGA sample is a tutorial that demonstrates how to implement streaming data interfaces on an IP component. It is recommended that you review the [Component Interfaces Comparison](/Tutorials/Features/hls_flow_interfaces/component_interfaces_comparison) tutorial before continuing with this one.
+This FPGA sample is a tutorial that demonstrates how to implement streaming data interfaces on an IP component. It is recommended that you review the [Host Pipes](/Tutorials/Features/experimental/hostpipes) tutorial and the [Component Interfaces Comparison](/Tutorials/Features/hls_flow_interfaces/component_interfaces_comparison) tutorial, specifically the [pipes](/Tutorials/Features/hls_flow_interfaces/component_interfaces_comparison/pipes/) code sample, before continuing with this one.
 
 | Area                  | Description
 |:--                    |:--
@@ -8,11 +8,12 @@ This FPGA sample is a tutorial that demonstrates how to implement streaming data
 | Time to complete      | 30 minutes
 | Category              | Concepts and Functionality
 
+
 ## Purpose
 
-Pipes are a first-in first-out (FIFO) buffer construct that provide data links between elements of a design. They are accessed through read and write APIs without the notion of a memory address or pointers to elements within the FIFO.
+Streaming pipes are first-in first-out (FIFO) buffer constructs that provide data links between elements of a design. They are accessed through read and write APIs without the notion of a memory address or pointers to elements within the FIFO.
 
-The concept of a pipe is an intuitive mechanism for specifying streaming data interfaces on an IP component. This tutorial demonstrates how to use the pipe API to configure an Avalon streaming interface.
+The concept of a streaming pipe is an intuitive mechanism for specifying streaming data interfaces on an IP component. This tutorial demonstrates how to use the pipe API to configure a streaming interface.
 
 ## Prerequisites
 
@@ -56,9 +57,9 @@ You can also find more information about [troubleshooting build errors](/README.
 
 ## Key Implementation Details
 
-### Configuring a Pipe to Implement a Streaming Data Interface
+### Configuring a Streaming Pipe
 
-Each pipe is a class declaration of the templated `pipe` class. A pipe declaration takes two mandatory and two optional parameters, as summarized in Table 1.
+Each pipe is a class declaration of the templated `pipe` class. A pipe declaration takes two mandatory and two optional parameters, as summarized in [Table 1](#table-1-template-parameters-of-the-pipe-class).
 
 #### Table 1. Template Parameters of the `pipe` Class
 
@@ -73,23 +74,24 @@ Each pipe is a class declaration of the templated `pipe` class. A pipe declarati
 
 Below is a summary of all relevant SYCL properties which can be applied to a `pipe` using the `properties` template parameter. Please note that this table is not complete; see the [HLS IP Gen Handbook](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/optimization-guide/current/host-pipe-declaration.html) for more information on how to use pipes in other applications.
 
-
 #### Table 2. Properties used to Configure a Pipe to Implement a Streaming Data Interface
 
 | Property                                | Default Value               | Valid Values
 | ---                                     | ---                         | ---
-| `ready_latency<int>`                    | 0                           | non-negative integer
-| `bits_per_symbol<int>`                  | 8                           | non-negative integer that divides the size of the data type
+| `ready_latency<uint32_t>`               | 0                           | non-negative integer
+| `bits_per_symbol<uint32_t>`             | 8                           | non-negative integer that divides the size of the data type
 | `uses_valid<bool>`                      | `true`                      | boolean
 | `uses_ready<bool>`                      | `true`                      | boolean
-| `first_symbol_in_high_order_bits<bool>` | `true`                      | boolean
-| `protocol`                              | `protocol_avalon_streaming` | `protocol_avalon_streaming` / `protocol_avalon_mm`
+| `first_symbol_in_high_order_bits<bool>` | `false`                     | boolean
+| `protocol`                              | `protocol_avalon_streaming` | `protocol_avalon_streaming` / `protocol_avalon_mm` / `protocol_axi_streaming`
 
-See [this page](https://www.intel.com/content/www/us/en/docs/programmable/683091/current/st-interface-properties.html) for more information on the Avalon interface specifications.
+To configure a pipe to implement a streaming data interface, specify either `protocol_avalon_streaming` or `protocol_axi_streaming` for the `protocol` property. The `protocol_avalon_mm` pipe protocol does not generate a streaming data interface; it configures host pipes as a CSR (memory-mapped agent) data interface instead. For details and a full example on configuring a CSR data interface, see the [CSR Data](/Tutorials/Features/hls_flow_interfaces/component_interfaces_comparison/csr-pipes/) code sample.
+
+> **Note**: The pipe's `properties` template are largely based on Avalon® streaming interface semantics (e.g., ready latency, valid/ready usage, and bits per symbol). Currently AXI™ streaming does not add a separate set of protocol-specific properties in the pipe's `properties` template. For more information on Avalon® streaming interface properties, see [this page](https://docs.altera.com/r/docs/683091/22.3/avalon-interface-specifications/avalon-st-interface-properties).
 
 #### Example 1.
 
-The following example explicitly declares a pipe that implements a streaming data interface with  `ready` and `valid` signals, using the defaults for all other parameters.
+The following example explicitly declares a pipe that implements an Avalon® streaming data interface with `ready` and `valid` signals. All the properties specified in `DefaultPropertiesT` are default, including the `protocol` property.
 
 ```c++
 // Forward declare the pipe name in the global scope. This is an FPGA best
@@ -98,58 +100,43 @@ class FirstPipeT;
 
 // Pipe properties (listed here are the defaults; this achieves the same
 // behavior as not specifying any of these properties)
-using PipePropertiesT = decltype(sycl::ext::oneapi::experimental::properties(
+using DefaultPropertiesT = decltype(sycl::ext::oneapi::experimental::properties(
     sycl::ext::altera::experimental::ready_latency<0>,
     sycl::ext::altera::experimental::bits_per_symbol<8>,
     sycl::ext::altera::experimental::uses_valid<true>,
     sycl::ext::altera::experimental::uses_ready<true>,
-    sycl::ext::altera::experimental::first_symbol_in_high_order_bits<true>,
+    sycl::ext::altera::experimental::first_symbol_in_high_order_bits<false>,
     sycl::ext::altera::experimental::protocol_avalon_streaming));
 
 using FirstPipe = sycl::ext::altera::experimental::pipe<
-    FirstPipeT,      // An identifier for the pipe
-    int,             // The type of data in the pipe
-    8,               // Minimum capacity of the pipe (buffer depth)
-    PipePropertiesT  // Customizable pipe properties
+    FirstPipeT,          // An identifier for the pipe
+    int,                 // The type of data in the pipe
+    8,                   // Minimum capacity of the pipe (buffer depth)
+    DefaultPropertiesT   // Pipe properties, customizable
     >;
-```
-
-### Avalon Streaming Sideband Signals
-
-Pipes support a subset of Avalon streaming sideband signals. You can add these to your pipe interface by using the special `StreamingBeat` structure provided by the `pipes_ext.hpp` header file (`sycl/ext/altera/experimental/pipes_ext.hpp`) as the `dataT` of your pipe. Only the `StreamingBeat` structure generates sideband signals when used with a pipe.
-
-The `StreamingBeat` structure is templated on three parameters, as summarized in Table 3.
-
-#### Table 3. Template Parameters of the `StreamingBeat` Structure
-
-| Template Parameter                      | Description
-| ---                                     | ---
-| `dataT`                                 | The datatype of elements carried by the `data` signal of the Avalon streaming interface.
-| `uses_packets`                          | A boolean that indicates whether to enable the `startofpacket` (`sop`) and `endofpacket` (`eop`) sideband signals on the Avalon streaming interface.
-| `uses_empty`                            | A boolean that indicates whether to enable the `empty` sideband signal on the Avalon streaming interface
-
-#### Example 2.
-
-The following example shows how to configure a `StreamingBeat` structure to use `sop`, `eop` and `empty` by setting the second and third template parameters to `true`. Using the `StreamingBeatT` type defined here in a pipe will result in `startofpacket`, `endofpacket`, and `empty` signals appearing on the resulting Avalon streaming interface.
-
-```c++
-#include <sycl/ext/altera/experimental/pipes_ext.hpp>
-
-...
-
-using StreamingBeatDataT = sycl::ext::altera::experimental::StreamingBeat<unsigned short, true, true>;
-
-...
-
-StreamingBeatT out_beat(data, sop, eop, empty);
-SecondPipeInstance::write(out_beat);
 ```
 
 ### Pipe API
 
-Pipes expose read and write interfaces that allow a single element to be read or written in FIFO order to the pipe.
+Pipes expose read and write interfaces that allow data to be read or written in FIFO order to the pipe.
 
 See the [Host Pipes](/Tutorials/Features/experimental/hostpipes) code sample for more details on the read and write APIs.
+
+### Streaming Sideband Signals
+
+Besides the main data payload and the usual valid/ready handshake, streaming interfaces can expose extra signals to denote variable-length packet boundaries or specify custom metadata. Those signals are called *sideband* signals, and are protocol-dependent. For pipes that implement a streaming data interface, you enable them by using a per-protocol, dedicated *beat* type as the pipe's `dataT`:
+
+  - `StreamingBeat` for Avalon® streaming (`protocol_avalon_streaming`)
+  - `StreamingBeatAxi` for AXI™ streaming (`protocol_axi_streaming`)
+
+Only these beat types cause the compiler to infer the corresponding sideband wires in the generated interface.
+
+### Sample Structure
+
+There are 2 different example designs in this sample, both of which implement a pixel clipping kernel intaking pixel beats with sideband signals. The source code demonstrates how to use streaming sideband signals for the Avalon® streaming data interface and the AXI™ streaming data interface.
+
+  1. [Avalon® streaming data interface](avalon_streaming/) This design uses `StreamingBeat` as the pipe element type and `protocol_avalon_streaming` in the pipe properties. It exercises Avalon® streaming sideband signals (`startofpacket` and `endofpacket`; the `empty` signal is disabled in this example) while streaming pixels through host pipes.
+  2. [AXI™ streaming data interface](axi_streaming/) This design uses `StreamingBeatAxi` as the pipe element type and `protocol_axi_streaming` in the pipe properties. It exercises AXI™ streaming sideband signals (`tlast` by default; `tuser` is not enabled in this example) for the same pixel-clipping kernel pattern.
 
 ## Build the `Streaming Data Interfaces` Tutorial
 
@@ -166,11 +153,11 @@ See the [Host Pipes](/Tutorials/Features/experimental/hostpipes) code sample for
    ```
    mkdir build
    cd build
-   cmake ..
+   cmake .. -DTYPE=<AVST/AXIST>
    ```
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    >  ```
-   >  cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
+   >  cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number> -DTYPE=<AVST/AXIST>
    >  ```
    >
    > This tutorial is only intended for use in the SYCL HLS flow and does not support targeting an explicit FPGA board variant and BSP.
@@ -196,93 +183,19 @@ See the [Host Pipes](/Tutorials/Features/experimental/hostpipes) code sample for
       make fpga
       ```	
 
-### On Windows*
-
-1. Change to the sample directory.
-2. Build the program for the Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" ..
-   ```
-   > **Note**: You can change the default target by using the command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
-   >  ```
-   >
-   > This tutorial is only intended for use in the SYCL HLS flow and does not support targeting an explicit FPGA board variant and BSP.
-
-3. Compile the design. (The provided targets match the recommended development flow.)
-
-   1. Compile and run for emulation (fast compile time, targets emulated FPGA device).
-      ```
-      nmake fpga_emu
-      ```
-      >**Note**: Since this design uses host pipes, make sure that the emulator pipe depth behaviour is as intended. Set the environment variable `CL_CONFIG_CHANNEL_DEPTH_EMULATION_MODE` to `ignore-depth` for this design so that multiple writes can happen to the pipe without first having the contents read.
-      
-   2. Generate the optimization report.
-      ```
-      nmake report
-      ```
-   3. Compile and run for simulation (fast compile time, targets simulated FPGA device).
-      ```
-      nmake fpga_sim
-      ```
-   4. Compile for FPGA hardware (longer compile time, targets an FPGA device).
-      ```
-      nmake fpga
-      ```
-> **Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your 'build' directory in a shorter path, for example c:\samples\build.  You can then run cmake from that directory, and provide cmake with the full path to your sample directory, for example:
->
->  ```
-  > C:\samples\build> cmake -G "NMake Makefiles" C:\long\path\to\code\sample\CMakeLists.txt
->  ```
 ## Run the `Streaming Data Interfaces` Tutorial
 
 ### On Linux
 
 1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
    ```
-   ./threshold_packets.fpga_emu
+   ./streaming_data_interfaces.fpga_emu
    ```
 2. Run the sample on the FPGA simulator.
    ```
-   CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./threshold_packets.fpga_sim
-   ```
-	
-### On Windows
-
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
-   ```
-   threshold_packets.fpga_emu.exe
-   ```
-2. Run the sample on the FPGA simulator.
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   threshold_packets.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
+   CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./streaming_data_interfaces.fpga_sim
    ```
 
-## Understanding the Tutorial
-
-In `threshold_packets.cpp`, two pipes are declared to implement the input and output streaming interfaces on a kernel which thresholds pixel values in an image. The streams use `startofpacket` and `endofpacket` signals to determine the beginning and end of the image.
-
-
-### Reading the Reports
-
-After compiling the `report` target, locate and open the `report.html` file in the `threshold_packets.report.prj/reports/` directory. Under the `Threshold` kernel in the System Viewer, the streaming in and streaming out interfaces can be seen, shown by the pipe read and pipe write nodes respectively. Clicking on either of these nodes gives further information about these interfaces in the 'details' pane. The 'details' pane will identify that the read is coming from `InStream`, and that the write is going to `OutStream`, as well as verifying that both interfaces have a width of 32 bits (corresponding to size of the `StreamingBeatT` type) and depth of 8 (which is the capacity that each pipe was declared with).
-
-<p align="center">
-  <img src=assets/kernel.png />
-</p>
-
-### Viewing the Simulation Waveform
-
-After compiling in the simulation flow and running the resulting executable, locate and run the `view_waveforms.sh` script in the `threshold_packets.fpga_sim.prj/` directory. Here you can see the `ready`, `valid` and `data` signals of the streaming input and streaming output interfaces (`InStream` and `OutStream` respectively). You can also see the `startofpacket` and `endofpacket` sideband signals that were added to the interface.
-
-<p align="center">
-  <img src=assets/sim_waveform.png />
-</p>
 
 ## License
 

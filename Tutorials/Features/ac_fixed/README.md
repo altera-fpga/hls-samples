@@ -95,7 +95,7 @@ To use an `ac_fixed` type in your code, include the following header:
 #include <sycl/ext/altera/ac_types/ac_fixed.hpp>
 ```
 
-> **Important**: You must pass the  `-qactypes` option to the `icpx` command on Linux or the `/Qactypes` option to the `icx-cl` command on Windows when building your SYCL program in order to include `ac_types` header files on the include path and link against the AC type libraries. In this tutorial, the options are passed through the `src/CMakeLists.txt` file.
+> **Important**: You must pass the  `-qactypes` option to the `icpx` command when building your SYCL program in order to include `ac_types` header files on the include path and link against the AC type libraries. In this tutorial, the options are passed through the `src/CMakeLists.txt` file.
 
 ### Recommended Method for Constructing `ac_fixed` Numbers
 
@@ -131,7 +131,7 @@ When you use the `ac_fixed` library, keep the following points in mind:
 
 - **Input Bit Width and Input Value Range Limits**
 
-    The fixed-point math functions have bit width and input value range requirements. All bit width and input value range requirements are documented at the top of the `ac_fixed_math.hpp` file, which locates in `${ONEAPI_ROOT}/compiler/latest/linux/lib/oclfpga/include/sycl/ext/intel/ac_types` on Linux or `%ONEAPI_ROOT%\compiler\latest\windows\lib\oclfpga\include\sycl\ext\intel\ac_types` on Windows.
+    The fixed-point math functions have bit width and input value range requirements. All bit width and input value range requirements are documented at the top of the `ac_fixed_math.hpp` file, which locates in `${ALTERA_HLS_ROOT}/include/sycl/ext/altera/ac_types`.
 
 - **Return Types**
 
@@ -163,26 +163,10 @@ When you use the `ac_fixed` library, keep the following points in mind:
    cd build
    cmake ..
    ```
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    >  ```
    >  cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
    >  ```
-   >
-   > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-   >  ```
-   >  cmake .. -DFPGA_DEVICE=<board-support-package>:<board-variant>
-   >  ```
-  > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-  > ```
-  > $> aoc -list-boards
-  > Board list:
-  >   <board-variant>
-  >      Board Package: <path/to/board/package>/board-support-package
-  >   <board-variant2>
-  >      Board Package: <path/to/board/package>/board-support-package
-  > ```
-   >
-   > You will only be able to run an executable on the FPGA if you specified a BSP.
 
 3. Compile the design. (The provided targets match the recommended development flow.)
 
@@ -203,59 +187,6 @@ When you use the `ac_fixed` library, keep the following points in mind:
       make fpga
       ```
 
-### On Windows*
-
-1. Change to the sample directory.
-2. Build the program for the Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" ..
-   ```
-   > **Note**: You can change the default target by using the command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
-   >  ```
-   >
-   > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<board-support-package>:<board-variant>
-   >  ```
-  > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-  > ```
-  > $> aoc -list-boards
-  > Board list:
-  >   <board-variant>
-  >      Board Package: <path/to/board/package>/board-support-package
-  >   <board-variant2>
-  >      Board Package: <path/to/board/package>/board-support-package
-  > ```
-   >
-   > You will only be able to run an executable on the FPGA if you specified a BSP.
-
-3. Compile the design. (The provided targets match the recommended development flow.)
-
-   1. Compile for emulation (fast compile time, targets emulated FPGA device).
-      ```
-      nmake fpga_emu
-      ```
-   2. Generate the optimization report. (See [Read the Reports](#read-the-reports) below for information on finding and understanding the reports.)
-      ```
-      nmake report
-      ```
-   3. Compile for simulation (fast compile time, targets simulated FPGA device, reduced problem size).
-      ```
-      nmake fpga_sim
-      ```
-   4. Compile for FPGA hardware (longer compile time, targets FPGA device):
-      ```
-      nmake fpga
-      ```
-> **Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your 'build' directory in a shorter path, for example c:\samples\build.  You can then run cmake from that directory, and provide cmake with the full path to your sample directory, for example:
->
->  ```
-  > C:\samples\build> cmake -G "NMake Makefiles" C:\long\path\to\code\sample\CMakeLists.txt
->  ```
 ### Read the Reports
 
 Locate the pair of `report.html` files in either of the following folders.
@@ -276,24 +207,6 @@ Scroll down on the Summary page of the report and expand the section titled **Co
    ```
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./ac_fixed.fpga_sim
    ```
-3. Run the sample on the FPGA device (only if you ran `cmake` with `-DFPGA_DEVICE=<board-support-package>:<board-variant>`).
-   ```
-   ./ac_fixed.fpga
-   ```
-
-### On Windows
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
-   ```bash
-   ac_fixed.fpga_emu.exe
-   ```
-2. Run the sample of the FPGA simulator device (the kernel executes on the CPU).
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   ac_fixed.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
-   ```
-> **Note**: Hardware runs are not supported on Windows.
-
 ## Example Output
 
 The following is example output for the emulator.

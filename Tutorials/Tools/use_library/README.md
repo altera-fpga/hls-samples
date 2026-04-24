@@ -94,9 +94,6 @@ To create a library from  source code, use the following steps:
    ```bash
    # Linux
    fpga_crossgen lib_rtl_spec.xml --cpp_model lib_rtl_model.cpp -o lib_rtl.o
-
-   # Windows
-   fpga_crossgen lib_rtl_spec.xml --cpp_model lib_rtl_model.cpp -o lib_rtl.obj
    ```
 
    Note that generating an RTL library requires that an `xml` file and a C++ model be provided in addition to the Verilog source code. The RTL is used when compiling for the hardware whereas the C++ model is used when the SYCL program is run on the FPGA emulator. Examine the tutorial source code and the comments in `use_library.cpp` for more details.
@@ -112,9 +109,6 @@ To create a library from  source code, use the following steps:
    ```bash
    # Linux
    fpga_libtool lib_rtl.o --create lib_rtl.a
-
-   # Windows
-   fpga_libtool lib_rtl.obj --create lib_rtl.lib
 
    ```
 
@@ -153,7 +147,7 @@ Note that the library files (\*.a) must be included after all of the cpp files i
    cd build
    cmake ..
    ```
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    >  ```
    >  cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
    >  ```
@@ -179,44 +173,6 @@ Note that the library files (\*.a) must be included after all of the cpp files i
       make fpga
       ```
 
-### On a Windows* System
-
-1. Change to the sample directory.
-2. Build the program for the Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" ..
-   ```
-   > **Note**: You can change the default target by using the command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
-   >  ```
-   >
-
-3. Compile the design. (The provided targets match the recommended development flow.)
-
-   1. Compile for emulation (fast compile time, targets emulated FPGA device).
-      ```
-      nmake fpga_emu
-      ```
-   2. Generate the optimization report. (See [Read the Reports](#read-the-reports) below for information on finding and understanding the reports.)
-      ```
-      nmake report
-      ```
-   3. Compile for simulation (fast compile time, targets simulated FPGA device, reduced problem size).
-      ```
-      nmake fpga_sim
-      ```
-   4. Compile for FPGA hardware (longer compile time, runs Quartus® Prime to get accurate area estimates).
-      ```
-      nmake fpga
-      ```
-> **Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your 'build' directory in a shorter path, for example c:\samples\build.  You can then run cmake from that directory, and provide cmake with the full path to your sample directory, for example:
->
->  ```
-  > C:\samples\build> cmake -G "NMake Makefiles" C:\long\path\to\code\sample\CMakeLists.txt
->  ```
 ## Run the `use_library` Sample
 
 ### On Linux
@@ -231,21 +187,6 @@ Note that the library files (\*.a) must be included after all of the cpp files i
    ```
 
 > **Note**: Running this sample on an actual FPGA device requires a BSP that supports host pipes. As there are currently no commercial BSPs with such support, only the SYCL HLS flow is enabled for this code sample.
-
-### On Windows
-
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
-   ```
-   use_library.fpga_emu.exe
-   ```
-2. Run the sample of the FPGA simulator device (the kernel executes on the CPU).
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   use_library.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
-   ```
-
-> **Note**: Hardware runs are not supported on Windows.
 
 ### Example of Output
 

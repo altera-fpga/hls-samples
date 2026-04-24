@@ -136,10 +136,10 @@ Use the appropriate TYPE parameter when running CMake to config which design to 
    ```
    mkdir build
    cd build
-   cmake ..
+   cmake .. -DTYPE=<NAIVE/CSR/STREAMING/PIPES/MMHOST>
    ```
 
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    >  ```
    >  cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number> -DTYPE=<NAIVE/CSR/STREAMING/PIPES/MMHOST>
    >  ``` 
@@ -168,49 +168,6 @@ Use the appropriate TYPE parameter when running CMake to config which design to 
       make fpga
       ```
 
-### On Windows*
-
-1. Change to the sample directory.
-2. Configure the build system for the Agilex™ 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" .. -DTYPE=<NAIVE/CSR/STREAMING/PIPES/MMHOST>
-   ```
-
-  > **Note**: You can change the default target by using the command:
-  >  ```
-  >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number> -DTYPE=<NAIVE/CSR/STREAMING/PIPES/MMHOST>
-  >  ``` 
-
-3. Compile the design. (The provided targets match the recommended development flow.)
-
-   1. Compile for emulation (fast compile time, targets emulated FPGA device).
-      ```
-      nmake fpga_emu
-      ```
-      >**Note**: Since this design uses host pipes, make sure that the emulator pipe depth behaviour is as intended. Set the environment variable `CL_CONFIG_CHANNEL_DEPTH_EMULATION_MODE` to `ignore-depth` for this design so that multiple writes can happen to the pipe without first having the contents read.
-      
-   2. Compile for simulation (fast compile time, targets simulator FPGA device):
-      ```
-      nmake fpga_sim
-      ```
-   3. Generate HTML performance report.
-      ```
-      nmake report
-      ```
-      The report resides at `vector_add.report.prj/reports/report.html`.
-
-   4. Compile with Quartus place and route (To get accurate area estimate, longer compile time).
-      ```
-      nmake fpga
-      ```
-
->**Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your 'build' directory in a shorter path, for example `C:\samples\build`. You can then run cmake from that directory, and provide cmake with the full path to your sample directory, for example:
->
->  ```
-  > C:\samples\build> cmake -G "NMake Makefiles" C:\long\path\to\code\sample\CMakeLists.txt
->  ```
 ## Run the Design
 
 ### On Linux
@@ -227,24 +184,6 @@ Use the appropriate TYPE parameter when running CMake to config which design to 
 1. Run the sample on the FPGA simulator.
    ```
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./vector_add.fpga_sim
-   ```
-
-### On Windows
-
-#### Run on FPGA Emulator
-
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
-   ```
-   vector_add.fpga_emu.exe
-   ```
-
-#### Run on FPGA Simulator
-
-1. Run the sample on the FPGA simulator.
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   vector_add.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
    ```
 
 ## License

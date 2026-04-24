@@ -22,13 +22,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(SOURCE_FILES src/db.cpp;src/dbdata.cpp)
 set(TARGET_NAME db)
 
-# Use cmake -DFPGA_DEVICE=<board-support-package>:<board-variant> to choose a
+# Use cmake -DFPGA_DEVICE=<FPGA device family or FPGA part number> to choose a
 # different device.
-# Note that depending on your installation, you may need to specify the full 
-# path to the board support package (BSP), this usually is in your install 
-# folder.
-#
-# You can also specify a device family (E.g. "Arria10" or "Stratix10") or a
+# You can specify a device family (E.g. "Arria10" or "Stratix10") or a
 # specific part number (E.g. "10AS066N3F40E2SG") to generate a standalone IP.
 if(NOT DEFINED FPGA_DEVICE)
     set(FPGA_DEVICE "Agilex7")
@@ -46,6 +42,8 @@ else()
       set(DEVICE_FLAG "S10")
     elseif(FPGA_DEVICE_NAME MATCHES ".*cyclone10.*")
       set(DEVICE_FLAG "Cyclone10")
+    elseif(FPGA_DEVICE_NAME MATCHES ".*agilex5.*")
+      set(DEVICE_FLAG "Agilex5")
     elseif(FPGA_DEVICE_NAME MATCHES ".*agilex.*")
       set(DEVICE_FLAG "Agilex7")
     endif()

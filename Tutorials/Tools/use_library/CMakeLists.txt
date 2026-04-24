@@ -36,17 +36,9 @@ else()
     set(LIBRARY_ARCHIVE ${LIB_FILENAME}.a)
 endif()
 
-# Use cmake -DFPGA_DEVICE=<board-support-package>:<board-variant> to choose a
-# different device. Here are a few device examples (this list is not
-# exhaustive):
-#   intel_s10sx_pac:pac_s10
-#   intel_s10sx_pac:pac_s10_usm
-#   intel_a10gx_pac:pac_a10
-# Note that depending on your installation, you may need to specify the full 
-# path to the board support package (BSP), this usually is in your install 
-# folder.
-#
-# You can also specify a device family (E.g. "Arria10" or "Stratix10") or a
+# Use cmake -DFPGA_DEVICE=<FPGA device family or FPGA part number> to choose a
+# different device.
+# You can specify a device family (E.g. "Arria10" or "Stratix10") or a
 # specific part number (E.g. "10AS066N3F40E2SG") to generate a standalone IP.
 if(NOT DEFINED FPGA_DEVICE)
     set(FPGA_DEVICE "Agilex7")
