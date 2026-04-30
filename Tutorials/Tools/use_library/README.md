@@ -114,20 +114,20 @@ To create a library from  source code, use the following steps:
 
 ### Using the library
 
-To use the generated library in your project, simply add the generated library archive file to the list of input source files when invoking `icpx`. To compile the `use_library` tutorial, pass both `use_library.cpp` and `lib.a` as inputs.
+To use the generated library in your project, simply add the generated library archive file to the list of input source files when invoking `ahls`. To compile the `use_library` tutorial, pass both `use_library.cpp` and `lib.a` as inputs.
 
 ```bash
 # Compile for FPGA emulator
-icpx -fintelfpga use_library.cpp lib_rtl.a -o use_library_emu.fpga -DFPGA_EMULATOR
+ahls -fintelfpga use_library.cpp lib_rtl.a -o use_library_emu.fpga -DFPGA_EMULATOR
 
 # Compile for FPGA Simulator
-icpx -fintelfpga use_library.cpp lib_rtl.a -o use_library.fpga -Xssimulation -DFPGA_SIMULATOR
+ahls -fintelfpga use_library.cpp lib_rtl.a -o use_library.fpga -Xssimulation -DFPGA_SIMULATOR
 
 # Compile for FPGA hardware
-icpx -fintelfpga use_library.cpp lib_rtl.a -o use_library.fpga -Xshardware -DFPGA_HARDWARE
+ahls -fintelfpga use_library.cpp lib_rtl.a -o use_library.fpga -Xshardware -DFPGA_HARDWARE
 ```
 
-Note that the library files (\*.a) must be included after all of the cpp files in the `icpx` command.
+Note that the library files (\*.a) must be included after all of the cpp files in the `ahls` command.
 
 
 ## Build the `use_library` Sample

@@ -81,7 +81,7 @@ Otherwise, the global memory bandwidth utilization may be reduced, which will
 negatively impact the throughput of your design.
 
 To disable burst-interleaving, you need to pass the
-`-Xsno-interleaving=<global_memory_type>` flag to your `icpx` command. In the 
+`-Xsno-interleaving=<global_memory_type>` flag to your `ahls` command. In the 
 case of targeting a BSP, the global memory type is indicated in the board 
 specification XML file for the Board Support Package (BSP) that you're using. 
 The board specification XML file, called `board_spec.xml`, can be found in the 

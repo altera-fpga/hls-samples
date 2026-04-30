@@ -95,7 +95,7 @@ To use an `ac_fixed` type in your code, include the following header:
 #include <sycl/ext/altera/ac_types/ac_fixed.hpp>
 ```
 
-> **Important**: You must pass the  `-qactypes` option to the `icpx` command when building your SYCL program in order to include `ac_types` header files on the include path and link against the AC type libraries. In this tutorial, the options are passed through the `src/CMakeLists.txt` file.
+> **Important**: You must pass the  `-qactypes` option to the `ahls` command when building your SYCL program in order to include `ac_types` header files on the include path and link against the AC type libraries. In this tutorial, the options are passed through the `src/CMakeLists.txt` file.
 
 ### Recommended Method for Constructing `ac_fixed` Numbers
 

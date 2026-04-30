@@ -15,9 +15,9 @@ HLS IP Gen Compiler only supports ahead-of-time (AoT) compilation for FPGA, whic
 
 When targeting an FPGA family/part, no FPGA executable is generated. So this sample is really meant to be used when targeting a device with a BSP where an FPGA executable would be produced.
 
->**Note**: Throughout the sample, the compiler is referred to by the Linux* invocation: `icpx`.
+>**Note**: Throughout the sample, the compiler is referred to by the Linux* invocation: `ahls`.
 
-Passing the `-reuse-exe=<exe_name>` flag to `icpx` instructs the compiler to attempt to reuse the existing FPGA device image.
+Passing the `-reuse-exe=<exe_name>` flag to `ahls` instructs the compiler to attempt to reuse the existing FPGA device image.
 
 ## Prerequisites
 
@@ -62,20 +62,20 @@ You can also find more information about [troubleshooting build errors](/README.
 
 ## Using the `-reuse-exe` Flag
 
-If the device code and options affecting the device have not changed since the previous compilation, passing the `-reuse-exe=<exe_name>` flag to `icpx` instructs the compiler to extract the compiled FPGA binary from the existing executable and package it into the new executable, saving the device compilation time.
+If the device code and options affecting the device have not changed since the previous compilation, passing the `-reuse-exe=<exe_name>` flag to `ahls` instructs the compiler to extract the compiled FPGA binary from the existing executable and package it into the new executable, saving the device compilation time.
 
 Some examples are shown below.
 
 ```
 # Initial compilation
-icpx -fintelfpga <files.cpp> -o out.fpga_sim -Xssimulation -DFPGA_SIMULATOR
+ahls -fintelfpga <files.cpp> -o out.fpga_sim -Xssimulation -DFPGA_SIMULATOR
 ```
 
 The initial compilation generates an FPGA device image. Next, make changes to the host code.
 
 ```
 # Subsequent recompilation
-icpx -fintelfpga <files.cpp> -o out.fpga_sim -reuse-exe=out.fpga_sim -Xssimulation -DFPGA_SIMULATOR
+ahls -fintelfpga <files.cpp> -o out.fpga_sim -reuse-exe=out.fpga_sim -Xssimulation -DFPGA_SIMULATOR
 ```
 
 If `out.fpga_sim` does not exist, `-reuse-exe` is ignored and the FPGA device image is regenerated. This will always be the case the first time a project is compiled.

@@ -19,7 +19,7 @@ buffers that are guaranteed to be constant throughout the execution of a
 kernel. The read-only cache is optimized for high cache hit performance.
 
 To enable the read-only cache, the `-Xsread-only-cache-size<N>` flag should be
-passed to the `icpx` command. Each kernel will get its own *private* version
+passed to the `ahls` command. Each kernel will get its own *private* version
 of the cache that serves all reads in the kernel from read-only no-alias
 accessors. Read-only no-alias accessors are accessors that have both the
 `read_only` and the `no_alias` properties:
@@ -101,7 +101,7 @@ This tutorial requires compiling the source code twice: once with the
 `-Xsread-only-cache-size=<N>` flag and once without it. Because the look-up
 table contains 512 integers as indicated by the `kLUTSize` constant, the chosen
 size of the cache is `512*4 bytes = 2048 bytes`, and so, the flag
-`-Xsread-only-cache-size=2048` is passed to `icpx`.
+`-Xsread-only-cache-size=2048` is passed to `ahls`.
 
 ## Build the `Read-Only Cache` Tutorial
 
