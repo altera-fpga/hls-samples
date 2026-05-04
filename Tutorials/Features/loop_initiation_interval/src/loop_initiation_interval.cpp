@@ -124,10 +124,12 @@ void RunKernel(std::vector<int> &in, std::vector<int> &out) {
           [[intel::initiation_interval(5)]]
 #elif defined(Cyclone10)
           [[intel::initiation_interval(5)]]
-#elif defined(Agilex5)
-          [[intel::initiation_interval(5)]]
 #elif defined(Agilex7)
           [[intel::initiation_interval(5)]]
+#elif defined(Agilex5)
+          [[intel::initiation_interval(5)]]
+#elif defined(Agilex3)
+          [[intel::initiation_interval(3)]]
 #else
           static_assert(false, "Unknown FPGA Architecture!");
 #endif

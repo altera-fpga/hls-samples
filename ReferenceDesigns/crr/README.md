@@ -39,7 +39,7 @@ You can also find more information about [troubleshooting build errors](/README.
 | Optimized for        | Description
 |:---                  |:---
 | OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
-| Hardware             | Agilex® 5, Agilex® 7 and Arria® 10 FPGAs
+| Hardware             | Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
 | Software             | HLS IP Gen Compiler
 
 > **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.

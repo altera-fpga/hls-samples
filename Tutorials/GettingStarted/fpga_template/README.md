@@ -5,7 +5,7 @@ This project serves as a template for HLS FPGA designs, and demonstrates the fea
 | Optimized for                     | Description
 |:---                               |:---
 | OS                                | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
-| Hardware                          | Agilex® 5, Agilex® 7 and Arria® 10 FPGAs
+| Hardware                          | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
 | Software                          | HLS IP Gen Compiler
 | What you will learn               | Best practices for creating and managing a oneAPI FPGA project
 | Time to complete                  | 10 minutes

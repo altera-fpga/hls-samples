@@ -43,10 +43,12 @@ else()
       set(DEVICE_FLAG "S10")
     elseif(FPGA_DEVICE_NAME MATCHES ".*cyclone10.*")
       set(DEVICE_FLAG "Cyclone10")
-    elseif(FPGA_DEVICE_NAME MATCHES ".*agilex5.*")
-      set(DEVICE_FLAG "Agilex5")
     elseif(FPGA_DEVICE_NAME MATCHES ".*agilex7.*")
       set(DEVICE_FLAG "Agilex7")
+    elseif(FPGA_DEVICE_NAME MATCHES ".*agilex5.*")
+      set(DEVICE_FLAG "Agilex5")
+    elseif(FPGA_DEVICE_NAME MATCHES ".*agilex3.*")
+      set(DEVICE_FLAG "Agilex3")
     endif()
 
     # Check if the target is a BSP
@@ -62,7 +64,7 @@ endif()
 if(NOT DEFINED DEVICE_FLAG)
     message(FATAL_ERROR "An unrecognized or custom board was passed, but DEVICE_FLAG was not specified. \
                          Please make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10, \
-                         -DDEVICE_FLAG=Cyclone10 or -DDEVICE_FLAG=Agilex7.")
+                         -DDEVICE_FLAG=Cyclone10, -DDEVICE_FLAG=Agilex7, -DDEVICE_FLAG=Agilex5 or -DDEVICE_FLAG=Agilex3.")
 endif()
 
 # Platform specific flags
@@ -115,6 +117,14 @@ elseif(DEVICE_FLAG MATCHES "Agilex7")
     set(COMPLEX 1)
     set(CLOCK_TARGET "-Xsclock=600MHz")
     set(SEED "-Xsseed=5")
+elseif(DEVICE_FLAG MATCHES "Agilex3")
+    # Agilex 3 parameters
+    set(ROWS_COMPONENT 8)
+    set(COLS_COMPONENT 8)
+    set(FIXED_ITERATIONS 64)
+    set(COMPLEX 1)
+    set(CLOCK_TARGET "-Xsclock=360MHz")
+    set(SEED "-Xsseed=3")
 else()
     message(FATAL_ERROR "Unreachable")
 endif()

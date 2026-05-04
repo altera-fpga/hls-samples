@@ -46,6 +46,8 @@ else()
       set(DEVICE_FLAG "Agilex7")
     elseif(FPGA_DEVICE_NAME MATCHES ".*agilex5.*")
       set(DEVICE_FLAG "Agilex5")
+    elseif(FPGA_DEVICE_NAME MATCHES ".*agilex3.*")
+      set(DEVICE_FLAG "Agilex3")
     elseif(FPGA_DEVICE_NAME MATCHES ".*cyclonev.*")
       set(DEVICE_FLAG "CycloneV")
     endif()
@@ -54,7 +56,7 @@ endif()
 if(NOT DEFINED DEVICE_FLAG)
     message(FATAL_ERROR "An unrecognized or custom board was passed, but DEVICE_FLAG was not specified. \
                          Please make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10, -DDEVICE_FLAG=Cyclone10, -DDEVICE_FLAG=CycloneV, \
-                         -DDEVICE_FLAG=Agilex5, or -DDEVICE_FLAG=Agilex7.")
+                         -DDEVICE_FLAG=Agilex5, -DDEVICE_FLAG=Agilex3, or -DDEVICE_FLAG=Agilex7.")
 endif()
 
 # The manual revert step has to undo some optimizations of the -Xsoptimize flag.
@@ -71,6 +73,8 @@ elseif(${DEVICE_FLAG} STREQUAL S10)
     set(MANUAL_REVERT_FLAGS "-Xshyper-optimized-handshaking=on -Xssfc-exit-fifo-type=default")
 elseif(${DEVICE_FLAG} STREQUAL Agilex5)
     set(MANUAL_REVERT_FLAGS "-Xssfc-exit-fifo-type=default")
+elseif(${DEVICE_FLAG} STREQUAL Agilex3)
+    set(MANUAL_REVERT_FLAGS "-Xssfc-exit-fifo-type=default")
 elseif(${DEVICE_FLAG} STREQUAL Agilex7)
     set(MANUAL_REVERT_FLAGS "-Xshyper-optimized-handshaking=on -Xssfc-exit-fifo-type=default")
 elseif(${DEVICE_FLAG} STREQUAL Cyclone10)
@@ -79,7 +83,7 @@ elseif(${DEVICE_FLAG} STREQUAL CycloneV)
     set(MANUAL_REVERT_FLAGS "-Xssfc-exit-fifo-type=default")
 else()
     message(FATAL_ERROR "No matching device flag found for DEVICE_FLAG ${DEVICE_FLAG}\n
-Valid device flags are -DDEVICE_FLAG=[ A10 - S10 - Agilex5 - Agilex7 - CycloneV ]")
+Valid device flags are -DDEVICE_FLAG=[ A10 - S10 - Agilex7 - Agilex5 - Agilex3 - CycloneV ]")
 endif()
 
 

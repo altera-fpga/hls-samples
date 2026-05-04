@@ -46,6 +46,12 @@ else()
     endif()
 endif()
 
+# Agilex 3 devices are too small to fit this design
+string(TOLOWER ${FPGA_DEVICE} FPGA_DEVICE_NAME)
+if(FPGA_DEVICE_NAME MATCHES ".*agilex3.*")
+    message(FATAL_ERROR "The design is currently too large to fit on Agilex 3 devices.")
+endif()
+
 if(NOT DEFINED FIXED_ITERATIONS)
     set(FIXED_ITERATIONS 55)
 endif()

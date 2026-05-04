@@ -18,7 +18,7 @@ This sample demonstrates how to apply loop fusion to loops in your design. It is
 | Optimized for        | Description
 |:---                  |:---
 | OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
-| Hardware             | Agilex® 5, Agilex® 7 and Arria® 10 FPGAs
+| Hardware             | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
 | Software             | HLS IP Gen Compiler
 
 

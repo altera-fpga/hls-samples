@@ -52,6 +52,12 @@ if (${NO_HYPER_OPTIMIZATION})
     set(HYPER_FLAG -Xshyper-optimized-handshaking=off)
 endif(${NO_HYPER_OPTIMIZATION})
 
+# Agilex 3 devices are too small to fit this design
+string(TOLOWER ${FPGA_DEVICE} FPGA_DEVICE_NAME)
+if(FPGA_DEVICE_NAME MATCHES ".*agilex3.*")
+    message(FATAL_ERROR "The design is currently too large to fit on Agilex 3 devices.")
+endif()
+
 # Use cmake -DUSER_FPGA_FLAGS=<flags> to set extra flags for FPGA backend
 # compilation. 
 set(USER_FPGA_FLAGS ${USER_FPGA_FLAGS})

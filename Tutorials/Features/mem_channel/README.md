@@ -7,7 +7,7 @@ SYCL*-compliant FPGA design.
 | Optimized for                     | Description
 |:---                               |:---
 | OS                                | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
-| Hardware                          | Agilex® 5, Agilex® 7 and Arria® 10 FPGAs
+| Hardware                          | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
 | Software                          | HLS IP Gen Compiler
 | What you will learn               | How and when to use the `mem_channel` buffer property and the `-Xsno-interleaving` flag
 | Time to complete                  | 30 minutes

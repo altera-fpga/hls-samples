@@ -145,14 +145,18 @@ int main(int argc, char *argv[]) {
   ComplexExit<0, true>(bound, r0);
   ComplexExit<10>(bound, r1);
   ComplexExit<54>(bound, r2);
-#elif defined(Agilex5)
-  ComplexExit<0, true>(bound, r0);
-  ComplexExit<10>(bound, r1);
-  ComplexExit<50>(bound, r2);
 #elif defined(Agilex7)
   ComplexExit<0, true>(bound, r0);
   ComplexExit<10>(bound, r1);
   ComplexExit<50>(bound, r2);
+#elif defined(Agilex5)
+  ComplexExit<0, true>(bound, r0);
+  ComplexExit<10>(bound, r1);
+  ComplexExit<50>(bound, r2);
+#elif defined(Agilex3)
+  ComplexExit<0, true>(bound, r0);
+  ComplexExit<10>(bound, r1);
+  ComplexExit<27>(bound, r2);
 #else
   std::static_assert(false, "Invalid FPGA board macro");
 #endif

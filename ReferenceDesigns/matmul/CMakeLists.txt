@@ -47,6 +47,8 @@ else()
       set(DEVICE_FLAG "Agilex7")
     elseif(FPGA_DEVICE_NAME MATCHES ".*agilex5.*")
       set(DEVICE_FLAG "Agilex5")
+    elseif(FPGA_DEVICE_NAME MATCHES ".*agilex3.*")
+      set(DEVICE_FLAG "Agilex3")
     endif()
 
     # Check if the target is a BSP
@@ -62,7 +64,7 @@ endif()
 if(NOT DEFINED DEVICE_FLAG)
     message(FATAL_ERROR "An unrecognized or custom board was passed, but DEVICE_FLAG was not specified. \
                          Please make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10, \
-                         -DDEVICE_FLAG=Cyclone10, -DDEVICE_FLAG=Agilex7 or -DDEVICE_FLAG=Agilex5.")
+                         -DDEVICE_FLAG=Cyclone10, -DDEVICE_FLAG=Agilex7, -DDEVICE_FLAG=Agilex5 or -DDEVICE_FLAG=Agilex3.")
 endif()
 
 # Prevent ignoring NaN values
@@ -118,8 +120,17 @@ elseif(DEVICE_FLAG MATCHES "Agilex5")
     set(TILE_B 8)
     set(CLOCK_TARGET 540MHz)
     set(SEED "-Xsseed=5")
+elseif(DEVICE_FLAG MATCHES "Agilex3")
+    # Agilex™ parameters
+    set(ROWS_A 64)
+    set(COMMON 64)
+    set(COLS_B 64)
+    set(TILE_A 8)
+    set(TILE_B 8)
+    set(CLOCK_TARGET 540MHz)
+    set(SEED "-Xsseed=5")
 else()
-    message(FATAL_ERROR "An incorrect DEVICE_FLAG was given. Make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10, -DDEVICE_FLAG=Cyclone10, -DDEVICE_FLAG=Agilex7 or -DDEVICE_FLAG=Agilex5.")
+    message(FATAL_ERROR "An incorrect DEVICE_FLAG was given. Make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10, -DDEVICE_FLAG=Cyclone10, -DDEVICE_FLAG=Agilex7, -DDEVICE_FLAG=Agilex5 or -DDEVICE_FLAG=Agilex3.")
 endif()
 
 if(IGNORE_DEFAULT_SEED)

@@ -46,10 +46,13 @@ else()
 endif()
 
 string(TOLOWER ${FPGA_DEVICE} FPGA_DEVICE_NAME)
-if(FPGA_DEVICE_NAME MATCHES ".*cyclone.*")
-    message(WARNING "This design is too large for Cyclone devices. You may explicitly set -DNUM_SENSORS to a small \
+if(FPGA_DEVICE_NAME MATCHES ".*cyclone.*" OR FPGA_DEVICE_NAME MATCHES "agilex3")
+    message(WARNING "This design is too large for Agilex 3 and Cyclone devices. You may explicitly set -DNUM_SENSORS to a small \
                      value (e.g., 4) (default is 8) that will fit on the device, but the outputs WILL NOT MATCH \
                      THE EXPECTED OUTPUTS in the `data` folder.")
+    if (NOT NUM_SENSORS)
+        set(NUM_SENSORS "4")
+    endif()
 endif()
 
 # check if the BSP has USM host allocations

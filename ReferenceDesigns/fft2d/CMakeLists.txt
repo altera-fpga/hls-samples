@@ -38,7 +38,7 @@ set(USER_FPGA_FLAGS ${USER_FPGA_FLAGS})
 
 
 string(TOLOWER ${FPGA_DEVICE} FPGA_DEVICE_NAME)
-if(FPGA_DEVICE_NAME MATCHES ".*cyclone.*")
+if(FPGA_DEVICE_NAME MATCHES ".*cyclone.*" OR FPGA_DEVICE_NAME MATCHES ".*agilex3.*")
     message(STATUS "Limiting LOGN and PARALLELISM for Cyclone devices so the design fits.\ 
                     Note that manual overrides (-DSET_<>) still work.")
     set(LOGN "4")

@@ -319,6 +319,10 @@ int main(int argc, char** argv) {
     success &= Intersection<0,3>(q, a, b, golden_n);
     success &= Intersection<1,2>(q, a, b, golden_n);
     success &= Intersection<2,2>(q, a, b, golden_n);
+#elif defined(Agilex3)
+    success &= Intersection<0,3>(q, a, b, golden_n);
+    success &= Intersection<1,2>(q, a, b, golden_n);
+    success &= Intersection<2,2>(q, a, b, golden_n);
 #else
     success &= Intersection<0,3>(q, a, b, golden_n);
     success &= Intersection<1,3>(q, a, b, golden_n);
