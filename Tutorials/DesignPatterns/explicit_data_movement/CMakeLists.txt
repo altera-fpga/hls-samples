@@ -111,8 +111,8 @@ if(WIN32)
     set(EXT ".exe")
 endif()
 
-set(COMMON_COMPILE_FLAGS -fintelfpga -Wall ${WIN_FLAG} ${QACTYPES} ${BSP_FLAG} ${USER_FLAGS})
-set(COMMON_LINK_FLAGS -fintelfpga ${QACTYPES} ${BSP_FLAG} ${USER_FLAGS})
+set(COMMON_COMPILE_FLAGS -Wall ${WIN_FLAG} ${QACTYPES} ${BSP_FLAG} ${USER_FLAGS})
+set(COMMON_LINK_FLAGS ${QACTYPES} ${BSP_FLAG} ${USER_FLAGS})
 
 # A SYCL ahead-of-time (AoT) compile processes the device code in two stages.
 # 1. The "compile" stage compiles the device code to an intermediate

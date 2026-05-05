@@ -68,14 +68,14 @@ Some examples are shown below.
 
 ```
 # Initial compilation
-ahls -fintelfpga <files.cpp> -o out.fpga_sim -Xssimulation -DFPGA_SIMULATOR
+ahls <files.cpp> -o out.fpga_sim -Xssimulation -DFPGA_SIMULATOR
 ```
 
 The initial compilation generates an FPGA device image. Next, make changes to the host code.
 
 ```
 # Subsequent recompilation
-ahls -fintelfpga <files.cpp> -o out.fpga_sim -reuse-exe=out.fpga_sim -Xssimulation -DFPGA_SIMULATOR
+ahls <files.cpp> -o out.fpga_sim -reuse-exe=out.fpga_sim -Xssimulation -DFPGA_SIMULATOR
 ```
 
 If `out.fpga_sim` does not exist, `-reuse-exe` is ignored and the FPGA device image is regenerated. This will always be the case the first time a project is compiled.

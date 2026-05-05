@@ -146,10 +146,10 @@ This design uses CMake to generate a build script for GNU/make.
    ```bash
    build $> make report
    [ 33%] To compile manually:
-   ahls -I../../../../include -fintelfpga -Wall -qactypes -DFPGA_HARDWARE -c ../src/fpga_template.cpp -o CMakeFiles/report.dir/src/ fpga_template.cpp.o
+   ahls -I../../../../include -Wall -qactypes -DFPGA_HARDWARE -c ../src/fpga_template.cpp -o CMakeFiles/report.dir/src/ fpga_template.cpp.o
 
    To link manually:
-   ahls -fintelfpga -Xshardware  -Xstarget=Agilex7 -fsycl-link=early -o fpga_template.report CMakeFiles/report.dir/src/  fpga_template.cpp.o
+   ahls -Xshardware  -Xstarget=Agilex7 -fsycl-link=early -o fpga_template.report CMakeFiles/report.dir/src/  fpga_template.cpp.o
    
    [ ... ]
 

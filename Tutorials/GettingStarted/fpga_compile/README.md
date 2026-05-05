@@ -152,14 +152,14 @@ The [HLS IP Gen Handbook](https://www.intel.com/content/www/us/en/docs/oneapi/pr
 
 ```
 # FPGA emulator image
-ahls -fintelfpga -DFPGA_EMULATOR -I../../../../include vector_add.cpp -o vector_add.fpga_emu
+ahls -DFPGA_EMULATOR -I../../../../include vector_add.cpp -o vector_add.fpga_emu
 ```
 
 #### Optimization Report
 
 ```
 # FPGA early image (with optimization report):
-ahls -fintelfpga -DFPGA_HARDWARE -I../../../../include vector_add.cpp -Xshardware -fsycl-link=early -Xstarget=Agilex7 -o vector_add_report.a
+ahls -DFPGA_HARDWARE -I../../../../include vector_add.cpp -Xshardware -fsycl-link=early -Xstarget=Agilex7 -o vector_add_report.a
 ```
 Use the`-Xstarget` flag to target a device family, or a specific FPGA part number.
 
@@ -167,7 +167,7 @@ Use the`-Xstarget` flag to target a device family, or a specific FPGA part numbe
 
 ```
 # FPGA simulator image:
-ahls -fintelfpga -DFPGA_SIMULATOR -I../../../../include vector_add.cpp -Xssimulation -Xstarget=Agilex7 -Xsghdl -o vector_add_sim.fpga_sim
+ahls -DFPGA_SIMULATOR -I../../../../include vector_add.cpp -Xssimulation -Xstarget=Agilex7 -Xsghdl -o vector_add_sim.fpga_sim
 ```
 Through `-Xstarget`, you can target a device family, or an FPGA part number.
 
@@ -175,7 +175,7 @@ Through `-Xstarget`, you can target a device family, or an FPGA part number.
 
 ```
 # FPGA hardware image:
-ahls -fintelfpga -DFPGA_HARDWARE -I../../../../include vector_add.cpp -Xshardware -Xstarget=Agilex7 -o vector_add.fpga
+ahls -DFPGA_HARDWARE -I../../../../include vector_add.cpp -Xshardware -Xstarget=Agilex7 -o vector_add.fpga
 ```
 Through `-Xstarget`, you can target a device family, or an FPGA part number.
 
