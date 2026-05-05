@@ -54,7 +54,12 @@ endif()
 if(NOT DEFINED DEVICE_FLAG)
     message(FATAL_ERROR "An unrecognized or custom board was passed, but DEVICE_FLAG was not specified. \
                          Please make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10, \
-                         -DDEVICE_FLAG=Cyclone10, -DDEVICE_FLAG=Agilex7, -DDEVICE_FLAG=Agilex5 or -DDEVICE_FLAG=Agilex3.")
+                         -DDEVICE_FLAG=Cyclone10, -DDEVICE_FLAG=Agilex7, -DDEVICE_FLAG=Agilex5.")
+endif()
+
+# Error out if trying to run any query on Agilex 3, which is too small
+if (DEVICE_FLAG MATCHES "Agilex3")
+    message(FATAL_ERROR "db code sample is not supported on Agilex 3 devices")
 endif()
 
 # which query are we doing?
@@ -109,12 +114,6 @@ if(NOT DEFINED SEED)
         elseif(${QUERY} EQUAL 12)
             set(SEED -Xsseed=3)
         endif()
-    elseif(DEVICE_FLAG MATCHES "Agilex3")
-        if(${QUERY} EQUAL 1)
-            set(SEED -Xsseed=2)
-        elseif(${QUERY} EQUAL 12)
-            set(SEED -Xsseed=3)
-        endif()
     else()
         set(SEED -Xsseed=1)
     endif()
@@ -124,10 +123,6 @@ if(IGNORE_DEFAULT_SEED)
     set(SEED )
 endif()
 
-# Error out if trying to run any query on Agilex 3, which is too small
-if (DEVICE_FLAG MATCHES "Agilex3")
-    message(FATAL_ERROR "db code sample is not supported on Agilex 3 devices")
-endif()
 
 # Error out if trying to run Q9 or Q11 on Arria 10 or Agilex 5
 if (DEVICE_FLAG MATCHES "A10" OR DEVICE_FLAG MATCHES "Agilex5")
