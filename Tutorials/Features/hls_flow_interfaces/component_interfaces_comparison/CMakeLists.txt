@@ -29,9 +29,11 @@ elseif(${TYPE} MATCHES PIPES)
     set(SOURCE_FILES pipes/src/vector_add.cpp)
 elseif(${TYPE} MATCHES MMHOST)
     set(SOURCE_FILES mm-host/src/vector_add.cpp)
+elseif(${TYPE} MATCHES DEVGLOB)
+    set(SOURCE_FILES device-global/src/vector_add.cpp)
 else()
     message(FATAL_ERROR "No matching compile type found for ${TYPE}\n
-Valid types -DTYPE=[ NAIVE / CSR / STREAMING / PIPES / MMHOST ]")
+Valid types -DTYPE=[ NAIVE / CSR / STREAMING / PIPES / MMHOST / DEVGLOB ]")
 endif()
 set(TARGET_NAME vector_add)
 

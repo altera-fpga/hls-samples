@@ -155,11 +155,11 @@
 					<text x="0" y="290.13" class="st15" v:langID="4105"><v:paragraph/><v:tabList/>some_other_arg</text>				</g>
 				<g id="shape1012-50" v:mID="1012" v:groupContext="shape" transform="translate(34.5979,-17.0079)">
 					<title>Sheet.1012</title>
-					<desc>some_output</desc>
+					<desc>output_ptr_arg</desc>
 					<v:textBlock v:margins="rect(0,0,0,0)" v:tabSpace="42.5197"/>
 					<v:textRect cx="41.9052" cy="286.796" width="83.82" height="13.3441"/>
 					<path d="M83.81 280.12 L0 280.12 L0 293.47 L83.81 293.47 L83.81 280.12" class="st14"/>
-					<text x="0" y="290.13" class="st15" v:langID="4105"><v:paragraph/><v:tabList/>some_output</text>				</g>
+					<text x="0" y="290.13" class="st15" v:langID="4105"><v:paragraph/><v:tabList/>output_ptr_arg</text>				</g>
 				<g id="shape1013-54" v:mID="1013" v:groupContext="shape" transform="translate(31.2459,-60.135)">
 					<title>Sheet.1013</title>
 					<path d="M0 293.47 L86.37 293.47" class="st16"/>

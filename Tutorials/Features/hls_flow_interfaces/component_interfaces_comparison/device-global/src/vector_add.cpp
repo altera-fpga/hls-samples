@@ -1,12 +1,21 @@
 #include <iostream>
 
-// oneAPI headers
 #include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "exception_handler.hpp"
 
+// Define namespace alias for easy reference.
+namespace altera_exp = sycl::ext::altera::experimental;
+namespace oneapi_exp = sycl::ext::oneapi::experimental;
+
 constexpr int kVectorSize = 256;
+constexpr int kBatchSize = 64;
+
+// Declare a device-global index variable
+using DeviceGlobalProperties = decltype(oneapi_exp::properties(
+  oneapi_exp::device_image_scope, oneapi_exp::host_access_write));
+oneapi_exp::device_global<int, DeviceGlobalProperties> start_idx;
 
 // Forward declare the kernel name in the global scope. This is an FPGA best
 // practice that reduces name mangling in the optimization reports.
@@ -19,12 +28,15 @@ struct SimpleVAddKernel {
   int len;
 
   void operator()() const {
-    for (int idx = 0; idx < len; idx++) {
+    const int start = start_idx.get();
+    for (int idx = start; idx < start + len; idx++) {
       int a_val = a_in[idx];
       int b_val = b_in[idx];
       int sum = a_val + b_val;
       c_out[idx] = sum;
     }
+    // Update idx, state will be preserved across kernel invocations
+    start_idx = start + len;
   }
 };
 
@@ -52,8 +64,11 @@ int main() {
               << device.get_info<sycl::info::device::name>().c_str()
               << std::endl;
 
-    // Vector size is a constant here, but it could be a run-time variable too.
+    // Vector size and batch size are constants here, but they could be a
+    // run-time variable too.
     int count = kVectorSize;
+    int batch = kBatchSize;
+    int num_batches = count / batch;
 
     // Create USM shared allocations in the specified buffer_location.
     // You can also use host allocations with malloc_host(...) API
@@ -65,12 +80,18 @@ int main() {
       b[i] = (count - i);
     }
 
-    std::cout << "Add two vectors of size " << count << std::endl;
+    // Initialize the device-global index variable
+    int init_idx = 0;
+    q.copy(&init_idx, start_idx).wait();
 
-    sycl::event e = q.single_task<IDSimpleVAdd>(SimpleVAddKernel{a, b, c, count});
+    std::cout << "Add two vectors of size " << count << " in " << num_batches
+              << " batches of size " << batch << std::endl;
 
-    // Verify that outputs are correct, after the kernel has finished running.
-    e.wait();
+    for (int i = 0; i < num_batches; i++)
+      q.single_task<IDSimpleVAdd>(SimpleVAddKernel{a, b, c, batch}).wait();
+
+    // Verify that outputs are correct, after the last invocation of the kernel
+    // has finished running.
     for (int i = 0; i < count; i++) {
       int expected = a[i] + b[i];
       if (c[i] != expected) {

@@ -1,22 +1,57 @@
 # Memory-Mapped Host Interfaces
+
 This implementation uses a register-mapped invocation interface, and demonstrates how to use `annotated_arg` to customize the memory-mapped host data interface.
 
 ![](../assets/ddr.svg)
 
-## Invocation Interface
-By default, an un-decorated oneAPI kernel will have all its control signals and arguments mapped into the IP component's control/status register (CSR).
+## Interface Summary
 
-## Data Interface - MM Host
-The pointer arguments `a_in`, `b_in`, `c_out` and scalar argument `len` are passed through the IP component's CSR. In this example design, the memory-mapped host interfaces pointed to by `a_in`, `b_in`, `c_out` are customized using `annotated_arg`.
+<table>
+  <tr>
+    <th>Interface</th>
+    <th>Type</th>
+    <th>Variable</th>
+  </tr>
+  <tr>
+    <td>Kernel invocation</td>
+    <td rowspan="5">Avalon® MM agent (CSR)</td>
+    <td>N/A</td>
+  </tr>
+  <tr>
+    <td rowspan="4">Kernel argument</td>
+    <td><code>a_in</code> (pointer address)</td>
+  </tr>
+  <tr>
+    <td><code>b_in</code> (pointer address)</td>
+  </tr>
+  <tr>
+    <td><code>c_out</code> (pointer address)</td>
+  </tr>
+  <tr>
+    <td><code>len</code></td>
+  </tr>
+  <tr>
+    <td rowspan="3">External memory</td>
+    <td>Avalon MM host (customized, <code>buffer_location<1></code>)</td>
+    <td><code>a_in</code> (data)</td>
+  </tr>
+  <tr>
+    <td>Avalon MM host (customized, <code>buffer_location<2></code>)</td>
+    <td><code>b_in</code> (data)</td>
+  </tr>
+  <tr>
+    <td>Avalon MM host (customized, <code>buffer_location<3></code>)</td>
+    <td><code>c_out</code> (data)</td>
+  </tr>
+</table>
 
-You can customize memory-mapped interfaces of your IP component if the component uses a unified shared memory (USM) host or shared pointer to access data. To customize the interface, declare your pointer arguments with the templated type `annotated_arg`.
+## Memory-Mapped Host Interface
 
-### Declare `annotated_arg`
-An explicit MM Host interface should be declared as a member of your kernel functor as shown in the  next section.
+Since the pointer arguments refer to data in external memory, the compiler generates memory-mapped host interfaces for the kernel to access that memory. You can customize these interfaces by declaring your pointer arguments with the templated type `annotated_arg`. In this example, the memory-mapped host interfaces for `a_in`, `b_in`, and `c_out` are each customized this way.
 
-A list of properties that can be used to customize `annotated_arg` can be found in this dedicated [mmhost](/Tutorials/Features/hls_flow_interfaces/mmhost) code sample.
+### Using `annotated_arg`
 
-### Example of how to use `annotated_arg` to customize an Avalon memory-mapped host interface
+To customize a memory-mapped host interface, declare the pointer argument as an `annotated_arg` member in your kernel functor. The following example shows how to specify properties such as `buffer_location`, `dwidth`, `latency`, `read_write_mode`, and `alignment`:
 
 ```cpp
 sycl::ext::oneapi::experimental::annotated_arg<
@@ -26,8 +61,10 @@ sycl::ext::oneapi::experimental::annotated_arg<
                  sycl::ext::altera::experimental::latency<0>,
                  sycl::ext::altera::experimental::read_write_mode_read,
                  sycl::ext::oneapi::experimental::alignment<4>})>
-      A_in;
+      a_in;
 ```
+
+A full list of properties that can be used with `annotated_arg` can be found in the dedicated [mmhost](/Tutorials/Features/hls_flow_interfaces/mmhost) code sample.
 
 ## Example Output
 
@@ -37,6 +74,7 @@ PASSED
 ```
 
 ## License
+
 Code samples are licensed under the MIT license. See
 [License.txt](/License.txt) for details.
 
