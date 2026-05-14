@@ -5,7 +5,7 @@ This example design shows how to use an FPGA IP produced with the HLS IP Gen Com
 | Optimized for                     | Description
 |:---                               |:---
 | OS                                | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
-| Hardware                          | This process applies to any FPGA that is supported by the DPC++/C++ compiler, but the sample Quartus® Prime Pro Edition project targets the [Arria® 10 SX SoC Development Kit](https://www.intel.com/content/www/us/en/products/details/fpga/development-kits/arria/10-sx.html)
+| Hardware                          | This process applies to any FPGA that is supported by the DPC++/C++ compiler, but the sample Quartus® Prime Pro Edition project targets the [Arria® 10 SX SoC Development Kit](https://www.altera.com/products/devkit/po-3006/arria-10-sx-soc-development-kit)
 | Software                          | HLS IP Gen Compiler
 | What you will learn               | How to integrate an RTL IP generated from a SYCL kernel with an Quartus® Prime Pro Edition project
 | Time to complete                  | 1 hour
