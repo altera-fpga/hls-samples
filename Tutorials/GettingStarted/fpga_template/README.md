@@ -166,7 +166,7 @@ This design uses CMake to generate a build script for GNU/make.
 2. Run the sample on the FPGA simulator device.
    ```
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./fpga_template.fpga_sim
-  ```
+   ```
 
 ## Example Output
 
