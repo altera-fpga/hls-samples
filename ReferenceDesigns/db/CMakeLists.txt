@@ -111,6 +111,8 @@ if(NOT DEFINED SEED)
     elseif(DEVICE_FLAG MATCHES "Agilex5")
         if(${QUERY} EQUAL 1)
             set(SEED -Xsseed=2)
+            # This design utilizes area more effectively on Agilex5 with this optimization turned on
+            set(USER_FPGA_FLAGS ${USER_FPGA_FLAGS};-Xshyper-optimized-handshaking=on)
         elseif(${QUERY} EQUAL 12)
             set(SEED -Xsseed=3)
         endif()

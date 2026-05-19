@@ -116,13 +116,14 @@ This design measures the FPGA performance to determine how many assets can be pr
 
 #### Compiler Flags Used
 
-| Flag                    | Description
-|:---                     |:---
-|`-Xshardware`            | Target FPGA hardware (as opposed to FPGA emulator)
-|`-Xsdaz`                 | Denormals are zero
-|`-Xsrounding=faithful`   | Rounds results to either the upper or lower nearest single-precision numbers
-|`-Xsparallel=2`          | Uses 2 cores when compiling the bitstream through Quartus®
-|`-Xsseed=2`              | Uses seed 2 during Quartus®, yields slightly higher f<sub>MAX</sub>
+| Flag                               | Description
+|:---                                |:---
+|`-Xshardware`                       | Target FPGA hardware (as opposed to FPGA emulator)
+|`-Xsdaz`                            | Denormals are zero
+|`-Xsrounding=faithful`              | Rounds results to either the upper or lower nearest single-precision numbers
+|`-Xsparallel=2`                     | Uses 2 cores when compiling the bitstream through Quartus®
+|`-Xsseed=2`                         | Uses seed 2 during Quartus®, yields slightly higher f<sub>MAX</sub>
+|`-Xshyper-optimized-handshaking=on` | Applied on Agilex5 device, on by default on Agilex7 and Stratix10 devices. Improves throuhgput/area on larger devices
 
 #### Preprocessor Define Flags
 

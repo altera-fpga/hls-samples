@@ -115,6 +115,13 @@ message(STATUS "OUTER_UNROLL_POW2_V=${OUTER_UNROLL_POW2_V}")
 # compilation. 
 set(USER_FPGA_FLAGS ${USER_FPGA_FLAGS};${SEED};-Xsdaz;-Xsrounding=faithful)
 
+if(DEVICE_FLAG MATCHES "Agilex5")
+  # This design utilizes area more effectively on Agilex5 with this optimization turned on
+  # Note that this results in a warning as not all optimizations under this umbrella
+  # can be enabled, this does not render the flag ineffective though
+  set(USER_FPGA_FLAGS ${USER_FPGA_FLAGS};-Xshyper-optimized-handshaking=on)
+endif()
+
 # Use cmake -DUSER_FLAGS=<flags> to set extra flags for general compilation.
 set(USER_FLAGS ${USER_FLAGS};-DOUTER_UNROLL_V=${OUTER_UNROLL_V};-DINNER_UNROLL_V=${INNER_UNROLL_V};-DOUTER_UNROLL_POW2_V=${OUTER_UNROLL_POW2_V})
 
