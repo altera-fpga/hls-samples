@@ -5,33 +5,36 @@
 
 #include "exception_handler.hpp"
 
+namespace oneapi_exp = sycl::ext::oneapi::experimental;
+namespace altera_exp = sycl::ext::altera::experimental;
+
 using MyUInt5 = ac_int<5, false>;
 
 // Forward declare the kernel names in the global scope.
 // This FPGA best practice reduces name mangling in the optimization reports.
 class FunctorRegMap;
 
+
+
 /////////////////////////////////////////
 
 struct FunctorRegMapIP {
-  // Use an annotated_arg with the 'register_map' property to explicitly specify
-  // it to be a register-mapped kernel argument.
-  sycl::ext::oneapi::experimental::annotated_arg<
-      int *, decltype(sycl::ext::oneapi::experimental::properties{
-                 sycl::ext::altera::experimental::register_map})>
-      input;
+  // Use an annotated_arg with the 'register_map' property to explicitly
+  // specify it to be a register-mapped kernel argument.
+  using register_map_property =
+      decltype(oneapi_exp::properties{altera_exp::register_map});
+  oneapi_exp::annotated_arg<int *, register_map_property> input;
 
   // Without the annotation, kernel argument will be inferred to be
-  // register-mapped kernel arguments if the kernel invocation interface is
-  // register-mapped, and vice-versa.
+  // register-mapped kernel arguments if the kernel invocation interface
+  // is register-mapped, and vice-versa.
   int *output;
 
   // A kernel with a register map invocation interface can also independently
   // have streaming kernel arguments, when annotated by 'conduit' property.
-  sycl::ext::oneapi::experimental::annotated_arg<
-      MyUInt5, decltype(sycl::ext::oneapi::experimental::properties{
-                   sycl::ext::altera::experimental::conduit})>
-      n;
+  using conduit_property =
+      decltype(oneapi_exp::properties{altera_exp::conduit});
+  oneapi_exp::annotated_arg<MyUInt5, conduit_property> n;
 
   // Without a kernel argument definition, the compiler will infer a
   // register-mapped invocation interface.
@@ -134,11 +137,7 @@ int main(int argc, char *argv[]) {
     std::terminate();
   }
 
-  if (passed) {
-    std::cout << "PASSED\n";
-    return 0;
-  } else {
-    std::cout << "FAILED\n";
-    return 1;
-  }
+  std::cout << (passed ? "PASSED" : "FAILED") << std::endl;
+
+  return passed ? EXIT_SUCCESS : EXIT_FAILURE;
 }

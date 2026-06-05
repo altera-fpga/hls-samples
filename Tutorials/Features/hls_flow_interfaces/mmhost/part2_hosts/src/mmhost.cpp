@@ -3,6 +3,9 @@
 
 #include "exception_handler.hpp"
 
+namespace oneapi_exp = sycl::ext::oneapi::experimental;
+namespace altera_exp = sycl::ext::altera::experimental;
+
 constexpr int kBL1 = 1;
 constexpr int kBL2 = 2;
 constexpr int kBL3 = 3;
@@ -11,36 +14,36 @@ constexpr int kAlignment = 4;
 struct MultiMMIP {
   // Each annotated pointer is configured with a unique `buffer_location`,
   // resulting in three unique Avalon memory-mapped host interfaces.
-  using XProps = decltype(sycl::ext::oneapi::experimental::properties{
-      sycl::ext::altera::experimental::buffer_location<kBL1>,
-      sycl::ext::altera::experimental::awidth<32>,
-      sycl::ext::altera::experimental::dwidth<32>,
-      sycl::ext::altera::experimental::latency<1>,
-      sycl::ext::oneapi::experimental::alignment<kAlignment>,
-      sycl::ext::altera::experimental::read_write_mode_read});
-  using YProps = decltype(sycl::ext::oneapi::experimental::properties{
-      sycl::ext::altera::experimental::buffer_location<kBL2>,
-      sycl::ext::altera::experimental::awidth<32>,
-      sycl::ext::altera::experimental::dwidth<32>,
-      sycl::ext::altera::experimental::latency<1>,
-      sycl::ext::oneapi::experimental::alignment<kAlignment>,
-      sycl::ext::altera::experimental::read_write_mode_read});
-  using ZProps = decltype(sycl::ext::oneapi::experimental::properties{
-      sycl::ext::altera::experimental::buffer_location<kBL3>,
-      sycl::ext::altera::experimental::awidth<32>,
-      sycl::ext::altera::experimental::dwidth<32>,
-      sycl::ext::altera::experimental::latency<1>,
-      sycl::ext::oneapi::experimental::alignment<kAlignment>,
-      sycl::ext::altera::experimental::read_write_mode_write});
+  using XProps = decltype(oneapi_exp::properties{
+      altera_exp::buffer_location<kBL1>,
+      altera_exp::awidth<32>,
+      altera_exp::dwidth<32>,
+      altera_exp::latency<1>,
+      oneapi_exp::alignment<kAlignment>,
+      altera_exp::read_write_mode_read});
+  using YProps = decltype(oneapi_exp::properties{
+      altera_exp::buffer_location<kBL2>,
+      altera_exp::awidth<32>,
+      altera_exp::dwidth<32>,
+      altera_exp::latency<1>,
+      oneapi_exp::alignment<kAlignment>,
+      altera_exp::read_write_mode_read});
+  using ZProps = decltype(oneapi_exp::properties{
+      altera_exp::buffer_location<kBL3>,
+      altera_exp::awidth<32>,
+      altera_exp::dwidth<32>,
+      altera_exp::latency<1>,
+      oneapi_exp::alignment<kAlignment>,
+      altera_exp::read_write_mode_write});
 
-  sycl::ext::oneapi::experimental::annotated_arg<int *, XProps> x;
-  sycl::ext::oneapi::experimental::annotated_arg<int *, YProps> y;
-  sycl::ext::oneapi::experimental::annotated_arg<int *, ZProps> z;
+  oneapi_exp::annotated_arg<int *, XProps> x;
+  oneapi_exp::annotated_arg<int *, YProps> y;
+  oneapi_exp::annotated_arg<int *, ZProps> z;
 
   int size;
 
   void operator()() const {
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < size; ++i) {
       z[i] = x[i] + y[i];
     }
   }
@@ -71,19 +74,19 @@ int main(void) {
     constexpr int kN = 8;
     std::cout << "Elements in vector : " << kN << "\n";
 
-    // Host array must share the same buffer location property as defined in the
-    // kernel. Since we are specifying alignment on the kernel argument, we
-    // need to also specify that to the allocation call by using
+    // Host array must share the same buffer location property as defined in
+    // the kernel. Since we are specifying alignment on the kernel argument,
+    // we need to also specify that to the allocation call by using
     // aligned_alloc_shared API
     int *array_a = sycl::aligned_alloc_shared<int>(
         kAlignment, kN, q,
-        sycl::ext::altera::experimental::property::usm::buffer_location(kBL1));
+        altera_exp::property::usm::buffer_location(kBL1));
     int *array_b = sycl::aligned_alloc_shared<int>(
         kAlignment, kN, q,
-        sycl::ext::altera::experimental::property::usm::buffer_location(kBL2));
+        altera_exp::property::usm::buffer_location(kBL2));
     int *array_c = sycl::aligned_alloc_shared<int>(
         kAlignment, kN, q,
-        sycl::ext::altera::experimental::property::usm::buffer_location(kBL3));
+        altera_exp::property::usm::buffer_location(kBL3));
 
     assert(array_a);
     assert(array_b);
@@ -92,9 +95,13 @@ int main(void) {
     for (int i = 0; i < kN; i++) {
       array_a[i] = i;
       array_b[i] = 2 * i;
+      array_c[i] = 0;
     }
 
+    // Launch the kernel
     q.single_task(MultiMMIP{array_a, array_b, array_c, kN}).wait();
+
+    // Verify the results
     for (int i = 0; i < kN; i++) {
       auto golden = 3 * i;
       if (array_c[i] != golden) {
@@ -104,13 +111,10 @@ int main(void) {
       }
     }
 
-    std::cout << (passed ? "PASSED" : "FAILED") << std::endl;
+    sycl::free(array_a, q);
+    sycl::free(array_b, q);
+    sycl::free(array_c, q);
 
-    free(array_a, q);
-    free(array_b, q);
-    free(array_c, q);
-
-    return passed ? EXIT_SUCCESS : EXIT_FAILURE;
   } catch (sycl::exception const &e) {
     // Catches exceptions in the host code
     std::cerr << "Caught a SYCL host exception:\n" << e.what() << "\n";
@@ -125,4 +129,8 @@ int main(void) {
     }
     std::terminate();
   }
+
+  std::cout << (passed ? "PASSED" : "FAILED") << std::endl;
+
+  return passed ? EXIT_SUCCESS : EXIT_FAILURE;
 }

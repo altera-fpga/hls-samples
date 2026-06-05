@@ -3,12 +3,15 @@
 
 #include "exception_handler.hpp"
 
-struct SingleMMIP {
-  // This kernel has 3 annotated pointers, but since they have no properties
-  // specified, this kernel will result in the same IP component as Example 1.
-  sycl::ext::oneapi::experimental::annotated_arg<int *> x;
-  sycl::ext::oneapi::experimental::annotated_arg<int *> y;
-  sycl::ext::oneapi::experimental::annotated_arg<int *> z;
+constexpr int kBL1 = 1;
+constexpr int kBL2 = 2;
+constexpr int kBL3 = 3;
+
+template <class AccA, class AccB, class AccC>
+struct AccessorMMIP {
+  AccA x;
+  AccB y;
+  AccC z;
   int size;
 
   void operator()() const {
@@ -17,6 +20,31 @@ struct SingleMMIP {
     }
   }
 };
+
+template <int N>
+void RunKernel(sycl::queue &q, std::array<int, N> &array_a,
+               std::array<int, N> &array_b, std::array<int, N> &array_c) {
+  sycl::buffer buf_a{array_a};
+  sycl::buffer buf_b{array_b};
+  sycl::buffer buf_c{array_c};
+
+  q.submit([&](sycl::handler &h) {
+    sycl::accessor acc_a{buf_a, h, sycl::read_only,
+                         sycl::ext::oneapi::accessor_property_list{
+                             sycl::ext::altera::buffer_location<kBL1>}};
+    sycl::accessor acc_b{buf_b, h, sycl::read_only,
+                         sycl::ext::oneapi::accessor_property_list{
+                             sycl::ext::altera::buffer_location<kBL2>}};
+    sycl::accessor acc_c{buf_c, h, sycl::write_only,
+                         sycl::ext::oneapi::accessor_property_list{
+                             sycl::ext::altera::buffer_location<kBL3>,
+                             sycl::no_init}};
+
+    h.single_task(
+        AccessorMMIP<decltype(acc_a), decltype(acc_b), decltype(acc_c)>{
+            acc_a, acc_b, acc_c, N});
+  });
+}
 
 int main(void) {
 #if FPGA_SIMULATOR
@@ -43,20 +71,17 @@ int main(void) {
     constexpr int kN = 8;
     std::cout << "Elements in vector : " << kN << "\n";
 
-    int *array_a = sycl::malloc_shared<int>(kN, q);
-    int *array_b = sycl::malloc_shared<int>(kN, q);
-    int *array_c = sycl::malloc_shared<int>(kN, q);
-
-    assert(array_a);
-    assert(array_b);
-    assert(array_c);
-
+    std::array<int, kN> array_a, array_b, array_c;
     for (int i = 0; i < kN; i++) {
       array_a[i] = i;
       array_b[i] = 2 * i;
+      array_c[i] = 0;
     }
 
-    q.single_task(SingleMMIP{array_a, array_b, array_c, kN}).wait();
+    // Launch the kernel
+    RunKernel<kN>(q, array_a, array_b, array_c);
+
+    // Verify the results
     for (int i = 0; i < kN; i++) {
       auto golden = 3 * i;
       if (array_c[i] != golden) {
@@ -66,13 +91,6 @@ int main(void) {
       }
     }
 
-    std::cout << (passed ? "PASSED" : "FAILED") << std::endl;
-
-    free(array_a, q);
-    free(array_b, q);
-    free(array_c, q);
-
-    return passed ? EXIT_SUCCESS : EXIT_FAILURE;
   } catch (sycl::exception const &e) {
     // Catches exceptions in the host code
     std::cerr << "Caught a SYCL host exception:\n" << e.what() << "\n";
@@ -87,4 +105,8 @@ int main(void) {
     }
     std::terminate();
   }
+
+  std::cout << (passed ? "PASSED" : "FAILED") << std::endl;
+
+  return passed ? EXIT_SUCCESS : EXIT_FAILURE;
 }

@@ -5,6 +5,9 @@
 
 #include "exception_handler.hpp"
 
+namespace oneapi_exp = sycl::ext::oneapi::experimental;
+namespace altera_exp = sycl::ext::altera::experimental;
+
 using MyUInt5 = ac_int<5, false>;
 
 // Forward declare the kernel names in the global scope.
@@ -16,10 +19,9 @@ class LambdaRegMap;
 void LambdaRegMapKernel(sycl::queue &q, int *input, int *output, MyUInt5 n) {
   // A kernel with a register map invocation interface can also independently
   // have streaming kernel arguments, when annotated by 'conduit' property.
-  sycl::ext::oneapi::experimental::annotated_arg<
-      MyUInt5, decltype(sycl::ext::oneapi::experimental::properties{
-                   sycl::ext::altera::experimental::conduit})>
-      n_annotated = n;
+  using conduit_property =
+      decltype(oneapi_exp::properties{altera_exp::conduit});
+  oneapi_exp::annotated_arg<MyUInt5, conduit_property> n_annotated = n;
 
   // Without passing a properties object argument, the compiler will infer a
   // register-mapped invocation interface.
@@ -120,11 +122,7 @@ int main(int argc, char *argv[]) {
     std::terminate();
   }
 
-  if (passed) {
-    std::cout << "PASSED\n";
-    return 0;
-  } else {
-    std::cout << "FAILED\n";
-    return 1;
-  }
+  std::cout << (passed ? "PASSED" : "FAILED") << std::endl;
+
+  return passed ? EXIT_SUCCESS : EXIT_FAILURE;
 }

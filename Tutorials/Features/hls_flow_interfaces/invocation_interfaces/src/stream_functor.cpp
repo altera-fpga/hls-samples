@@ -4,6 +4,9 @@
 
 #include "exception_handler.hpp"
 
+namespace oneapi_exp = sycl::ext::oneapi::experimental;
+namespace altera_exp = sycl::ext::altera::experimental;
+
 // Forward declare the kernel names in the global scope.
 // This FPGA best practice reduces name mangling in the optimization reports.
 class FunctorStream;
@@ -18,18 +21,16 @@ struct Point {
 struct FunctorStreamIP {
   // Annotate kernel argument with 'conduit' property
   // to specify it to be a streaming kernel argument.
-  sycl::ext::oneapi::experimental::annotated_arg<
-      Point, decltype(sycl::ext::oneapi::experimental::properties{
-                 sycl::ext::altera::experimental::conduit})>
-      input;
+  using conduit_property =
+      decltype(oneapi_exp::properties{altera_exp::conduit});
+  oneapi_exp::annotated_arg<Point, conduit_property> input;
 
   // A kernel with a streaming invocation interface can also independently
   // have register-mapped kernel arguments, when annotated by 'register_map'
   // property.
-  sycl::ext::oneapi::experimental::annotated_arg<
-      Point *, decltype(sycl::ext::oneapi::experimental::properties{
-                   sycl::ext::altera::experimental::register_map})>
-      output;
+  using register_map_property =
+      decltype(oneapi_exp::properties{altera_exp::register_map});
+  oneapi_exp::annotated_arg<Point *, register_map_property> output;
 
   // Without the annotation, kernel argument will be inferred to be streaming
   // kernel arguments if the kernel invocation interface is streaming, and
@@ -38,10 +39,9 @@ struct FunctorStreamIP {
 
   // Kernel properties method to configure the kernel to be a kernel with
   // streaming invocation interface.
-  auto get(sycl::ext::oneapi::experimental::properties_tag) {
-    return sycl::ext::oneapi::experimental::properties{
-        sycl::ext::altera::experimental::
-            streaming_interface_accept_downstream_stall};
+  auto get(oneapi_exp::properties_tag) {
+    return oneapi_exp::properties{
+        altera_exp::streaming_interface_accept_downstream_stall};
   }
 
   void operator()() const {
@@ -158,11 +158,7 @@ int main(int argc, char *argv[]) {
     std::terminate();
   }
 
-  if (passed) {
-    std::cout << "PASSED\n";
-    return 0;
-  } else {
-    std::cout << "FAILED\n";
-    return 1;
-  }
+  std::cout << (passed ? "PASSED" : "FAILED") << std::endl;
+
+  return passed ? EXIT_SUCCESS : EXIT_FAILURE;
 }

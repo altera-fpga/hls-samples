@@ -1,16 +1,16 @@
 # `Invocation Interfaces` Sample
 
-This sample is an FPGA tutorial that demonstrates how to specify the kernel invocation interface and kernel argument interface for an FPGA IP produced with the HLS IP Gen Compiler.
+This sample demonstrates how to specify the kernel invocation interface and kernel argument interface for an FPGA IP produced with the HLS IP Gen Compiler.
 
 | Area                 | Description
 |:--                   |:--
-| What you will learn  | Basics of specifying kernel invocation interfaces and kernel argument interfaces
+| What you will learn  | Basics of configuring kernel invocation interfaces and kernel argument interfaces
 | Time to complete     | 30 minutes
 | Category             | Concepts and Functionality
 
 ## Purpose
 
-The sample demonstrates the differences between streaming invocation interfaces that use a ready/valid handshake and register-mapped invocation interfaces that exist in the control/status register (CSR) of FPGA IP produced with the HLS IP Gen Compiler.
+This sample demonstrates the differences between streaming invocation interfaces that use a ready/valid handshake and register-mapped invocation interfaces that exist in the control/status register (CSR) of FPGA IP produced with the HLS IP Gen Compiler.
 
 Use the `get` kernel properties method to specify how the IP is started, and `annotated_arg` wrapper to specify how arguments are passed to the IP.
 
@@ -60,30 +60,36 @@ The sample demonstrates in detail how to declare kernel invocation interfaces an
 
 ### Understanding Register-Mapped and Streaming Interfaces
 
-The kernel invocation interface (namely, the `start` and `done` signals) can be implemented in the kernel's CSR, or using a ready/valid handshake. Similarly, the kernel arguments can be passed through the CSR, or through dedicated conduits. 
+The kernel invocation interface (namely, the `start` and `done` signals) can be implemented in the kernel's CSR, or using a ready/valid handshake. Similarly, the kernel arguments can be passed through the CSR, or through dedicated conduits.
 
 | Register-mapped Invocation with Register-mapped Arguments | Streaming Invocation with Conduit Arguments
 |:--:                                                       |:--:
 | ![](assets/invocation_mm_agent_args.svg)                  | ![](assets/invocation_streaming_args.svg)
 
-The invocation interface and any argument interfaces are specified independently, so you may choose to implement the invocation interface with a ready/valid handshake, and implement the kernel arguments in the CSR. The following table lists valid kernel argument interface synchronizations.
+The invocation interface and any argument interfaces are specified independently, so you may choose to implement the invocation interface with a ready/valid handshake and implement the kernel arguments in the CSR, or vice versa. The following table lists valid kernel argument interface synchronizations.
 
 | Invocation Interface    | Argument Interface    | Argument Interface Synchronization
 |:---                     |:---                   |:---
-| Streaming               | Conduit               | Consumed when `<kernel_name>_streaming_start`=1 and `<kernel_name>_streaming_ready_out`=0 
-| Streaming               | Register-mapped       | Consumed if written one clock cycle before `<kernel_name>_streaming_start`=1 and `<kernel_name>_streaming_ready_out`=0 
-| Register-mapped         | Conduit               | Consumed one clock cycle after writing to the `start` register 
 | Register-mapped         | Register-mapped       | Consumed if written any time before writing to the `start` register 
+| Register-mapped         | Conduit               | Consumed one clock cycle after writing to the `start` register 
+| Streaming               | Conduit               | Consumed when `<kernel_name>_streaming_start`=1 and `<kernel_name>_streaming_ready_out`=1 
+| Streaming               | Register-mapped       | Consumed if written one clock cycle before `<kernel_name>_streaming_start`=1 and `<kernel_name>_streaming_ready_out`=1 
 
-If you would like an argument to have its own **dedicated** ready/valid handshake, implement that argument using a [streaming interface](../streaming_data_interfaces/).
+Note that streaming kernel arguments (conduit) only open a single data port on the IP interface and are sampled once upon kernel invocation. If you would like to stream data into or out of the kernel as it runs, use a [streaming data interface](../streaming_data_interfaces/), which provides a dedicated ready/valid handshake for continuous data transfer.
 
-> **Note**: The register-mapped and streaming interface features are **only** supported in the SYCL HLS flow. The SYCL HLS flow compiles SYCL* source code to IPs that can be deployed into your Quartus® Prime projects. Emulator and simulator executables are still generated to allow you to validate your IP. You can compile the generated RTL with Quartus® Prime to generate accurate f<sub>MAX</sub> and area estimates. However, the six `.fpga` executables generated in this tutorial are **not** designed to run on FPGA devices directly.
+## Customizing the Kernel Invocation Interface
 
 ### Declaring a Register-Mapped Invocation Interface
 
 By default, your IP's `start` and `done` signals will appear in the IP's CSR. This is true whether you declare your kernel using the 'functor' or 'lambda' syntax.
 
-#### Functor Syntax
+<table>
+<tr>
+  <th>Functor Syntax</th>
+  <th>Lambda Syntax</th>
+</tr>
+<tr>
+  <td style="vertical-align: top;">
 
 ```c++
 struct MyIP {
@@ -98,7 +104,8 @@ struct MyIP {
 q.single_task(MyIP{});
 ```
 
-#### Lambda Syntax
+  </td>
+  <td style="vertical-align: top;">
 
 ```c++
 void myIPFunction() {
@@ -113,19 +120,39 @@ q.single_task([=] {
 });
 ```
 
-You can see concrete examples of kernels that use register-mapped invocation interfaces in `src/reg_map_functor.cpp` and `src/reg_map_lambda.cpp` 
+  </td>
+</tr>
+</table>
 
+You can see concrete examples of kernels that use register-mapped invocation interfaces in:
+  - [`src/reg_map_functor.cpp`](src/reg_map_functor.cpp)
+  - [`src/reg_map_lambda.cpp`](src/reg_map_lambda.cpp)
 
 ### Declaring a Streaming Invocation Interface
 
 You can force your IP's `start` and `done` signals to appear as signals on your IP boundary by adding the `streaming_interface` kernel property.
 
-Using the property `sycl::ext::altera::experimental::streaming_interface<>` or `sycl::ext::altera::experimental::streaming_interface_accept_downstream_stall` configures a streaming invocation interface with a `ready_in` interface to allow down-stream components to backpressure. You can choose to remove the `ready_in` interface by using `sycl::ext::altera::experimental::streaming_interface<remove_downstream_stall>` or `sycl::ext::altera::experimental::streaming_interface_remove_downstream_stall` instead. If you omit the `streaming_interface` property, the compiler will configure your kernel with a register-mapped invocation interface. The syntax for declaring a kernel property is different depending on if you use the functor syntax or the lambda syntax, but the `streaming_interface` property is the same. 
+The `streaming_interface` property has two variants:
 
+- `sycl::ext::altera::experimental::streaming_interface<accept_downstream_stall>`
+  -  Configures a streaming invocation interface **with** a `ready_in` port, allowing downstream components to backpressure the kernel.
+  - The alias `sycl::ext::altera::experimental::streaming_interface_accept_downstream_stall` is equivalent.
+  - Using `streaming_interface<>` (no template argument) also defaults to this variant.
+- `sycl::ext::altera::experimental::streaming_interface<remove_downstream_stall>`
+  - Configures a streaming invocation interface **without** a `ready_in` port.
+  - The alias `sycl::ext::altera::experimental::streaming_interface_remove_downstream_stall` is equivalent.
 
-#### Functor Syntax
+If you omit the `streaming_interface` property entirely, the compiler will configure your kernel with a register-mapped invocation interface.
 
-If you declare your kernel using the functor syntax, you must declare your kernel properties in the `get()` function, as shown here:
+The syntax for declaring a kernel property differs between functor and lambda syntax, but the `streaming_interface` property itself is the same.  If you declare your kernel using the functor syntax, you must declare your kernel properties in the `get()` function; if you declare your kernel using the lambda syntax, you must declare your kernel properties in an object that you pass to the `single_task()` function.
+
+<table>
+<tr>
+  <th>Functor Syntax</th>
+  <th>Lambda Syntax</th>
+</tr>
+<tr>
+  <td style="vertical-align: top;">
 
 ```c++
 struct MyIP {
@@ -145,24 +172,34 @@ struct MyIP {
 q.single_task(MyIP{});
 ```
 
-`src/stream_functor.cpp` and `src/stream_lambda.cpp`
-demonstrate two different kernels that use a streaming invocation interface.
-`src/stream_rm_stall.cpp` demonstrates a kernel
-that has a streaming invocation interface with the `ready_in` signal disabled.
-
-#### Lambda Syntax
-
-If you declare your kernel using the lambda syntax, you must declare your kernel properties in an object that you pass to the `single_task()` function.
+  </td>
+  <td style="vertical-align: top;">
 
 ```c++
+void myIPFunction() {
+  ...
+}
+
+...
+
 sycl::ext::oneapi::experimental::properties kernel_properties {
   sycl::ext::altera::experimental::streaming_interface<>,
 };
 
 q.single_task(kernel_properties, [=] {
+  myIPFunction();
   ...
 })
 ```
+
+  </td>
+</tr>
+</table>
+
+You can see concrete examples of kernels that use streaming invocation interfaces in:
+  - [`src/stream_functor.cpp`](src/stream_functor.cpp)
+  - [`src/stream_lambda.cpp`](src/stream_lambda.cpp)
+  - [`src/stream_rm_stall.cpp`](src/stream_rm_stall.cpp) (`ready_in` signal disabled)
 
 #### Pipelined Streaming Invocation Interface
 
@@ -175,11 +212,11 @@ SYCL* task kernels are non-pipelined by default, meaning the next kernel invocat
 The kernel property `sycl::ext::altera::experimental::pipelined` takes an optional template parameter that controls whether to pipeline the kernel. Valid parameters are:
 - **-1**: Pipeline the kernel, and automatically infer lowest possible II at target fMAX.
 - **0**: Do not pipeline the kernel.
-- **N (N> 0)**: Pipeline the kernel, and force the II of the kernel to be N.
+- **N (N > 0)**: Pipeline the kernel, and force the II of the kernel to be N.
 
-If a parameter is not specified, the default parameter of `-1` will be inferred, so the compiler will make its best effort to achieve the lowest kernel II. 
+If a parameter is not specified, the default parameter of `-1` will be inferred, so the compiler will make its best effort to achieve the lowest kernel II.
 
-> **Note**: The `sycl::ext::altera::experimental::pipelined<>` property only supports kernels with a streaming invocation interface.
+> **Note**: The `sycl::ext::altera::experimental::pipelined<>` property only supports task (non-NDRange) kernels with a streaming invocation interface.
 
 When you invoke a kernel with a pipelined streaming interface, you should only call the `wait()` blocking function after all kernel invocations have launched.
 
@@ -190,21 +227,23 @@ for (int i = 0; i < count; i++) {
 q.wait();
 ```
 
-> **Note**: As per the SYCL language semantics, separate invocations of a kernel are **independent**. This means that you can't make assumptions about memory ordering or memory dependences between kernel invocations. Make sure you use synchronization mechanisms such as the `.wait()` function or *atomic operations* to avoid race conditions. \
-If you want to guarantee sequential equivalence, you can also write your kernel with a `while(1)` loop in the kernel body instead of using a pipelined kernel. \
-In particular, a repeatedly-invoked kernel with a memory dependence will result in undefined behavior in SYCL and may not function as you expect. 
+> **Note**: As per the SYCL language semantics, separate invocations of a kernel are **independent**. This means that you can't make assumptions about memory ordering or memory dependences between kernel invocations. Make sure you use synchronization mechanisms such as the `.wait()` function or *atomic operations* to avoid race conditions.  
+> If you want to guarantee sequential equivalence, you can also write your kernel with a `while(1)` loop in the kernel body instead of using a pipelined kernel.  
+> In particular, a repeatedly-invoked kernel with a memory dependence will result in undefined behavior in SYCL and may not function as you expect. 
 
-For an example of a pipelined streaming kernel, see `src/stream_pipelined.cpp`.
+You can see a concrete example of a kernel that uses pipelined streaming invocation interfaces in:
+  - [`src/stream_pipelined.cpp`](src/stream_pipelined.cpp)
 
-### Customizing the Kernel Argument Interface
+## Customizing the Kernel Argument Interface
+
+While this example primarily focuses on the invocation interface, you can also customize the kernel argument interfaces as described below.
 
 You can use the `sycl::ext::oneapi::experimental::annotated_arg` wrapper type to customize whether a kernel argument should be passed to the IP component as a conduit, or through the CSR. If you do not specify an `annotated_arg` wrapper, the compiler will infer an argument interface based on your invocation interface.
 
-| Invocation Interface | Automatically Inferred Argument Interface | SYCL* Property
+| Invocation Interface | Automatically Inferred Argument Interface | SYCL Property
 |:--                   |:--                                        |:--
 | Register-mapped      | Register-mapped                           | `sycl::ext::altera::experimental::register_map`
 | Streaming            | Conduit                                   | `sycl::ext::altera::experimental::conduit`
-
 
 You can add a `conduit` property to an `annotated_arg` like this:
 
@@ -214,6 +253,7 @@ struct MyIP {
     int, decltype(sycl::ext::oneapi::experimental::properties {
                   sycl::ext::altera::experimental::conduit})>
   arg1;
+
   void operator()() const {
     ...
     // access arg1 here
@@ -251,48 +291,22 @@ struct MyIP {
 > ```
 > This is demonstrated in `src/reg_map_functor.cpp`, `src/reg_map_lambda.cpp` and `src/stream_functor.cpp`.
 
-### Source File Summary
+## Source File Summary
 
 This code sample contains 6 source files that together demonstrate a full spectrum of configuration options for IP component invocation interfaces.
 
-1. `src/reg_map_functor.cpp`
-   * Register-mapped invocation interface
-   * Functor coding style
-   * Register-mapped argument (explicitly specified with `annotated_arg`)
-   * Proper casting away of `annotated_arg` to access an `ac_int` method
-
-2. `src/reg_map_lambda.cpp`
-   * Register-mapped invocation interface
-   * Lambda coding style
-   * Register-mapped argument (explicitly specified with `annotated_arg`)
-   * Proper casting away of `annotated_arg` to access an `ac_int` method
-
-3. `src/stream_functor.cpp`
-   * Streaming invocation interface (non-pipelined)
-   * Functor coding style
-   * Conduit argument (explicitly specified with `annotated_arg`)
-   * Register-mapped argument (explicitly specified with `annotated_arg`)
-   * Proper casting away of `annotated_arg` to access an `struct` member
-
-4. `src/stream_lambda.cpp`
-   * Streaming invocation interface (non-pipelined)
-   * Lambda coding style
-   * Conduit argument (implied)
-
-5. `src/stream_pipelined.cpp`
-   * Streaming invocation interface (pipelined)
-   * Functor coding style
-   * Conduit argument (implied)
-
-6. `src/stream_rm_stall.cpp`
-   * Streaming invocation interface (non-pipelined, stall-free)
-   * Functor coding style
-   * Register-mapped argument (explicitly specified with `annotated_arg`)
-   * Conduit argument (explicitly specified with `annotated_arg`)
+| Source File | Invocation Interface | Coding Style | Argument Interfaces |
+|:---|:---|:---|:---|
+| [`src/reg_map_functor.cpp`](src/reg_map_functor.cpp) | Register-mapped | Functor | Register-mapped (explicit `annotated_arg`) |
+| [`src/reg_map_lambda.cpp`](src/reg_map_lambda.cpp) | Register-mapped | Lambda | Register-mapped (explicit `annotated_arg`) |
+| [`src/stream_functor.cpp`](src/stream_functor.cpp) | Streaming (non-pipelined) | Functor | Conduit (explicit `annotated_arg`)<br>Register-mapped (explicit `annotated_arg`) |
+| [`src/stream_lambda.cpp`](src/stream_lambda.cpp) | Streaming (non-pipelined) | Lambda | Conduit (implied) |
+| [`src/stream_pipelined.cpp`](src/stream_pipelined.cpp) | Streaming (pipelined) | Functor | Conduit (implied) |
+| [`src/stream_rm_stall.cpp`](src/stream_rm_stall.cpp) | Streaming (non-pipelined, stall-free) | Functor | Register-mapped (explicit `annotated_arg`)<br>Conduit (explicit `annotated_arg`) |
 
 ## Build the `Invocation Interfaces` Tutorial
 
->**Note**: When working with the command-line interface (CLI), you should configure the HLS IP Gen Compiler using environment variables. Set up your CLI environment by sourcing the `fpgavars` script in the root of your HLS IP Gen Compiler installation every time you open a new terminal window. This practice ensures that your compiler, libraries, and tools are ready for development.
+> **Note**: When working with the command-line interface (CLI), you should configure the HLS IP Gen Compiler using environment variables. Set up your CLI environment by sourcing the `fpgavars` script in the root of your HLS IP Gen Compiler installation every time you open a new terminal window. This practice ensures that your compiler, libraries, and tools are ready for development.
 >
 > Linux*:
 > - `source <install-dir>/fpgavars.sh`
@@ -341,21 +355,27 @@ This code sample contains 6 source files that together demonstrate a full spectr
 
 ### Read the Reports
 
-1. Locate `report.html` in the corresponding `<source_file>.report.prj/reports/` directory.
+1. Locate `report.html` in the corresponding `build/vector_add.report.prj/reports/` directory, and open it in a browser.
 
 2. Open the **Views** menu and select **System Viewer**.
 
-In the left-hand pane, select **FunctorRegMap** or **LambdaRegMap** under the System hierarchy for the kernels with a register-mapped invocation interface.
+3. For kernels with a **register-mapped** invocation interface, select **FunctorRegMap** or **LambdaRegMap** under the System hierarchy in the left-hand pane.
 
-In the main **System Viewer** pane, the kernel invocation interfaces and kernel arguments interfaces are shown. They show that the `start`, `busy`, and `done` kernel invocation interfaces are implemented in register map interfaces, and the `arg_input` and `arg_output` kernel arguments are implemented in register map interfaces. The `arg_n` kernel argument is implemented in a streaming interface in both the **FunctorRegMap**, and **LambdaRegMap**.
+   In the main **System Viewer** pane, you will see:
+   - The `start`, `busy`, and `done` kernel invocation interfaces are implemented as register-mapped interfaces.
+   - The `arg_input` and `arg_output` kernel arguments are implemented as register-mapped interfaces.
+   - The `arg_n` kernel argument is implemented as a conduit interface.
 
-Similarly, in the left-hand pane, select **FunctorStream**, **StreamRmStall**, **StreamPipelined** or **LambdaStream** under the System hierarchy for the kernels with a streaming invocation interface.
+4. For kernels with a **streaming** invocation interface, select **FunctorStream**, **StreamRmStall**, **StreamPipelined**, or **LambdaStream** under the System hierarchy in the left-hand pane.
 
-In the main **System Viewer** pane, the kernel invocation interfaces and kernel arguments interfaces are shown. They show that the `start`, `done`, `ready_in`, and `ready_out` kernel invocation interfaces are implemented in streaming interfaces. The `arg_input` kernel argument are implemented in streaming interfaces, `arg_n` kernel argument are implemented in streaming interfaces except for **StreamPipelined** which does not have this argument input and `arg_output` kernel argument are implemented in a register map interface in the **FunctorStream** and **StreamRmStall**, and in a streaming interface in the **StreamPipelined** and **LambdaStream**.
+   In the main **System Viewer** pane, you will see:
+   - The `start`, `done`, `ready_in`, and `ready_out` kernel invocation interfaces are implemented as streaming interfaces.
+     > **Note**: In the report, `ready_in` and `ready_out` are shown as `stall_in` and `stall_out` respectively. The report for **StreamRmStall** shows the internals of the kernel, so `stall_in` appears but is tied to ground and not visible at the device image boundary.
+   - The `arg_input` kernel argument is implemented as a conduit interface.
+   - The `arg_n` kernel argument is implemented as a conduit interface (except for **StreamPipelined**, which does not have this argument).
+   - The `arg_output` kernel argument is implemented as a register-mapped interface in **FunctorStream** and **StreamRmStall**, and as a conduit interface in **StreamPipelined** and **LambdaStream**.
 
-> **Note**: Kernel invocation interfaces `ready_in` and `ready_out` are shown as `stall_in` and `stall_out` respectively.
 
-> **Note**: The report of **StreamRmStall** shows the internals of the kernel. Thus, there is a `stall_in`, but tied to ground and not seen at the device image boundary.
 
 ## Run the `Invocation Interfaces` Sample
 
@@ -372,28 +392,33 @@ In the main **System Viewer** pane, the kernel invocation interfaces and kernel 
 
 ## Example Output
 
-### Register-Mapped Functor Example Output
+### Example Command Line Output
+
+#### Register-Mapped Functor Example Output
 
 ```
 Running the kernel with register map invocation interface implemented in the functor programming model
 	 Done
 PASSED
 ```
-### Streaming Functor Example Output
+
+#### Streaming Functor Example Output
 
 ```
 Running the kernel with streaming invocation interface implemented in the functor programming model
 	 Done
 PASSED
 ```
-### Streaming Remove Downstream Stall Functor Example Output
+
+#### Streaming Remove Downstream Stall Functor Example Output
 
 ```
 Running the kernel with streaming invocation interface implemented in the functor programming model
 	 Done
 PASSED
 ```
-### Streaming Pipelined Functor Example Output
+
+#### Streaming Pipelined Functor Example Output
 
 ```
 Launching streaming pipelined kernels consecutively
@@ -401,7 +426,8 @@ Launching streaming pipelined kernels consecutively
 
 PASSED
 ```
-### Register-Mapped Lambda Example Output
+
+#### Register-Mapped Lambda Example Output
 
 ```
 Running the kernel with register map invocation interface implemented in the lambda programming model
@@ -409,7 +435,7 @@ Running the kernel with register map invocation interface implemented in the lam
 PASSED
 ```
 
-### Streaming Lambda Example Output
+#### Streaming Lambda Example Output
 
 ```
 Running the kernel with streaming invocation interface implemented in the lambda programming model
@@ -432,6 +458,7 @@ The diagram below shows the example waveform generated by the simulator that you
 ![pipelined_kernels](assets/pipelined_kernels.png)
 
 ## License
+
 Code samples are licensed under the MIT license. See [License.txt](/License.txt) for details.
 
 Third party program Licenses can be found here: [third-party-programs.txt](/third-party-programs.txt).

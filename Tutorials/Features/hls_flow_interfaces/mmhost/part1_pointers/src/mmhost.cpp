@@ -4,9 +4,9 @@
 #include "exception_handler.hpp"
 
 struct PointerIP {
-  // Pointer kernel arguments will be passed through the component's CSR. They
-  // will refer to data accessible through a shared Avalon memory-mapped host
-  // interface.
+  // Pointer kernel arguments will be passed through the component's CSR.
+  // They will refer to data accessible through a shared Avalon memory-mapped
+  // host interface.
   int *x;
   int *y;
   int *z;
@@ -55,9 +55,13 @@ int main(void) {
     for (int i = 0; i < kN; i++) {
       array_a[i] = i;
       array_b[i] = 2 * i;
+      array_c[i] = 0;
     }
 
+    // Launch the kernel
     q.single_task(PointerIP{array_a, array_b, array_c, kN}).wait();
+
+    // Verify the results
     for (int i = 0; i < kN; i++) {
       auto golden = 3 * i;
       if (array_c[i] != golden) {
@@ -67,13 +71,10 @@ int main(void) {
       }
     }
 
-    std::cout << (passed ? "PASSED" : "FAILED") << std::endl;
+    sycl::free(array_a, q);
+    sycl::free(array_b, q);
+    sycl::free(array_c, q);
 
-    free(array_a, q);
-    free(array_b, q);
-    free(array_c, q);
-
-    return passed ? EXIT_SUCCESS : EXIT_FAILURE;
   } catch (sycl::exception const &e) {
     // Catches exceptions in the host code
     std::cerr << "Caught a SYCL host exception:\n" << e.what() << "\n";
@@ -88,4 +89,8 @@ int main(void) {
     }
     std::terminate();
   }
+
+  std::cout << (passed ? "PASSED" : "FAILED") << std::endl;
+
+  return passed ? EXIT_SUCCESS : EXIT_FAILURE;
 }

@@ -3,30 +3,33 @@
 
 #include "exception_handler.hpp"
 
+namespace oneapi_exp = sycl::ext::oneapi::experimental;
+namespace altera_exp = sycl::ext::altera::experimental;
+
 constexpr int kBL1 = 1;
 constexpr int kBL2 = 2;
 constexpr int kAlignment = 32;
 
 struct DDRIP {
-  using ParamsBl1 = decltype(sycl::ext::oneapi::experimental::properties{
-      sycl::ext::altera::experimental::buffer_location<kBL1>,
-      sycl::ext::altera::experimental::maxburst<8>,
-      sycl::ext::altera::experimental::dwidth<256>,
-      sycl::ext::oneapi::experimental::alignment<kAlignment>,
-      sycl::ext::altera::experimental::awidth<32>,
-      sycl::ext::altera::experimental::latency<0>});
+  using ParamsBl1 = decltype(oneapi_exp::properties{
+      altera_exp::buffer_location<kBL1>,
+      altera_exp::awidth<32>,
+      altera_exp::dwidth<256>,
+      altera_exp::latency<0>,
+      altera_exp::maxburst<8>,
+      oneapi_exp::alignment<kAlignment>});
 
-  using ParamsBl2 = decltype(sycl::ext::oneapi::experimental::properties{
-      sycl::ext::altera::experimental::buffer_location<kBL2>,
-      sycl::ext::altera::experimental::maxburst<8>,
-      sycl::ext::altera::experimental::dwidth<256>,
-      sycl::ext::oneapi::experimental::alignment<kAlignment>,
-      sycl::ext::altera::experimental::awidth<32>,
-      sycl::ext::altera::experimental::latency<0>});
+  using ParamsBl2 = decltype(oneapi_exp::properties{
+      altera_exp::buffer_location<kBL2>,
+      altera_exp::awidth<32>,
+      altera_exp::dwidth<256>,
+      altera_exp::latency<0>,
+      altera_exp::maxburst<8>,
+      oneapi_exp::alignment<kAlignment>});
 
-  sycl::ext::oneapi::experimental::annotated_arg<int *, ParamsBl1> x;
-  sycl::ext::oneapi::experimental::annotated_arg<int *, ParamsBl1> y;
-  sycl::ext::oneapi::experimental::annotated_arg<int *, ParamsBl2> z;
+  oneapi_exp::annotated_arg<int *, ParamsBl1> x;
+  oneapi_exp::annotated_arg<int *, ParamsBl1> y;
+  oneapi_exp::annotated_arg<int *, ParamsBl2> z;
   int size;
 
   void operator()() const {
@@ -62,19 +65,19 @@ int main(void) {
     constexpr int kN = 8;
     std::cout << "Elements in vector : " << kN << "\n";
 
-    // Host array must share the same buffer location property as defined in the
-    // kernel. Since we are specifying alignment on the kernel argument, we
-    // need to also specify that to the allocation call by using
+    // Host array must share the same buffer location property as defined in
+    // the kernel. Since we are specifying alignment on the kernel argument,
+    // we need to also specify that to the allocation call by using
     // aligned_alloc_shared API
     int *array_a = sycl::aligned_alloc_shared<int>(
         kAlignment, kN, q,
-        sycl::ext::altera::experimental::property::usm::buffer_location(kBL1));
+        altera_exp::property::usm::buffer_location(kBL1));
     int *array_b = sycl::aligned_alloc_shared<int>(
         kAlignment, kN, q,
-        sycl::ext::altera::experimental::property::usm::buffer_location(kBL1));
+        altera_exp::property::usm::buffer_location(kBL1));
     int *array_c = sycl::aligned_alloc_shared<int>(
         kAlignment, kN, q,
-        sycl::ext::altera::experimental::property::usm::buffer_location(kBL2));
+        altera_exp::property::usm::buffer_location(kBL2));
 
     assert(array_a);
     assert(array_b);
@@ -83,9 +86,13 @@ int main(void) {
     for (int i = 0; i < kN; i++) {
       array_a[i] = i;
       array_b[i] = 2 * i;
+      array_c[i] = 0;
     }
 
+    // Launch the kernel
     q.single_task(DDRIP{array_a, array_b, array_c, kN}).wait();
+
+    // Verify the results
     for (int i = 0; i < kN; i++) {
       auto golden = 3 * i;
       if (array_c[i] != golden) {
@@ -95,13 +102,10 @@ int main(void) {
       }
     }
 
-    std::cout << (passed ? "PASSED" : "FAILED") << std::endl;
+    sycl::free(array_a, q);
+    sycl::free(array_b, q);
+    sycl::free(array_c, q);
 
-    free(array_a, q);
-    free(array_b, q);
-    free(array_c, q);
-
-    return passed ? EXIT_SUCCESS : EXIT_FAILURE;
   } catch (sycl::exception const &e) {
     // Catches exceptions in the host code
     std::cerr << "Caught a SYCL host exception:\n" << e.what() << "\n";
@@ -116,4 +120,8 @@ int main(void) {
     }
     std::terminate();
   }
+
+  std::cout << (passed ? "PASSED" : "FAILED") << std::endl;
+
+  return passed ? EXIT_SUCCESS : EXIT_FAILURE;
 }

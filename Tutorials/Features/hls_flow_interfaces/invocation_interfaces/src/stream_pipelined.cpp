@@ -5,6 +5,9 @@
 
 #include "exception_handler.hpp"
 
+namespace oneapi_exp = sycl::ext::oneapi::experimental;
+namespace altera_exp = sycl::ext::altera::experimental;
+
 // Forward declare the kernel names in the global scope.
 // This FPGA best practice reduces name mangling in the optimization reports.
 class StreamPipelined;
@@ -23,10 +26,10 @@ struct StreamPipelinedIP {
   // possible II at target fMAX. 0: Do not pipeline the kernel. N (N> 0):
   // Pipeline the kernel, and force the II of the kernel to be N. If a parameter
   // is not specified, the default behaviour of -1 will be inferred.
-  auto get(sycl::ext::oneapi::experimental::properties_tag) {
-    return sycl::ext::oneapi::experimental::properties{
-        sycl::ext::altera::experimental::streaming_interface<>,
-        sycl::ext::altera::experimental::pipelined<>};
+  auto get(oneapi_exp::properties_tag) {
+    return oneapi_exp::properties{
+        altera_exp::streaming_interface<>,
+        altera_exp::pipelined<>};
   }
 
   void operator()() const {
@@ -123,11 +126,7 @@ int main(int argc, char *argv[]) {
     std::terminate();
   }
 
-  if (passed) {
-    std::cout << "PASSED\n";
-    return 0;
-  } else {
-    std::cout << "FAILED\n";
-    return 1;
-  }
+  std::cout << (passed ? "PASSED" : "FAILED") << std::endl;
+
+  return passed ? EXIT_SUCCESS : EXIT_FAILURE;
 }

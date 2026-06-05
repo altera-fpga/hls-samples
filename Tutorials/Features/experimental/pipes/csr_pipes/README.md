@@ -4,7 +4,7 @@ This example demonstrates how to use CSR (Control/Status Register)-mapped host p
 
 ## CSR Pipe Overview
 
-CSR pipes are host pipes that use the Avalon memory-mapped protocol instead of the default Avalon streaming protocol. Each CSR pipe maps to a single hardware register, making them ideal for **low-bandwidth control signals** rather than bulk data transfer. Typical use cases include:
+CSR pipes are host pipes that use the Avalon® memory-mapped protocol instead of the default Avalon streaming protocol. Each CSR pipe maps to a single hardware register, making them ideal for **low-bandwidth control signals** rather than bulk data transfer. Typical use cases include:
 
 - Gracefully stopping a long running kernel loop
 - Publishing status counters or error flags that the external system can poll
