@@ -67,7 +67,7 @@ You can also find more information about [troubleshooting build errors](/README.
 
 ### MVDR Beamforming
 
->**Note**: This reference design is built upon the **IO Streaming** sample code and concepts. Review that tutorial for more information.
+> **Note**: This reference design is built upon the **IO Streaming** sample code and concepts. Review that tutorial for more information.
 
 The images below show the data flow in the MVDR beamforming design. The first image shows the "real" data flow when IO pipes are used at the inputs and outputs. The second image shows the data flow in this reference design where we don't have access to a BSP with IO pipes.
 
@@ -157,7 +157,7 @@ The general syntax for running the program is shown below and the table describe
 
 | Argument Index | Description
 |:---            |:---
-| 0              | The number of matrices (default=`1024`)
+| 0              | The number of matrices (default=`2` for fpga_sim, default='1024' for fpga_emu and fpga)
 | 1              | The input directory (default=`../data`)
 | 2              | The output directory (default=`.`)
 
@@ -167,14 +167,17 @@ The general syntax for running the program is shown below and the table describe
    ./mvdr_beamforming.fpga_emu 1024 ../data .
    ```
 2. Run the sample on the FPGA simulator device.
-   ```
-   CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./mvdr_beamforming.fpga_sim 1024 ../data .
-   ```
+
+  > **Note**: For this large design, the simulator may take up to several hours to execute.
+
+  ```
+   CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./mvdr_beamforming.fpga_sim 2 ../data .
+  ```
 ## Build and Run the Design Using Real IO-pipes
 
 This section describes how to build and run this reference design on a BSP with real IO pipes. The real IO pipes version does **not** work on Windows and requires a specific system setup and BSP.
 
->**Note**: This design requires a specific board support package (BSP) with a distinct hardware configuration. For access to this BSP or general customer support, submit a case through Intel® Premier Support (IPS) or contact your Intel or Distribution Sales Representative.
+> **Note**: This design requires a specific board support package (BSP) with a distinct hardware configuration. For access to this BSP or general customer support, submit a case through Intel® Premier Support (IPS) or contact your Intel or Distribution Sales Representative.
 
 ### Build on Linux
 
@@ -235,7 +238,7 @@ This section describes how to build and run this reference design on a BSP with 
    | 7              | Host User Datagram Protocol (UDP) Port
    | 8              | The number of matrices (optional, default=`1024`)
    | 9              | The input directory (optional, default=`../data`)
-   | 10             | The output directory (optional, default=`.`
+   | 10             | The output directory (optional, default=`.`)
 
 
 ## Example Output
