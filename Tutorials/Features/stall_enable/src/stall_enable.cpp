@@ -105,9 +105,6 @@ void DoSomeWork(const WorkVec &vec_a, const WorkVec &vec_b, WorkVec &res) {
   } catch (exception const &exc) {
     std::cerr << "Caught synchronous SYCL exception:\n" << exc.what() << '\n';
     if (exc.code().value() == CL_DEVICE_NOT_FOUND) {
-      std::cerr << "If you are targeting an FPGA, please ensure that your "
-                   "system has a correctly configured FPGA board.\n";
-      std::cerr << "Run sys_check in the oneAPI root directory to verify.\n";
       std::cerr << "If you are targeting the FPGA emulator, compile with "
                    "-DFPGA_EMULATOR.\n";
     }

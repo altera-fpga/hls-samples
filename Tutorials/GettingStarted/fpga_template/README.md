@@ -4,17 +4,17 @@ This project serves as a template for HLS FPGA designs, and demonstrates the fea
 
 | Optimized for                     | Description
 |:---                               |:---
-| OS                                | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| OS                                | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
 | Hardware                          | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
 | Software                          | HLS IP Gen Compiler
-| What you will learn               | Best practices for creating and managing a oneAPI FPGA project
+| What you will learn               | Best practices for creating and managing an Altera® HLS IP Gen project
 | Time to complete                  | 10 minutes
 
 > **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > To use the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
 > When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
@@ -136,7 +136,7 @@ This design uses CMake to generate a build script for GNU/make.
    |:---             |:---            |:---                                                                          |:---
    | `make fpga_emu` | Seconds        | x86-64 binary                                                                | Compiles the FPGA device code to the CPU. Use the Intel® FPGA Emulation Platform for OpenCL™ software to verify your SYCL code’s functional correctness.
    | `make report`   | Minutes        | RTL + FPGA reports                                                           | Compiles the FPGA device code to RTL and generates an optimization report that describes the structures generated on the FPGA, identifies performance bottlenecks, and estimates resource utilization. The generated RTL may be exported to Quartus Prime software.
-   | `make fpga_sim` | Minutes        | RTL + FPGA reports + x86-64 binary                                           | Compiles the FPGA device code to RTL and generates a simulation testbench. Use the Questa*-Intel® FPGA Edition simulator to verify your design.
+   | `make fpga_sim` | Minutes        | RTL + FPGA reports + x86-64 binary                                           | Compiles the FPGA device code to RTL and generates a simulation testbench. Use the Questa*-Altera® FPGA Edition simulator to verify your design.
    | `make fpga`     | Multiple Hours | Quartus Place & Route + FPGA reports | Compiles the FPGA device code to RTL and compiles the generated RTL using Quartus® Prime.
 
    The `fpga_emu` and `fpga_sim` targets produce binaries that you can run. The executables will be called `TARGET_NAME.fpga_emu`, and `TARGET_NAME.fpga_sim`, where `TARGET_NAME` is the value you specify in `CMakeLists.txt`.

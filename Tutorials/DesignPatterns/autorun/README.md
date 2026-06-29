@@ -1,6 +1,6 @@
 # `Autorun Kernels` Sample
 
-This `Autorun Kernels` sample is a tutorial that demonstrates how to create the equivalent of OpenCL `autorun` kernels in oneAPI. An autorun kernel is one that is submitted before the `main()` function begins, and typically (though not necessarily) never finishes.
+This `Autorun Kernels` sample is a tutorial that demonstrates how to create the equivalent of OpenCL `autorun` kernels in SYCL\*. An autorun kernel is one that is submitted before the `main()` function begins, and typically (though not necessarily) never finishes.
 
 | Area                | Description
 |:---                 |:---
@@ -37,15 +37,15 @@ You can also find more information about [troubleshooting build errors](/README.
 
 | Optimized for      | Description
 |:---                |:---
-| OS                 | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| OS                 | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
 | Hardware           | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
 | Software           | HLS IP Gen Compiler
 
 > **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
 > When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.

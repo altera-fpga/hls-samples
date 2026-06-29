@@ -17,7 +17,7 @@ proc echoAndEval { tcl_cmd } {
 
 set OS [lindex $tcl_platform(platform) 0]
 
-post_message -type info  "1. Compile oneAPI kernel into an IP component"
+post_message -type info  "1. Compile the kernel into an IP component"
 echoAndEval "cd kernels/simple_dma"
 echoAndEval "file mkdir build"
 echoAndEval "cd build"

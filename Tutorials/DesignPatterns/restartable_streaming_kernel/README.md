@@ -4,25 +4,23 @@ This tutorial demonstrates how to make a streaming kernel that can be stopped at
 
 | Optimized for       | Description                                                                                 |
 | :------------------ | :------------------------------------------------------------------------------------------ |
-| OS                  | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| OS                  | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
 | Hardware            | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
 | Software            | HLS IP Gen Compiler
-| What you will learn | Best practices for creating and managing a oneAPI FPGA project                              |
+| What you will learn | How to create a streaming kernel                                                            |
 | Time to complete    | 10 minutes                                                                                  |
 
 > **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > To use the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
 >
-> - Questa\*-Intel® FPGA Edition
-> - Questa\*-Intel® FPGA Starter Edition
+> - Questa\*-Altera® FPGA Edition
+> - Questa\*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
 > When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
 >
 > :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
-
-> **Note**: In oneAPI full systems, kernels that use SYCL Unified Shared Memory (USM) host allocations or USM shared allocations (and therefore the code in this tutorial) are only supported by Board Support Packages (BSPs) with USM support. Kernels that use these types of allocations can always be used to generate standalone IPs.
 
 ## Prerequisites
 

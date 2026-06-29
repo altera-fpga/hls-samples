@@ -23,7 +23,7 @@ Alternatively, you can download a zip file containing the primary branch in repo
 
 ### Understand FPGA Programming
 
-The section [Introduction To FPGA Design Concepts](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/developer-guide/current/introduction-to-fpga-design-concepts.html) contains information on the basic concepts that are foundational to FPGA programming. Read that section to get the most from these FPGA samples.
+The section [Introduction To FPGA Design Concepts](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/3-introduction-to-fpga-design-concepts) contains information on the basic concepts that are foundational to FPGA programming. Read that section to get the most from these FPGA samples.
 
 ## FPGA Repository Structure
 
@@ -143,7 +143,6 @@ flowchart LR
 | [loop_carried_dependency](Tutorials/DesignPatterns/loop_carried_dependency)                                   | [Tutorials/DesignPatterns](Tutorials/DesignPatterns) | A technique to remove loop carried dependencies from your FPGA device code, and when to apply it
 | [lsu_control](Tutorials/Features/lsu_control)                                                                 | [Tutorials/Features](Tutorials/Features)             | The basic concepts of LSU styles and LSU modifiers <br>  How to use the LSU controls extension to request specific configurations <br>  How to confirm what LSU configurations are implemented <br> A case study of the type of area trade-offs enabled by LSU
 | [max_reinvocation_delay](Tutorials/Features/max_reinvocation_delay)                                           | [Tutorials/Features](Tutorials/Features)             | How and when to apply the `max_reinvocation_delay` attribute when optimizing loop throughput
-| [mem_channel](Tutorials/Features/mem_channel)                                                                 | [Tutorials/Features](Tutorials/Features)             | How and when to use the `mem_channel` buffer property and the `-Xsno-interleaving` flag
 | [onchip_memory_cache](Tutorials/DesignPatterns/onchip_memory_cache)                                           | [Tutorials/DesignPatterns](Tutorials/DesignPatterns) | How and when to implement the on-chip memory cache optimization
 | [optimization_targets](Tutorials/Features/optimization_targets)                                               | [Tutorials/Features](Tutorials/Features)             | How to set optimization targets for your compile</br>How to use the minimum latency optimization target to compile low-latency designs<br>How to manually override underlying controls set by the minimum latency optimization target
 | [optimize_inner_loop](Tutorials/DesignPatterns/optimize_inner_loop)                                           | [Tutorials/DesignPatterns](Tutorials/DesignPatterns) | How to optimize the throughput of an inner loop with a low trip
@@ -233,8 +232,6 @@ The FPGA samples use many of the headers in the [`include`](include) folder.
 If an error occurs when compiling a sample, you can get more details by running `make` with the `VERBOSE=1` argument:
 ``make VERBOSE=1``
 
-If you receive an error message, troubleshoot the problem using the **Diagnostics Utility for Intel® oneAPI Toolkits**. The diagnostic utility provides configuration and system checks to help find missing dependencies, permissions errors, and other issues. See the [Diagnostics Utility for Intel® oneAPI Toolkits User Guide](https://www.intel.com/content/www/us/en/docs/oneapi/user-guide-diagnostic-utility) for more information on using the utility.
-
 ## Performance Disclaimers
 
 Tests document performance of components on a particular test, in specific systems and may not reflect all publicly available security updates. 
@@ -246,12 +243,10 @@ No product or component can be absolutely secure.
 
 ## Documentation
 
-- The [Intel® oneAPI FPGA Handbook](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/developer-guide) helps you understand how to target FPGAs using SYCL and Intel® oneAPI Toolkits.
-- The [Intel® oneAPI Programming Guide](https://www.intel.com/content/www/us/en/docs/oneapi/programming-guide) helps you understand target-independent, SYCL-compliant programming using Intel® oneAPI Toolkits.
-- The [Intel® oneAPI DPC++/C++ Compiler Release Notes](https://www.intel.com/content/www/us/en/developer/articles/release-notes/intel-oneapi-dpc-c-compiler-release-notes.html).
-- The [Migrating OpenCL™ FPGA Designs to SYCL*](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/migrate-opencl-design-to-dpcpp) guide.
-- [Additional FPGA-specific Resources](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/optimization-guide).
-- The [Quartus® Prime Pro and Standard Software User Guides](https://www.intel.com/content/www/us/en/support/programmable/support-resources/design-software/user-guides.html).
+- The [Altera® HLS IP Gen Handbook](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook) helps you understand how to use the Altera HLS IP Gen compiler.
+- The [Altera® HLS IP Gen Compiler Release Notes](https://docs.altera.com/r/docs/m707363/current/hls-ip-gen-release-notes/preface).
+- The [Migrating OpenCL™ FPGA Designs to SYCL*](https://docs.altera.com/r/docs/767849/2024/migrating-opencltm-fpga-designs-to-sycl/download-document) guide.
+- The [Quartus® Prime Pro and Standard Software User Guides](https://www.altera.com/design/guidance/software/quartus-user-guides).
 
 ## Licenses
 

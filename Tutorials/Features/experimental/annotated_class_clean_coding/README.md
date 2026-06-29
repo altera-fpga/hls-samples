@@ -6,7 +6,7 @@ This tutorial demonstrates how to use the included `annotated_class_util.hpp` he
 
 | Optimized for                     | Description
 |:---                               |:---
-| OS                                | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| OS                                | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
 | Hardware                          | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
 | Software                          | HLS IP Gen Compiler
 | What you will learn               | How to use the provided helper funtion to allocate host/shared memory with properties for your FPGA IP components
@@ -16,8 +16,8 @@ This tutorial demonstrates how to use the included `annotated_class_util.hpp` he
 > **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > To use the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
 > When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
@@ -57,7 +57,7 @@ The `annotated_arg` class can be used to customize Avalon memory-mapped interfac
 
 ### Simplify the Declaration of Annotated Types with Groups of Properties by Using the `properties_t` Alias
 
-Most oneAPI code assigns properties to an `annotated_arg` type using `decltype`. For example,
+Most SYCL\* code assigns properties to an `annotated_arg` type using `decltype`. For example,
 ```c++
 using ArgProps = decltype(sycl::ext::oneapi::experimental::properties{
       sycl::ext::altera::experimental::buffer_location<1>,

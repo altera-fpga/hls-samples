@@ -15,7 +15,7 @@ This FPGA tutorial demonstrates how to use the `intel::initiation_interval` attr
 - Relax the II of a loop with a loop-carried dependency in order to achieve a higher kernel f<sub>MAX</sub>
 - Enforce the II of a loop such that the compiler will error out if it cannot achieve the specified II
 
->**Note**: The tutorial assumes you are familiar with the concepts of [loop-carried dependencies](https://software.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide/top/optimize-your-design/throughput-1/single-work-item-kernels/single-work-item-kernel-design-guidelines.html#SECTION_3A389B8F1FE3452C84F44F07FA2C813E) and [initiation interval (II)](https://software.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide/top/fpga-optimization-flags-attributes-pragmas-and-extensions/loop-directives/ii-attribute.html).
+>**Note**: The tutorial assumes you are familiar with the concepts of [loop-carried dependencies](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/12.1-refactor-the-loop-carried-data-dependency) and [initiation interval (II)](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/16.6.2-initiation_interval-attribute).
 
 - A **loop-carried dependency** refers to a situation where an operation in a loop iteration cannot proceed until an operation from a previous loop iteration has completed.
 - The **initiation interval**, or **II**, is the number of clock cycles between the launch of successive loop iterations.
@@ -24,15 +24,15 @@ This FPGA tutorial demonstrates how to use the `intel::initiation_interval` attr
 
 | Optimized for        | Description
 |:---                  |:---
-| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
 | Hardware             | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
 | Software             | HLS IP Gen Compiler
 
 > **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
 > When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
@@ -100,7 +100,7 @@ By default, the compiler attempts to schedule each loop with the optimal minimum
 
 The `intel::initiation_interval` attribute can be used to specify an II for a particular loop. It informs the compiler to ignore the default heuristic and to try and schedule the loop that the attribute is applied to with the specific II the user provides.
 
-The targeted f<sub>MAX</sub> can be specified using the [`–Xsclock`](https://software.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide/top/fpga-optimization-flags-attributes-pragmas-and-extensions/optimization-flags/specify-schedule-fmax-target-for-kernels-xsclock-clock-target.html) compiler argument. The argument determines the pipelining effort of the compiler, which uses an internal model of the FPGA fabric to estimate f<sub>MAX</sub>. The true f<sub>MAX</sub> is known only after compiling to hardware. Without the argument, the default target f<sub>MAX</sub> is 240MHz for the Arria® 10 FPGAs and 480MHz for the Stratix® 10 and Agilex® 7 FPGAs, but the compiler will not strictly enforce reaching that default target when scheduling loops.
+The targeted f<sub>MAX</sub> can be specified using the [`–Xsclock`](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/16.1.1-specify-schedule-fmax-target-for-kernels-xsclock-clock-target) compiler argument. The argument determines the pipelining effort of the compiler, which uses an internal model of the FPGA fabric to estimate f<sub>MAX</sub>. The true f<sub>MAX</sub> is known only after compiling to hardware. Without the argument, the default target f<sub>MAX</sub> is 240MHz for the Arria® 10 FPGAs and 480MHz for the Stratix® 10 and Agilex® 7 FPGAs, but the compiler will not strictly enforce reaching that default target when scheduling loops.
 
 >**Note:** The scheduler prioritizes II over f<sub>MAX</sub> if both `-Xsclock` **and** `intel::initiation_interval` are used. Your kernel may be able to achieve a lower II for the loop with the `intel::initiation_interval` attribute while targeting a specific f<sub>MAX</sub>, but the loop will not be scheduled with the lower II.
 

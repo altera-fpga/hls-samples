@@ -24,7 +24,7 @@
 #endif
 #endif
 
-// HLS did not allow exception handling, but oneAPI does.
+// HLS did not allow exception handling, but SYCL does.
 
 // #ifndef ENABLE_EXCEPTION_HANDLING
 // #define ENABLE_EXCEPTION_HANDLING 0

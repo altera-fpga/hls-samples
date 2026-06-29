@@ -39,7 +39,7 @@ This simple vector addition implementation is similar to the one presented in th
 
 ## Register-Mapped Invocation Interface
 
-By default, an un-decorated oneAPI kernel will have all its control signals and arguments mapped into the IP component's control/status register (CSR).
+By default, an un-decorated kernel will have all its control signals and arguments mapped into the IP component's control/status register (CSR).
 
 ## Register-Mapped Kernel Argument Interface
 

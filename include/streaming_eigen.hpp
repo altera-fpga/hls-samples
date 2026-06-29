@@ -224,7 +224,7 @@ struct StreamingEigen {
         // -------- Compute the QR decomposition
         //----------------------------------------
         /*
-        This code implements a oneAPI optimized variation of the following
+        This code implements an optimized variation of the following
         algorithm
 
         for i=0:n

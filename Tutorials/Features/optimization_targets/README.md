@@ -18,9 +18,9 @@ The `-Xsoptimize=<flag>` command-line option sets optimization targets, and it s
 
 |Flag                      |Explanation                        |Documentation
 |:---                      |:---                               |:---
-|`latency`                 |Minimum latency: minimize kernel latency at the cost of decreased f<sub>MAX</sub> |[*Minimum Latency Flow*](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/developer-guide/current/minimum-latency-flow.html)
-|`throughput-area-balanced`|Balanced throughput-area trade-offs: disable throughput-area trade-off heuristics that increase the throughput at the cost of area |[*Balanced Throughput-Area Trade-Offs Flow*](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/developer-guide/current/max-throughput.html)
-|`area`                    |Minimum area: minimize kernel area at the cost of decreased f<sub>MAX</sub> |[*Minimum Area Flow*](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/developer-guide/current/minimum-area.html)
+|`latency`                 |Minimum latency: minimize kernel latency at the cost of decreased f<sub>MAX</sub> |[*Minimum Latency Flow*](https://altera-dev.fluidtopics.net/r/docs/m615048/current/hls-ip-gen-handbook/16.2.1-minimum-latency-flow)
+|`throughput-area-balanced`|Balanced throughput-area trade-offs: disable throughput-area trade-off heuristics that increase the throughput at the cost of area |[*Balanced Throughput-Area Trade-Offs Flow*](https://altera-dev.fluidtopics.net/r/docs/m615048/current/hls-ip-gen-handbook/16.2.3-balanced-throughput-area-trade-offs-flow)
+|`area`                    |Minimum area: minimize kernel area at the cost of decreased f<sub>MAX</sub> |[*Minimum Area Flow*](https://altera-dev.fluidtopics.net/r/docs/m615048/current/hls-ip-gen-handbook/16.2.2-minimum-area-flow)
 
 To compile your design with the minimum latency optimization target, use the flag option `-Xsoptimize=latency`.
 
@@ -30,15 +30,15 @@ As an example, this tutorial shows how to use the minimum latency optimization t
 
 | Optimized for        | Description
 |:---                  |:---
-| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
 | Hardware             | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
 | Software             | HLS IP Gen Compiler
 
 > **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
 > When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
@@ -183,7 +183,7 @@ PASSED: all kernel results are correct
 
 Comparing to Arria® 10 GX FPGA, it is more notable on Stratix® 10 SX FPGA that the minimum latency optimization target significantly reduces the latency, along with the f<sub>MAX</sub> and the throughput. That is because the minimum latency optimization target disables the hyper-optimized handshaking, which achieves higher f<sub>MAX</sub> at the cost of increased latency. 
 
-> **Note**: For more information on the hyper-optimized handshaking protocol on Stratix® 10 and Agilex® 7 devices, see the [*Modify the Handshaking Protocol Between Clusters (-Xshyper-optimized-handshaking)*](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/optimization-guide/current/hyper-opt-handshaking.html) topic in the *HLS IP Gen Handbook*.
+> **Note**: For more information on the hyper-optimized handshaking protocol on Stratix® 10 and Agilex® 7 devices, see the [*Modify the Handshaking Protocol Between Clusters (-Xshyper-optimized-handshaking)*](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/16.1.7-improve-fmax-on-hyperflex-fabrics) topic in the *HLS IP Gen Handbook*.
 
 ## License
 

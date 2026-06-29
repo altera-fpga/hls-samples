@@ -16,15 +16,15 @@ Pipes are constructs that provide communication links between elements of a desi
 
 | Optimized for        | Description
 |:---                  |:---
-| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
 | Hardware             | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
 | Software             | HLS IP Gen Compiler
 
 > **Note**: Even though the HLS IP Gen Compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
 > When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
@@ -145,44 +145,6 @@ See the [csr_pipes](csr_pipes/) example.
       make fpga
       ```
 
-<!--
-### On Windows*
-
-1. Change to the sample directory.
-2. Configure the build system for the Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" .. -DTYPE=<INTERKERNEL/STREAM/CSR>
-   ```
-
-   > **Note**: You can change the default target by using the command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number> -DTYPE=<INTERKERNEL/STREAM/CSR>
-   >  ```
-
-3. Compile the design.
-
-   1. Compile for emulation.
-      ```
-      nmake fpga_emu
-      ```
-   2. Compile for simulation.
-      ```
-      nmake fpga_sim
-      ```
-   3. Generate HTML performance report.
-      ```
-      nmake report
-      ```
-   4. Compile for FPGA hardware.
-      ```
-      nmake fpga
-      ```
-
-> **Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your 'build' directory in a shorter path, for example `C:\samples\build`. You can then run cmake from that directory, and provide cmake with the full path to your sample directory.
--->
-
 ## Run the Design
 
 ### On Linux
@@ -195,21 +157,6 @@ See the [csr_pipes](csr_pipes/) example.
    ```
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./pipes.fpga_sim
    ```
-
-<!--
-### On Windows
-
-1. Run the sample on the FPGA emulator.
-   ```
-   pipes.fpga_emu.exe
-   ```
-2. Run the sample on the FPGA simulator.
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   pipes.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
-   ```
--->
 
 ## Related Samples
 

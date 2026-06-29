@@ -1,4 +1,3 @@
-// oneAPI headers
 #include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 

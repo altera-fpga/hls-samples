@@ -10,7 +10,7 @@ This reference design demonstrates IO streaming using SYCL* on an FPGA for a lar
 
 ## Purpose
 
-The purpose of this reference design is to implement a high-performance streaming IO design. In this reference design, we implement an MVDR-beamforming algorithm using oneAPI.
+The purpose of this reference design is to implement a high-performance streaming IO design. In this reference design, we implement an MVDR-beamforming algorithm using the HLS IP Gen compiler.
 
 This reference design code sample leverages concepts that are discussed in the following FPGA tutorials:
 
@@ -48,15 +48,15 @@ You can also find more information about [troubleshooting build errors](/README.
 
 | Optimized for        | Description
 |:---                  |:---
-| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
 | Hardware             | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
 | Software             | HLS IP Gen Compiler
 
 > **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition (Simulator flow can have a long run time)
-> - Questa*-Intel® FPGA Starter Edition (Simulator flow can have a long run time)
+> - Questa*-Altera® FPGA Edition (Simulator flow can have a long run time)
+> - Questa*-Altera® FPGA Starter Edition (Simulator flow can have a long run time)
 > - ModelSim® SE
 >
 > When using the hardware compile flow, Quartus® Prime Pro Edition must be installed and accessible through your PATH.
@@ -175,9 +175,9 @@ The general syntax for running the program is shown below and the table describe
   ```
 ## Build and Run the Design Using Real IO-pipes
 
-This section describes how to build and run this reference design on a BSP with real IO pipes. The real IO pipes version does **not** work on Windows and requires a specific system setup and BSP.
+This section describes how to build and run this reference design on a BSP with real IO pipes.
 
-> **Note**: This design requires a specific board support package (BSP) with a distinct hardware configuration. For access to this BSP or general customer support, submit a case through Intel® Premier Support (IPS) or contact your Intel or Distribution Sales Representative.
+> **Note**: This design requires a specific board support package (BSP) with a distinct hardware configuration. For access to this BSP or general customer support, contact your Altera or Distribution Sales Representative.
 
 ### Build on Linux
 

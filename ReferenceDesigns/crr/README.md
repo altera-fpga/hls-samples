@@ -40,7 +40,7 @@ You can also find more information about [troubleshooting build errors](/README.
 
 | Optimized for | Description                                                                                              |
 | ------------- | -------------------------------------------------------------------------------------------------------- |
-| OS            | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04, RHEL* 8, RHEL* 9, SUSE* 15 **NOTE: Windows is not supported** |
+| OS            | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04, RHEL* 9, SUSE* 15 **NOTE: Windows is not supported** |
 | Hardware      | Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs                                                    |
 | Software      | HLS IP Gen Compiler                                                                                      |
 
@@ -49,8 +49,8 @@ You can also find more information about [troubleshooting build errors](/README.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
 >
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
 > When using the hardware compile flow, Quartus® Prime Pro Edition must be installed and accessible through your PATH.

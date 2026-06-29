@@ -16,15 +16,15 @@ This tutorial shows how to use some simple macros to enable easy use of the SYCL
 
 | Optimized for        | Description
 |:---                  |:---
-| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
 | Hardware             | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
 | Software             | HLS IP Gen Compiler
 
 > **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
 > When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
@@ -58,20 +58,7 @@ You can also find more information about [troubleshooting build errors](/README.
 The sample illustrates the following important concepts.
 
 - Using the experimental `printf()` in code.
-- Showing the advantages of `printf()`:
-  - easy to use
-  - smaller area usage and better performance
 - Discussing the [limitations](#known-issues-and-limitations) of the `printf()`.
-
-### Motivation
-
-Previously, we've provided examples for how to print data using the Stream class in the [*HLS IP Gen Handbook*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide/top/flags-attr-prag-ext/kernel-controls/pipes-extension/i-o-pipes.html).
-
-Compare to the Stream class, `printf()` has the following advantages:
-
-- `printf()` is a function that is globally available; Stream is an object that can only be obtained by passing it as a kernel argument from the host. In order to use Stream somewhere within your application, you have to pass the Stream object through the whole call stack. For debugging in large applications, using `printf()` has a great advantage of allowing you to add some print statements that are easy to remove later without changing your main code.
-
-- On the FPGA device, `printf()` has smaller area usage (fewer LSUs) and better performance (Stream could introduce massive II inner loops).
 
 ### Simple Code Example
 

@@ -18,15 +18,15 @@ While SYCL* code can be compiled for CPU, GPU, or FPGA, compiling to FPGA is som
 
 | Optimized for        | Description
 |:---                  |:---
-| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
 | Hardware             | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
 | Software             | HLS IP Gen Compiler
 
 > **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
 > When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
@@ -76,9 +76,9 @@ The four types of FPGA compilation are summarized in the table below.
 
 | Target              | Expected Time  | Output              | Description
 |:---                 |:---            |:---                 |:---
-| Emulator            | Seconds        | x86-64 binary       | Compiles the FPGA device code to the CPU. Use the Intel® FPGA Emulation Platform for OpenCL™ software to verify your SYCL code’s functional correctness.
+| Emulator            | Seconds        | x86-64 binary       | Compiles the FPGA device code to the CPU. Use the Altera® FPGA Emulation Platform for OpenCL™ software to verify your SYCL code’s functional correctness.
 | Optimization Report | Minutes        | RTL + FPGA reports  | Compiles the FPGA device code to RTL and generates an optimization report that describes the structures generated on the FPGA, identifies performance bottlenecks, and estimates resource utilization.
-| Simulator          | Minutes         | RTL + FPGA reports + x86-64 binary    | Compiles the FPGA device code to RTL and generates a simulation test bench. Use the Questa*-Intel® FPGA Edition simulator to verify your design.
+| Simulator          | Minutes         | RTL + FPGA reports + x86-64 binary    | Compiles the FPGA device code to RTL and generates a simulation test bench. Use the Questa*-Altera® FPGA Edition simulator to verify your design.
 | FPGA Hardware      | Multiple Hours  | Quartus Place & Route + FPGA reports                                                  | Compiles the FPGA device code to RTL and compiles the generated RTL using Quartus® Prime.
 
 The typical FPGA development workflow is to iterate in each of these stages, refining the code using the feedback provided by that stage. You can avoid long compile times by relying on emulation and the optimization report whenever possible.
@@ -98,7 +98,7 @@ For this compilation type, your SYCL device code is optimized and converted into
 
 The optimization report contains significant information about how the compiler has transformed your device code into an FPGA design. The report includes visualizations of structures generated on the FPGA, performance and expected performance bottleneck information, and estimated resource utilization. Optimization reports are generated for the "optimization report", "simulator" and "hardware" compilation types.
 
-The [HLS IP Gen Handbook](https://software.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide/top/analyze-your-design.html) contains a chapter about how to analyze the reports generated after the FPGA early image and FPGA image.
+The Altera® HLS IP Gen Handbook contains a chapter on [analysing your design](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/8-analyzing-your-design) with the optimization report.
 
 #### Simulator
 
@@ -146,7 +146,7 @@ This section includes a helpful list of commands and options to compile this des
 
 >**Note**: In this sample, the compiler is referred to as `ahls`.
 
-The [HLS IP Gen Handbook](https://www.intel.com/content/www/us/en/docs/oneapi/programming-guide/current/fpga-compilation-flags.html) contains a chapter that explains the compiler options used in these examples.
+The Altera® HLS IP Gen Handbook has a chapter on [FPGA flows](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/4-altera-hls-ip-gen-fpga-development) that explains the compiler options used in these examples.
 
 #### Emulator
 
@@ -259,7 +259,7 @@ For part 1 of this tutorial, only the `fpga_emu` target is available as this reg
 
 In *part2*, *part3* and *part4*, after running the `report` target, the FPGA optimization report can be viewed using the HLS IP Gen FPGA Report Main Menu:
 
-1. Open the HLS IP Gen FPGA Report Main Menu (\<oneAPI FPGA installation directory>/share/lib/reports/html_report/report.html) in a supported browser*. If you cannot find the Intel® oneAPI FPGA Report Main Menu path, try running 'fpga_report'.
+1. Open the Altera® HLS IP Gen Report Main Menu (\<HLS IP Gen installation directory>/share/lib/reports/html_report/report.html) in a supported browser*. If you cannot find the HLS IP Gen Report Main Menu path, try running 'fpga_report'.
 ```
 <browser of choice> <HLS IP Gen Compiler installation directory>/share/lib/reports/html_report/report.html
 ```
@@ -267,7 +267,7 @@ In *part2*, *part3* and *part4*, after running the `report` target, the FPGA opt
 
 2. Import your design's reporting data .zip file (vector_add.report.prj/reports/vector_add_report.zip)
 
-![The summary page of the FPGA optimization report generated by running the report target for part 2.](assets/part2_report_example.png)
+![The summary page of the optimization report generated by running the report target for part 2.](assets/part2_report_example.png)
 
 Browse the reports that were generated for the `VectorAdd` kernel's FPGA early image. You may also want to examine the reports generated by the simulation compile and full FPGA hardware compile and compare their contents.
 

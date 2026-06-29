@@ -14,15 +14,15 @@ This FPGA tutorial demonstrates how to build SYCL device libraries from RTL sour
 ## Prerequisites
 | Optimized for                     | Description
 |:---                               |:---
-| OS                                | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| OS                                | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
 | Hardware                          | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
 | Software                          | HLS IP Gen Compiler
 
 > **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
 > When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
@@ -78,9 +78,9 @@ Your RTL library's interface must include a `clock` port, a `resetn` port, and a
     ![](assets/rtl_library.svg)
 
     > **Note**: The signal names must match the ones specified in the .xml file. An error occurs during library creation if a signal name is inconsistent.
-    > You may find full list of RTL support constraints in [Restrictions and Limitations in RTL Support](https://www.intel.com/content/www/us/en/docs/oneapi/programming-guide/2023-2/restrictions-and-limitations-in-rtl-support.html).
+    > You may find full list of RTL support constraints in [Restrictions and Limitations in RTL Support](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/17.4-restrictions-and-limitations-in-rtl-support).
 
-2. The RTL library’s characteristics need to be specified. For example, this tutorial RTL library has specified the latency of the RTL component, that needs to be specified in object manifest file (.xml) under ATTRIBUTES. For other ATTRIBUTES-specific elements, refer to [Object Manifest File Syntax of an RTL Module](https://www.intel.com/content/www/us/en/docs/oneapi/programming-guide/2023-2/object-manifest-file-syntax-of-an-rtl-library.html) for additional information.
+2. The RTL library’s characteristics need to be specified. For example, this tutorial RTL library has specified the latency of the RTL component, that needs to be specified in object manifest file (.xml) under ATTRIBUTES. For other ATTRIBUTES-specific elements, refer to [Manifest File Syntax of an RTL Module](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/17.3-manifest-file-syntax-of-an-rtl-library) for additional information.
 
     > **Note**: It is challenging to debug an RTL module that works correctly on its own but works incorrectly as part of a SYCL kernel. Double-check all parameters under the ATTRIBUTES element in the object manifest file (.xml).
 

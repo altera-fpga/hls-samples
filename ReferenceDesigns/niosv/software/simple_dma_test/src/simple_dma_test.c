@@ -1,7 +1,7 @@
 //  Copyright Altera Corporation. All rights reserved.
 //  SPDX-License-Identifier: MIT
 //
-// This design leverages a simple DMA oneAPI kernel that has had its RTL
+// This design leverages a simple DMA kernel that has had its RTL
 // generated and integrated into the Nios V test system that will be used to
 // control the accelerator. The DMA kernel has been configured to read from
 // memory in memory location 0 (Buffer Location 0) and write to memory in memory

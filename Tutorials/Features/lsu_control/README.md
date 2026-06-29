@@ -16,15 +16,15 @@ The compiler creates load-store units (LSU) to access memories, both on-chip and
 
 | Optimized for        | Description
 |:---                  |:---
-| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
 | Hardware             | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
 | Software             | HLS IP Gen Compiler
 
 > **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
 > When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
@@ -77,7 +77,7 @@ The best LSU style depends on the memory access pattern in your design. There ar
 
 In addition to these two styles, there are also LSU modifiers. LSU modifiers are add-ons that can be combined with LSU styles, such as caching, which can be combined with the burst-coalesced LSU style.
 
-For more details on LSU modifiers and LSU styles, refer to the *Memory Accesses* section in the [HLS IP Gen Handbook](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/optimization-guide/current/memory-accesses.html).
+For more details on LSU modifiers and LSU styles, refer to the *Load-Store Units* section in the [HLS IP Gen Handbook](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/15.2-load-store-units).
 
 ### Introduction to the LSU Control Extension
 
@@ -120,7 +120,7 @@ q.submit([&](handler &h) {
 ```
 
 Currently, not every combination of parameters is valid in the compiler.
-For more details on the descriptions of LSU controls, styles, and modifiers refer to the *Load-Store Unit Controls* section in the [HLS IP Gen Handbook](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/optimization-guide/current/load-store-unit-controls.html).
+For more details on the descriptions of LSU controls, styles, and modifiers refer to the *Load-Store Units* section in the [HLS IP Gen Handbook](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/15.2-load-store-units).
 
 ### Tutorial Overview
 
@@ -220,7 +220,7 @@ If your design is limited by the available FPGA resources, you can try the follo
 
 However, configuring an LSU solely based on area may compromise throughput. In this tutorial, the access pattern is ideal for the prefetch LSU and it will achieve the same throughput as the burst coalesced, but this is not always the case.
 
-For more details on the descriptions of LSU controls, styles, and modifiers, refer to the LSU Controls section in the [*HLS IP Gen Handbook*](https://software.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide).
+For more details on the descriptions of LSU controls, styles, and modifiers, refer to the LSU section in the [*HLS IP Gen Handbook*](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/15.2-load-store-units).
 
 ## Run the `LSU Control` Sample
 

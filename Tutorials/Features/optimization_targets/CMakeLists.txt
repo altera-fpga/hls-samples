@@ -1,12 +1,4 @@
-# Direct CMake to use ahls rather than the default C++ compiler/linker on Linux
-# and icx-cl on Windows
-if(UNIX)
-    set(CMAKE_CXX_COMPILER ahls)
-else() # Windows
-    include (CMakeForceCompiler)
-    CMAKE_FORCE_CXX_COMPILER (icx-cl IntelDPCPP)
-    include (Platform/Windows-Clang)
-endif()
+set(CMAKE_CXX_COMPILER ahls)
 
 cmake_minimum_required (VERSION 3.7.2)
 
@@ -143,31 +135,17 @@ message(STATUS "Additional USER_LIB_PATHS=${USER_LIB_PATHS}")
 link_libraries(${USER_LIBS})
 message(STATUS "Additional USER_LIBS=${USER_LIBS}")
 
-if(WIN32)
-    # add qactypes for Windows
-    set(QACTYPES "")
-    # This is a Windows-specific flag that enables exception handling in host code
-    set(WIN_FLAG "/EHsc")
-else()
-    # add qactypes for Linux
-    set(QACTYPES "")
-endif()
+# add qactypes
+set(QACTYPES "")
 
 string(TOLOWER "${CMAKE_BUILD_TYPE}" LOWER_BUILD_TYPE)
 if(LOWER_BUILD_TYPE MATCHES debug)
 # Set debug flags
-    if(WIN32)
-        set(DEBUG_FLAGS /DEBUG /Od)
-    else()
-        set(DEBUG_FLAGS -g -O0)
-    endif()
+    set(DEBUG_FLAGS -g -O0)
 else()
     set(DEBUG_FLAGS "")
 endif()
 
-if(WIN32)
-    set(EXT ".exe")
-endif()
 
 set(COMMON_COMPILE_FLAGS -Wall ${WIN_FLAG} ${QACTYPES} ${USER_FLAGS})
 set(COMMON_LINK_FLAGS ${QACTYPES} ${USER_FLAGS})
@@ -235,12 +213,8 @@ set_target_properties(${FPGA_TARGET} PROPERTIES OUTPUT_NAME ${FPGA_OUTPUT_NAME})
 ### This part only manipulates cmake variables to print the commands cmake is expected to run to the user
 ###############################################################################
 
-# set the correct object file extension depending on the target platform
-if(WIN32)
-    set(OBJ_EXTENSION "obj")
-else()
-    set(OBJ_EXTENSION "o")
-endif()
+# set the correct object file extension
+set(OBJ_EXTENSION "o")
 
 # Set the source file names in a string
 set(SOURCE_FILE_NAME "${SOURCE_FILES}")

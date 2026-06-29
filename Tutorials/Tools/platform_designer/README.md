@@ -4,7 +4,7 @@ This example design shows how to use an FPGA IP produced with the HLS IP Gen Com
 
 | Optimized for                     | Description
 |:---                               |:---
-| OS                                | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| OS                                | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
 | Hardware                          | This process applies to any FPGA that is supported by the DPC++/C++ compiler, but the sample Quartus® Prime Pro Edition project targets the [Arria® 10 SX SoC Development Kit](https://www.altera.com/products/devkit/po-3006/arria-10-sx-soc-development-kit)
 | Software                          | HLS IP Gen Compiler
 | What you will learn               | How to integrate an RTL IP generated from a SYCL kernel with an Quartus® Prime Pro Edition project
@@ -13,8 +13,8 @@ This example design shows how to use an FPGA IP produced with the HLS IP Gen Com
 > **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > To use the simulator flow, Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - Questa* Advanced Simulator
 > - ModelSim® SE
 >
@@ -64,7 +64,7 @@ This tutorial is structured with four source code directories.
 
 | Source Directory  | Description
 |:--                |:--
-| `add_oneapi`      | The source and build scripts needed to compile a simple IP using oneAPI
+| `add_oneapi`      | The source and build scripts needed to compile a simple IP using the HLS IP Gen Compiler
 | `add_quartus_sln` | An example of the project files that are created using the Quartus® Prime GUI
 | `starting_files`  | The minimal source files you need to create a Quartus® Prime project. Additional project files are created using the Quartus® Prime GUI.
 | `system_console`  | Scripts for controlling the System Console application while you test the design in hardware
@@ -80,14 +80,7 @@ This design is intended to work with the Arria® 10 SX SoC Development Kit. Thes
 
 ## Building the `platform_designer` Tutorial
 
-> **Note**: When working with the command-line interface (CLI), you should configure the HLS IP Gen Compiler using environment variables. 
-> Set up your CLI environment by sourcing the `fpgavars` script located in the root of your HLS IP Gen Compiler installation every time you open a new terminal window. 
-> This practice ensures that your compiler, libraries, and tools are ready for development.
->
-> Linux*:
-> - `source <install-dir>/fpgavars.sh`
-> - For system-wide installations: `. /opt/intel/oneapi/fpgavars.sh`
-> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/fpgavars.sh ; exec csh'`
+> **Note**: When working with the command-line interface (CLI), you should work within the HLS IP Gen Compiler's Apptainer shell.
 
 Follow these steps to compile and test the design:
 1. Compile the SYCL code to RTL. Although this design supports emulation and simulation like other FPGA code samples, they are not the focus of this tutorial. The emulation and simulation commands have been omitted.
@@ -166,7 +159,7 @@ Follow these steps to compile and test the design:
 
       ![](assets/add-ip-platform-designer.png)
 
-      > **Note**: If you cannot see the oneAPI IP component, refresh Platform Designer by clicking `File` > `Refresh System`
+      > **Note**: If you cannot see the IP component, refresh Platform Designer by clicking `File` > `Refresh System`
       >
       > ![](assets/refresh-system.png)
 

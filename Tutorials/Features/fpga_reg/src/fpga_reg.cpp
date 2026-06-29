@@ -119,7 +119,7 @@ void RunKernel(const std::vector<int> &vec_a,
 
           // Fully unroll the accumulator loop.
           // All of the unrolled operations can be freely scheduled by the
-          // oneAPI DPC++/C++ Compiler's FPGA backend as part of a common data pipeline.
+          // HLS IP Gen compiler as part of a common data pipeline.
           #pragma unroll
           for (size_t j = 0; j < kSize; j++) {
 #ifdef USE_FPGA_REG
@@ -146,7 +146,7 @@ void RunKernel(const std::vector<int> &vec_a,
 
           // Rotate the values of the coefficient array.
           // The loop is fully unrolled. This is a canonical code structure;
-          // the oneAPI DPC++/C++ Compiler's FPGA backend infers a shift register here.
+          // the HLS IP Gen compiler infers a shift register here.
           int tmp = coeff[0];
           #pragma unroll
           for (size_t j = 0; j < kSize - 1; j++) {
@@ -180,9 +180,6 @@ void RunKernel(const std::vector<int> &vec_a,
 
     // Most likely the runtime couldn't find FPGA hardware!
     if (e.code().value() == CL_DEVICE_NOT_FOUND) {
-      std::cerr << "If you are targeting an FPGA, please ensure that your "
-                   "system has a correctly configured FPGA board.\n";
-      std::cerr << "Run sys_check in the oneAPI root directory to verify.\n";
       std::cerr << "If you are targeting the FPGA emulator, compile with "
                    "-DFPGA_EMULATOR.\n";
     }

@@ -46,33 +46,13 @@ You can also find more information about [troubleshooting build errors](/README.
 > **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
 > When using the hardware compile flow, Quartus® Prime Pro Edition must be installed and accessible through your PATH.
 >
 > :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
-
-### Performance
-
-Performance results are based on testing conducted with a pre-release version of oneAPI 2024.2, with released Quartus® Prime Pro Edition 24.1 software. Testing was conducted May 25, 2024. Area and f<sub>MAX</sub> estimates are averaged across 8 seeds. 
-* These area estimates are ONLY for the `Convolution2d` kernel, and do not include the `RGB2Grey` or `Grey2RGB` kernels. You can compile the design with only the `Convolution2d` kernel by compiling with the `-DTEST_CONV2D_ISOLATED=1` compiler flag, or by adding `#define TEST_CONV2D_ISOLATED 1` in `src/main.cpp`.
-* These estimates were achieved by setting a 600 MHz clock target for the `Agilex7` device. You can set the clock target by adding the `-Xsclock=600MHz` flag to CMakeLists.txt, or by passing it to the `cmake` command as shown in [Building the `convolution2d` Tutorial](#building-the-convolution2d-tutorial).
-* The reported fMAX is the 'restricted fMAX' as reported by Quartus® Prime.
-
-> **Note**: Refer to the [Performance Disclaimers](/README.md#performance-disclaimers) section for important performance information.
-
-#### Agilex® 7 FPGA
-
-| Parallel Pixels | Window Dimensions | Coefficient Type | Input Type     | f<sub>MAX</sub> (MHz) | ALMs  | DSP blocks | M20K Block RAM
-|---              |---                |---               |---             |---                    |---    |---         |---
-| 1               | 3x3               | `float`          | 10-bit Integer | 639.8                 | 3026  |   9        | 19
-| 2               | 3x3               | `float`          | 10-bit Integer | 639.8                 | 4618  |  18        | 19
-| 4               | 3x3               | `float`          | 10-bit Integer | 639.8                 | 7677  |  36        | 18
-| 8               | 3x3               | `float`          | 10-bit Integer | 639.8                 | 14410 |  72        | 19
-
-> **Note**: This design uses a relatively large number of ALM resources because of the floating-point conversions in `ConvolutionFunction()` in `src/convolution_kernel.hpp`. The coefficients for this design were specified as floating-point for maximal flexibility in coefficient values, but the enthusiastic user is encouraged to convert this function to fixed-point using the `ac_fixed` types, as described in [this sample](/Tutorials/Features/ac_fixed).
 
 ## Key Implementation Details
 
@@ -88,7 +68,7 @@ The `LineBuffer2d` class lets you specify the number of concurrent pixels your d
 
 ![](assets/FIR2d_pip2.svg)
 
-You can instantiate the `LineBuffer2d` in a oneAPI kernel. The example below demonstrates a kernel that parses data indefinitely, but uses 'start-of-packet' and 'end-of-packet' sideband signals to indicate where new frames start. These signals are communicated to the `LineBuffer2d` instance in the call to the `Filter()`.
+You can instantiate the `LineBuffer2d` in a kernel. The example below demonstrates a kernel that parses data indefinitely, but uses 'start-of-packet' and 'end-of-packet' sideband signals to indicate where new frames start. These signals are communicated to the `LineBuffer2d` instance in the call to the `Filter()`.
 
 ```c++
 #include "linebuffer2d.hpp"
@@ -248,7 +228,7 @@ For convenience, you may use the header file included in `quartus_project_files/
 
 In this design, pipes are used to transfer data between kernels, and between the design and the testbench (host code). An aggregate type (`std::array`) is used to allow multiple pixels to transfer in one clock cycle. To help with this, this reference design uses the `WriteFrameToPipe()` and `ReadFrameFromPipe()` functions, which are defined in `include/vvp_stream_adapters.hpp`. 
 
-`WriteFrameToPipe()` writes the contents of an array of pixels *into* a SYCL pipe that can be consumed by a oneAPI kernel. It detects the parameterization of the aggregate type used by the pipe, and groups pixels together accordingly. It also generates start-of-packet and end-of-packet sideband signals like a VVP FPGA IP would, so you can test that your IP can interface with other IPs that use the VVP standard. 
+`WriteFrameToPipe()` writes the contents of an array of pixels *into* a SYCL pipe that can be consumed by a kernel. It detects the parameterization of the aggregate type used by the pipe, and groups pixels together accordingly. It also generates start-of-packet and end-of-packet sideband signals like a VVP FPGA IP would, so you can test that your IP can interface with other IPs that use the VVP standard. 
 
 `ReadFrameFromPipe()` consumes groups of pixels from a SYCL pipe and writes the pixels sequentially to a block of memory. Like `WriteFrameToPipe()`, this function also detects the parameterization of the aggregate type used by the pipe, and groups pixels together accordingly. It parses start-of-packet and end-of-packet sideband signals like a VVP FPGA IP would, and informs you of any errors via its output arguments. If this function detects an unexpected start-of-packet signal, it will print a note and write the new frame over the previous partial frame. It will return once it has read a complete frame, so if your design does not completely output a frame, the `ReadFrameFromPipe()` function will hang. 
 

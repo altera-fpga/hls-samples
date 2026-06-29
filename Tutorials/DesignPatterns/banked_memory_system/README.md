@@ -38,15 +38,15 @@ You can also find more information about [troubleshooting build errors](/README.
 
 | Optimized for      | Description
 |:---                |:---
-| OS                 | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| OS                 | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
 | Hardware           | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
 | Software           | HLS IP Gen Compiler
 
 > **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
 > When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
@@ -93,7 +93,7 @@ The desired memory access pattern in `NaiveKernel` is illustrated in the followi
 
 ![Naive Kernel Memory Access Pattern](./assets/access_pattern_naive.gif)
 
-In the `NaiveKernel`, the first array dimension (row) is accessed in an unrolled loop. In this way, the kernel tries to access all five elements in one column of the buffer, namely `array2d[0][col]` to `array2d[4][col]`. As a result, there are 4 loads and 5 stores to the memory system in each loop iteration, and since the initiation interval is 1, they **should** happen in a single clock cycle. Note that though the second `row` loop, which prepares the output to the `OutStreamNaiveKernel` pipe, also performs loads on each bank, since the values to be loaded are already accessed in the previous loop, these loads are shared. The [kernel memory viewer report](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/developer-guide/current/kernel-memory-viewer.html) shows that the memory system for `array2d` has 8 banks. This report shows the stallable load-store units (LSUs) that prevent the 4 loads and 5 stores from happening in a single clock cycle, and explains why the compiler decided to insert them.
+In the `NaiveKernel`, the first array dimension (row) is accessed in an unrolled loop. In this way, the kernel tries to access all five elements in one column of the buffer, namely `array2d[0][col]` to `array2d[4][col]`. As a result, there are 4 loads and 5 stores to the memory system in each loop iteration, and since the initiation interval is 1, they **should** happen in a single clock cycle. Note that though the second `row` loop, which prepares the output to the `OutStreamNaiveKernel` pipe, also performs loads on each bank, since the values to be loaded are already accessed in the previous loop, these loads are shared. The [kernel memory viewer report](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/8.1.5-kernel-memory-viewer) shows that the memory system for `array2d` has 8 banks. This report shows the stallable load-store units (LSUs) that prevent the 4 loads and 5 stores from happening in a single clock cycle, and explains why the compiler decided to insert them.
 
 ![Stallable Arbitration Node](./assets/stallable_arbitration_node.png)
 

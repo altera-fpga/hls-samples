@@ -2,8 +2,6 @@
 #define __RESTARTABLE_COUNTER_KERNEL_HPP__
 
 #include <iostream>
-
-// oneAPI headers
 #include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/ext/altera/experimental/pipes_ext.hpp>
 #include <sycl/sycl.hpp>

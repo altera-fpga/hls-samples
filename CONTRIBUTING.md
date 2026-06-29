@@ -1,8 +1,6 @@
 # Contributing to hls-samples
 
-The `main` branch contains code samples that work with the latest version of the [Intel® oneAPI Toolkits](https://www.intel.com/content/www/us/en/developer/tools/oneapi/toolkits.html) that supports targeting FPGAs. Do not commit changes to the `main` branch.
-
-All contributions must go into the `development` branch through a pull request (PR) where they will be reviewed before being merged. At specific dates, corresponding to patches of the oneapi DPC++/C++ compiler, the `development` branch is merged into the `main` branch and a new tag is created.
+The `main` branch contains code samples that work with the latest version of the Altera® HLS IP Gen compiler. If you want to contribute to the product, it is best to open a pull request (PR) to this branch. PRs will be reviewed before being merged.
 
 ## Fork the Repository
 
@@ -14,15 +12,15 @@ All contributions must go into the `development` branch through a pull request (
 
 4. Click the **Create fork** button.
 
-5. If you have an existing fork but do not have a `development` branch, create a `development` branch by selecting the altera-fpga/hls-samples `development` branch in the dropdown as the branch source.
+5. If you have an existing fork but do not have a `main` branch, create a `main` branch by selecting the altera-fpga/hls-samples `main` branch in the dropdown as the branch source.
 
 6. Once your fork has been created, click the **Settings** icon and find the **Default Branch** section.
 
 7. Click the **Switch to another branch** graphic.
 
-8. From the dropdown, change the default branch to `development`. Click the **Update** button.
+8. From the dropdown, change the default branch to `main`. Click the **Update** button.
 
-9. To create a branch in your fork, make sure the `development` branch is selected from the dropdown, and enter the name of your branch in the text field.
+9. To create a branch in your fork, make sure the `main` branch is selected from the dropdown, and enter the name of your branch in the text field.
 
 ## Clone Your Fork
 
@@ -50,8 +48,6 @@ When submitting a pull request, keep the following guidelines in mind:
 
 - Check the number of files being updated. Ensure that your pull request includes only the files you expected to be changed. (If there are additional files you did not expect included in the commit, troubleshoot before submitting the PR.)
 
-- Never open a pull request to the `main` branch directly, all pull requests must be targeting the `development` branch.
-
 ## Log a Bug or Request a Feature
 
 We use [GitHub Issues](https://github.com/altera-fpga/hls-samples/issues) to track sample development issues, bugs, and feature requests.
@@ -59,10 +55,8 @@ We use [GitHub Issues](https://github.com/altera-fpga/hls-samples/issues) to tra
 When reporting a bug, provide the following information when possible:
 
 - Steps to reproduce the bug.
-- Whether you found or reproduced the bug using the latest sample in the `main` branch and the latest compatible Intel® oneAPI Toolkits.
+- Whether you found or reproduced the bug using the latest sample in the `main` branch and the latest compatible Altera® HLS IP Gen compiler version.
 - Version numbers or other information about the FPGA, platform, operating system or distribution you used to find the bug.
-
-For usage, installation, or other requests for help, go to the [Intel® oneAPI Forums](https://software.intel.com/en-us/forums/intel-oneapi-forums) for more information.
 
 ## License
 

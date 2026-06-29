@@ -16,15 +16,15 @@ This tutorial demonstrates a simple example of initializing a `device_global` cl
 
 | Optimized for      | Description
 |:---                |:---
-| OS                 | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8, RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| OS                 | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
 | Hardware           | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
 | Software           | HLS IP Gen Compiler
 
 > **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
 > For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
 > When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
@@ -69,7 +69,7 @@ A `device_global` class is instantiated from a class template. The template is p
 
 * The `host_access` property tells the compiler how the host code accesses the `device_global`. The property comes in four variants `host_access_none`, `host_access_read`, `host_access_write`, and `host_access_read_write`(the default). The `host_access` property makes no assertion on how the **device** can access the `device_global`: the device can always read and write to the `device_global` object.
 
-> **Note**: Further details on these and other properties can be found in the [device_global Extension](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/optimization-guide/current/device-global-ext.html) section of the [HLS IP Gen Handbook](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/optimization-guide/current/overview.html).
+> **Note**: Further details on these and other properties can be found in the [device_global Extension](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/15.4-persistent-memory-storage-device_global) section of the HLS IP Gen Handbook.
 
 A `device_global` instance can be used to store state across multiple relaunches of a kernel without needing a SYCL buffer or a Unified Shared Memory (USM) pointer. This can be useful for creating a finite state machine.
 

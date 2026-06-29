@@ -8,7 +8,7 @@
 #include <vector>
 #include "tuple.hpp"
 
-// Headers shared with other oneAPI FPGA samples
+// Headers shared with other samples
 #include "exception_handler.hpp"
 #include "streaming_eigen.hpp"
 #include "streaming_qrd.hpp"

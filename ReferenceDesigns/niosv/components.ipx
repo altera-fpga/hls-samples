@@ -6,7 +6,7 @@
       Since this file is searching for RTL and kernel components recursively all you have to do is ensure those items are located in the following directories:
       
          1)  /custom_ip - Ensure that your RTL components are added to this directory.  This file will search up to 2 subdirectories deep looking for the build kernel.
-         2)  /kernels - Ensure that your oneAPI kernels are located here.  This file will search up to 3 subdirectories deep looking for the built kernel.
+         2)  /kernels - Ensure that your kernels are located here.  This file will search up to 3 subdirectories deep looking for the built kernel.
 -->
 
 <library>
