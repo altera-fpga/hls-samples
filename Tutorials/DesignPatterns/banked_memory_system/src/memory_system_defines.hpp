@@ -2,13 +2,14 @@
 
 #include <array>
 
+#include <sycl/ext/altera/experimental/pipes_ext.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
-#include <sycl/ext/intel/prototype/pipes_ext.hpp>
 
 #include "constexpr_math.hpp"
 
-using namespace sycl;
+namespace altera_exp = sycl::ext::altera::experimental;
+namespace oneapi_exp = sycl::ext::oneapi::experimental;
 
 // Constants for the simple kernels.
 constexpr size_t kNumRows = 5;
@@ -22,28 +23,24 @@ using SimpleOutputT = std::array<int, 5>;
 /////////////////////////////////////////////
 // Define input/output streaming interfaces
 /////////////////////////////////////////////
-using PipePropertiesT = decltype(sycl::ext::oneapi::experimental::properties(
-    sycl::ext::intel::experimental::bits_per_symbol<8>,
-    sycl::ext::intel::experimental::uses_valid<true>,
-    sycl::ext::intel::experimental::ready_latency<0>,
-    sycl::ext::intel::experimental::first_symbol_in_high_order_bits<true>));
+using PipePropertiesT = decltype(oneapi_exp::properties(
+    altera_exp::bits_per_symbol<8>,
+    altera_exp::uses_valid<true>,
+    altera_exp::ready_latency<0>,
+    altera_exp::first_symbol_in_high_order_bits<true>));
 
 // Interfaces for the illustrative simple kernels.
 class IDInStreamNaiveKernel;
 using InStreamNaiveKernel =
-    sycl::ext::intel::experimental::pipe<IDInStreamNaiveKernel, SimpleInputT, 0,
-                                         PipePropertiesT>;
+    altera_exp::pipe<IDInStreamNaiveKernel, SimpleInputT, 0, PipePropertiesT>;
 
 class IDOutStreamNaiveKernel;
 using OutStreamNaiveKernel =
-    sycl::ext::intel::experimental::pipe<IDOutStreamNaiveKernel, SimpleOutputT, 0,
-                                         PipePropertiesT>;
+    altera_exp::pipe<IDOutStreamNaiveKernel, SimpleOutputT, 0, PipePropertiesT>;
 
 class IDInStreamOptKernel;
 using InStreamOptKernel =
-    sycl::ext::intel::experimental::pipe<IDInStreamOptKernel, SimpleInputT, 0,
-                                         PipePropertiesT>;
+    altera_exp::pipe<IDInStreamOptKernel, SimpleInputT, 0, PipePropertiesT>;
 class IDOutStreamOptKernel;
 using OutStreamOptKernel =
-    sycl::ext::intel::experimental::pipe<IDOutStreamOptKernel, SimpleOutputT, 0,
-                                         PipePropertiesT>;
+    altera_exp::pipe<IDOutStreamOptKernel, SimpleOutputT, 0, PipePropertiesT>;

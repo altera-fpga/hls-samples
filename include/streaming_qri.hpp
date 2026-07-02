@@ -120,10 +120,10 @@ struct StreamingQRI {
             // Delay data signals to create a vine-based data distribution
             // to lower signal fanout.
             pipe_read.template get<t>() =
-                sycl::ext::intel::fpga_reg(pipe_read.template get<t>());
+                sycl::ext::altera::fpga_reg(pipe_read.template get<t>());
           });
 
-          write_idx = sycl::ext::intel::fpga_reg(write_idx);
+          write_idx = sycl::ext::altera::fpga_reg(write_idx);
         });
       }
 
@@ -265,7 +265,7 @@ struct StreamingQRI {
         bool get[kLoopIterPerColumn];
         fpga_tools::UnrolledLoop<kLoopIterPerColumn>([&](auto k) {
           get[k] = column_iter == k;
-          column_iter = sycl::ext::intel::fpga_reg(column_iter);
+          column_iter = sycl::ext::altera::fpga_reg(column_iter);
         });
 
         fpga_tools::NTuple<TT, pipe_size> pipe_write;
@@ -274,7 +274,7 @@ struct StreamingQRI {
             if constexpr (t * pipe_size + k < rows) {
               pipe_write.template get<k>() =
                   get[t] ? i_matrix[li / kLoopIterPerColumn][(t * pipe_size) + k]
-                         : sycl::ext::intel::fpga_reg(
+                         : sycl::ext::altera::fpga_reg(
                                pipe_write.template get<k>());
             }
           });

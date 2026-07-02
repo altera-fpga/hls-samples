@@ -5,7 +5,7 @@
 #include "constexpr_math.hpp"
 #include "unrolled_loop.hpp"
 
-using namespace sycl::ext::intel::experimental;
+using namespace sycl::ext::altera::experimental;
 using namespace sycl::ext::oneapi::experimental;
 
 constexpr int BL0 = 0;
@@ -47,7 +47,7 @@ void MatrixReadFromDDRToPipe(
   // lives on the device.
   // Knowing this, the compiler won't generate hardware to
   // potentially get data from the host.
-  sycl::ext::intel::device_ptr<TT> matrix_ptr_located(matrix_ptr);
+  sycl::ext::altera::device_ptr<TT> matrix_ptr_located(matrix_ptr);
 #else
   // Device pointers are not supported when targeting an FPGA 
   // family/part
@@ -153,7 +153,7 @@ void MatrixReadPipeToDDR(
   // lives on the device.
   // Knowing this, the compiler won't generate hardware to
   // potentially get data from the host.
-  sycl::ext::intel::device_ptr<TT> matrix_ptr_located(matrix_ptr);
+  sycl::ext::altera::device_ptr<TT> matrix_ptr_located(matrix_ptr);
 #else
   // Device pointers are not supported when targeting an FPGA 
   // family/part. We want to use the ptr_annotation that was definied in qri.hpp

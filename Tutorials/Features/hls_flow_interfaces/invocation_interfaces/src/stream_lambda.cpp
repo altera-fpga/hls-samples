@@ -1,8 +1,10 @@
-// oneAPI headers
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "exception_handler.hpp"
+
+namespace oneapi_exp = sycl::ext::oneapi::experimental;
+namespace altera_exp = sycl::ext::altera::experimental;
 
 // Forward declare the kernel names in the global scope.
 // This FPGA best practice reduces name mangling in the optimization reports.
@@ -13,9 +15,8 @@ class LambdaStream;
 void LambdaStreamKernel(sycl::queue &q, int *input, int *output, int n) {
   // Create a properties object containing the kernel invocation interface
   // property 'streaming_interface_remove_downstream_stall'.
-  sycl::ext::oneapi::experimental::properties kernel_properties{
-      sycl::ext::intel::experimental::
-          streaming_interface_remove_downstream_stall};
+  oneapi_exp::properties kernel_properties{
+      altera_exp::streaming_interface_remove_downstream_stall};
 
   // In the Lambda programming model, pass a properties object argument to
   // configure the kernel invocation interface. All kernel arguments will have
@@ -31,11 +32,11 @@ void LambdaStreamKernel(sycl::queue &q, int *input, int *output, int n) {
 
 int main(int argc, char *argv[]) {
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   bool passed = true;
@@ -115,11 +116,7 @@ int main(int argc, char *argv[]) {
     std::terminate();
   }
 
-  if (passed) {
-    std::cout << "PASSED\n";
-    return 0;
-  } else {
-    std::cout << "FAILED\n";
-    return 1;
-  }
+  std::cout << (passed ? "PASSED" : "FAILED") << std::endl;
+
+  return passed ? EXIT_SUCCESS : EXIT_FAILURE;
 }

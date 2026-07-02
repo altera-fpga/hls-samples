@@ -1,8 +1,8 @@
 #ifndef __PCA_HPP__
 #define __PCA_HPP__
 
-#include <sycl/ext/intel/ac_types/ac_int.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/ac_types/ac_int.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 #include <vector>
 
@@ -11,8 +11,8 @@
 #include "streaming_eigen.hpp"
 #include "tuple.hpp"
 
-using namespace sycl::ext::intel::experimental;
-using namespace sycl::ext::oneapi::experimental;
+namespace altera_exp = sycl::ext::altera::experimental;
+namespace oneapi_exp = sycl::ext::oneapi::experimental;
 
 // Forward declare the kernel and pipe names
 // (This prevents unwanted name mangling in the optimization report.)
@@ -75,14 +75,16 @@ void PCAKernel(
   constexpr int kEigenValuesVectorSize = k_features_count;
 
   using PipeType = fpga_tools::NTuple<T, kNumElementsPerDDRBurst>;
+  using PipeProps =
+      decltype(oneapi_exp::properties{altera_exp::bits_per_symbol<0>});
 
   // Pipes to communicate the A, Q and R matrices between kernels
-  using InputMatrixPipe = sycl::ext::intel::pipe<IMP, PipeType, 3>;
-  using CovarianceMatrixPipe = sycl::ext::intel::pipe<CMP, PipeType, 3>;
-  using EigenValuesPipe = sycl::ext::intel::pipe<EValP, T, 3>;
-  using EigenVectorsPipe = sycl::ext::intel::pipe<EVecP, PipeType, 3>;
+  using InputMatrixPipe = altera_exp::pipe<IMP, PipeType, 3>;
+  using CovarianceMatrixPipe = altera_exp::pipe<CMP, PipeType, 3>;
+  using EigenValuesPipe = altera_exp::pipe<EValP, T, 3>;
+  using EigenVectorsPipe = altera_exp::pipe<EVecP, PipeType, 3>;
   using RankDeficientFlagPipe =
-      sycl::ext::intel::pipe<RDFP, ac_int<1, false>, 3>;
+      altera_exp::pipe<RDFP, ac_int<1, false>, 3, PipeProps>;
 
   T *input_matrix_device;
   T *eigen_vectors_device;
@@ -120,8 +122,9 @@ void PCAKernel(
 
 #if not defined (IS_BSP)
     constexpr int BL0 = 0;
-    using PtrAnn = annotated_ptr<T, decltype(properties{buffer_location<BL0>,
-                                                        dwidth<512>})>;
+    using PtrAnn = annotated_ptr<T, decltype(oneapi_exp::properties{
+        altera_exp::buffer_location<BL0>,
+        altera_exp::dwidth<512>})>;
     PtrAnn eigen_vectors_device_ptr(eigen_vectors_device);
 #endif
 

@@ -2,9 +2,9 @@
 #define __QRD_HPP__
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
-#include <sycl/ext/intel/ac_types/ac_complex.hpp>
-#include <sycl/ext/intel/ac_types/ac_int.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
+#include <sycl/ext/altera/ac_types/ac_complex.hpp>
+#include <sycl/ext/altera/ac_types/ac_int.hpp>
 
 #include <chrono>
 #include <cstring>
@@ -15,7 +15,7 @@
 #include "streaming_qrd.hpp"
 #include "tuple.hpp"
 
-using namespace sycl::ext::intel::experimental;
+using namespace sycl::ext::altera::experimental;
 using namespace sycl::ext::oneapi::experimental;
 
 // Forward declare the kernel and pipe names
@@ -58,9 +58,9 @@ void QRDecompositionImpl(
   using PipeType = fpga_tools::NTuple<TT, kNumElementsPerDDRBurst>;
 
   // Pipes to communicate the A, Q and R matrices between kernels
-  using AMatrixPipe = sycl::ext::intel::pipe<APipe, PipeType, 3>;
-  using QMatrixPipe = sycl::ext::intel::pipe<QPipe, PipeType, 3>;
-  using RMatrixPipe = sycl::ext::intel::pipe<RPipe, TT,
+  using AMatrixPipe = sycl::ext::altera::experimental::pipe<APipe, PipeType, 3>;
+  using QMatrixPipe = sycl::ext::altera::experimental::pipe<QPipe, PipeType, 3>;
+  using RMatrixPipe = sycl::ext::altera::experimental::pipe<RPipe, TT,
                                                   kNumElementsPerDDRBurst * 4>;
 
   // Allocate FPGA DDR memory.
@@ -123,7 +123,7 @@ void QRDecompositionImpl(
     // lives on the device.
     // Knowing this, the compiler won't generate hardware to
     // potentially get data from the host.
-    sycl::ext::intel::device_ptr<TT> vector_ptr_located(r_device);
+    sycl::ext::altera::device_ptr<TT> vector_ptr_located(r_device);
 #else
     // Device pointers are not supported when targeting an FPGA 
     // family/part

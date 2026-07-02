@@ -2,7 +2,7 @@
 #define __DIAG_RECIPROCAL__
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "mvdr_complex.hpp"
 

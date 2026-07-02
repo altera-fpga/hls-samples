@@ -1,12 +1,4 @@
-# Direct CMake to use icpx rather than the default C++ compiler/linker on Linux
-# and icx-cl on Windows
-if(UNIX)
-    set(CMAKE_CXX_COMPILER icpx)
-else() # Windows
-    include (CMakeForceCompiler)
-    CMAKE_FORCE_CXX_COMPILER (icx-cl IntelDPCPP)
-    include (Platform/Windows-Clang)
-endif()
+set(CMAKE_CXX_COMPILER ahls)
 
 cmake_minimum_required (VERSION 3.7.2)
 
@@ -22,19 +14,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(SOURCE_FILES src/fft2d_demo.cpp)
 set(TARGET_NAME fft2d)
 
-# Use cmake -DFPGA_DEVICE=<board-support-package>:<board-variant> to choose a
-# different device. Here are a few device examples (this list is not
-# exhaustive):
-#   intel_s10sx_pac:pac_s10
-#   intel_s10sx_pac:pac_s10_usm
-#   intel_a10gx_pac:pac_a10
-# Note that depending on your installation, you may need to specify the full 
-# path to the board support package (BSP), this usually is in your install 
-# folder.
-#
-# You can also specify a device family (E.g. "Arria10" or "Stratix10") or a
+# Use cmake -DFPGA_DEVICE=<FPGA device family or FPGA part number> to choose a
+# different device.
+# You can specify a device family (E.g. "Arria10" or "Stratix10") or a
 # specific part number (E.g. "10AS066N3F40E2SG") to generate a standalone IP.
 if(NOT DEFINED FPGA_DEVICE)
+    set(FPGA_DEVICE "Agilex7")
     message(STATUS "FPGA_DEVICE was not specified.\
                     \nConfiguring the design to the default FPGA family target: ${FPGA_DEVICE}\
                     \nPlease refer to the README for information on target selection.")
@@ -44,20 +29,28 @@ endif()
 # compilation. 
 set(USER_FPGA_FLAGS ${USER_FPGA_FLAGS})
 
-set(LOGN "10")
+
+string(TOLOWER ${FPGA_DEVICE} FPGA_DEVICE_NAME)
+if(FPGA_DEVICE_NAME MATCHES ".*cyclone.*" OR FPGA_DEVICE_NAME MATCHES ".*agilex3.*")
+    message(STATUS "Limiting LOGN and PARALLELISM for Agilex 3 and Cyclone devices so the design fits.\ 
+                    Note that manual overrides (-DSET_<>) still work.")
+    set(LOGN "4")
+    set(PARALLELISM "4")
+else()
+    set(LOGN "10")
+    set(PARALLELISM "8")
+endif()
+
 
 if(DEFINED SET_LOGN)
     set(LOGN ${SET_LOGN})
 endif()
 
-message(STATUS "LOGN=${LOGN}")
-
-set(PARALLELISM "8")
-
 if(DEFINED SET_PARALLELISM)
     set(PARALLELISM ${SET_PARALLELISM})
 endif()
 
+message(STATUS "LOGN=${LOGN}")
 message(STATUS "PARALLELISM=${PARALLELISM}")
 
 # Use cmake -DUSER_FLAGS=<flags> to set extra flags for general compilation.
@@ -95,15 +88,8 @@ message(STATUS "Additional USER_LIB_PATHS=${USER_LIB_PATHS}")
 link_libraries(${USER_LIBS})
 message(STATUS "Additional USER_LIBS=${USER_LIBS}")
 
-if(WIN32)
-    # add qactypes for Windows
-    set(QACTYPES "-Qactypes")
-    # This is a Windows-specific flag that enables exception handling in host code
-    set(WIN_FLAG "/EHsc")
-else()
-    # add qactypes for Linux
-    set(QACTYPES "-qactypes")
-endif()
+# add qactypes
+set(QACTYPES "")
 
 # Check if the target is a BSP
 if(IS_BSP MATCHES "1" OR FPGA_DEVICE MATCHES ".*pac_a10.*|.*pac_s10.*")
@@ -130,8 +116,8 @@ if(WIN32)
     set(EXT ".exe")
 endif()
 
-set(COMMON_COMPILE_FLAGS -fintelfpga -Wall ${WIN_FLAG} ${QACTYPES} ${USER_FLAGS} ${BSP_FLAG})
-set(COMMON_LINK_FLAGS -fintelfpga ${QACTYPES} ${USER_FLAGS})
+set(COMMON_COMPILE_FLAGS -Wall ${WIN_FLAG} ${QACTYPES} ${USER_FLAGS} ${BSP_FLAG})
+set(COMMON_LINK_FLAGS ${QACTYPES} ${USER_FLAGS})
 
 # A SYCL ahead-of-time (AoT) compile processes the device code in two stages.
 # 1. The "compile" stage compiles the device code to an intermediate
@@ -176,7 +162,7 @@ target_compile_options(${REPORT_TARGET} PRIVATE ${REPORT_COMPILE_FLAGS})
 
 # The report target does not need the QACTYPES flag at link stage
 set(MODIFIED_COMMON_LINK_FLAGS_REPORT ${COMMON_LINK_FLAGS})
-list(REMOVE_ITEM MODIFIED_COMMON_LINK_FLAGS_REPORT ${QACTYPES})
+
 
 target_link_libraries(${REPORT_TARGET} ${MODIFIED_COMMON_LINK_FLAGS_REPORT})
 target_link_libraries(${REPORT_TARGET} ${REPORT_LINK_FLAGS})
@@ -293,11 +279,6 @@ function(getCompileCommands common_compile_flags special_compile_flags common_li
     set(LINK_COMMAND "${LINK_COMMAND}" PARENT_SCOPE)
 
 endfunction()
-
-# Windows executable is going to have the .exe extension
-if(WIN32)
-    set(EXECUTABLE_EXTENSION ".exe")
-endif()
 
 # Display the compile instructions in the emulation flow
 getCompileCommands("${COMMON_COMPILE_FLAGS}" "${EMULATOR_COMPILE_FLAGS}" "${COMMON_LINK_FLAGS}" "${EMULATOR_LINK_FLAGS}" "${EMULATOR_TARGET}" "${EMULATOR_OUTPUT_NAME}${EXECUTABLE_EXTENSION}")

@@ -1,4 +1,4 @@
-//  Copyright (c) 2023 Intel Corporation                                  
+//  Copyright Altera Corporation. All rights reserved.
 //  SPDX-License-Identifier: MIT                                          
 
 module add (
@@ -29,10 +29,11 @@ module add (
   end
   
   add_kernel_wrapper u0 (
-    .exception_add_data (),               //  output,  width = 64, exception_add_1.data
-    .irq_add_irq        (sort_done),      //  output,   width = 1,       irq_add_1.irq
-    .clk_clk            (i_clk),          //   input,   width = 1,             clk.clk
-    .reset_reset        (reset_button_d3) //   input,   width = 1,           reset.reset
+    .exception_add_data (),                //  output,  width = 64, exception_add_1.data
+    .irq_add_irq        (sort_done),       //  output,   width = 1,        irq_add_1.irq
+    .clk_clk            (i_clk),           //   input,   width = 1,              clk.clk
+    .reset_reset        (reset_button_d3), //   input,   width = 1,          reset.reset
+    .freeze_add_freeze  (1'b0)             //   input,   width = 1,  freeze_add_1.freeze
   );
 
 endmodule

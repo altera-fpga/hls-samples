@@ -95,10 +95,10 @@ struct StreamingCovarianceMatrix {
             // Delay data signals to create a vine-based data distribution
             // to lower signal fanout.
             pipe_read.template get<t>() =
-                sycl::ext::intel::fpga_reg(pipe_read.template get<t>());
+                sycl::ext::altera::fpga_reg(pipe_read.template get<t>());
           });
 
-          write_idx = sycl::ext::intel::fpga_reg(write_idx);
+          write_idx = sycl::ext::altera::fpga_reg(write_idx);
         });
       }  // for:li
 
@@ -240,7 +240,7 @@ struct StreamingCovarianceMatrix {
 #pragma unroll
           for (size_t k = 0; k < kLoopIterationPerRow; ++k) {
             get[k] = column_iter == k;
-            column_iter = sycl::ext::intel::fpga_reg(column_iter);
+            column_iter = sycl::ext::altera::fpga_reg(column_iter);
           }
 
           fpga_tools::NTuple<T, pipe_size> pipe_write;
@@ -250,7 +250,7 @@ struct StreamingCovarianceMatrix {
                 pipe_write.template get<k>() =
                     get[t]
                         ? cov_matrix_std[li / kLoopIterationPerRow][t * pipe_size + k]
-                        : sycl::ext::intel::fpga_reg(
+                        : sycl::ext::altera::fpga_reg(
                               pipe_write.template get<k>());
               }
             });
@@ -275,7 +275,7 @@ struct StreamingCovarianceMatrix {
 #pragma unroll
           for (size_t k = 0; k < kLoopIterationPerRow; ++k) {
             get[k] = column_iter == k;
-            column_iter = sycl::ext::intel::fpga_reg(column_iter);
+            column_iter = sycl::ext::altera::fpga_reg(column_iter);
           }
 
           fpga_tools::NTuple<T, pipe_size> pipe_write;
@@ -285,7 +285,7 @@ struct StreamingCovarianceMatrix {
                 pipe_write.template get<k>() =
                   get[t]
                       ? cov_matrix_consume[li / kLoopIterationPerRow][t * pipe_size + k]
-                      : sycl::ext::intel::fpga_reg(
+                      : sycl::ext::altera::fpga_reg(
                             pipe_write.template get<k>());
               }
             });

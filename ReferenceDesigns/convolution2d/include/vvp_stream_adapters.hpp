@@ -1,4 +1,4 @@
-//  Copyright (c) 2024 Intel Corporation
+//  Copyright Altera Corporation. All rights reserved.
 //  SPDX-License-Identifier: MIT
 
 // vvp_stream_adapters.hpp
@@ -6,9 +6,7 @@
 #pragma once
 #include <algorithm>
 #include <string>
-
-// oneAPI headers
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "bmp_tools.hpp"  // BmpTools::PixelRGB definition
@@ -22,7 +20,7 @@ namespace vvp_stream_adapters {
 /// @brief Write a frame to the pipe `PixelPipe` and generate appropriate
 /// SoP/EoP and Empty sideband signals
 /// @paragraph This function writes the contents of an array of pixels into a
-/// sycl pipe that can be consumed by a oneAPI kernel. It generates
+/// sycl pipe that can be consumed by a kernel. It generates
 /// start-of-packet and end-of-packet sideband signals like a video/vision
 /// processing (VVP) FPGA IP would, so you can test that your IP complies with
 /// the VVP standard.
@@ -31,11 +29,11 @@ namespace vvp_stream_adapters {
 /// itself templated on a payload of type `PixelType`.
 /// @tparam PixelType The type that represents each pixel. This may be a scalar
 /// (such as an `int`) or a `struct` of 'plain old data'.
-/// @param q SYCL queue where your oneAPI kernel will run
+/// @param q SYCL queue where your kernel will run
 /// @param[in] rows Image rows (height)
 /// @param[in] cols Image columns (width)
 /// @param[in] in_img Pointer to a buffer containing a single image to pass to
-/// your oneAPI kernel.
+/// your kernel.
 /// @param[in] end_pixel Optional parameter that lets you simulate a defective
 /// video frame, by ending the stream of pixels prematurely.
 /// @return `true` after successfully writing the input image to a SYCL pipe.
@@ -128,7 +126,7 @@ bool WriteFrameToPipe(sycl::queue q, int rows, int cols, PixelType *in_img,
 /// itself templated on a payload of type `PixelType`.
 /// @tparam PixelType The type that represents each pixel. This may be a scalar
 /// (such as an `int`) or a `struct` of 'plain old data'.
-/// @param q SYCL queue where your oneAPI kernel will run
+/// @param q SYCL queue where your kernel will run
 /// @param[in] rows Image rows (height)
 /// @param[in] cols Image columns (width)
 /// @param[out] out_img Pointer to place image pixels read from `PixelPipe`
@@ -294,13 +292,13 @@ bool ReadFrameFromPipe(sycl::queue q, int rows, int cols, PixelType *out_img,
 /// kernel. Dummy pixels have both the `start-of-frame` and `end-of-line`
 /// signals high, so they will be easily identifiable in simulation waveforms.
 /// @paragraph This function writes dummy values into a
-/// SYCL* pipe that can be consumed by a oneAPI kernel.
+/// SYCL* pipe that can be consumed by a kernel.
 /// @tparam PixelPipe The pipe to which pixels will be written. This pipe's
 /// payload should be a `StreamingBeat` templated on a `std::array`, which is
 /// itself templated on a payload of type `PixelType`.
 /// @tparam PixelType The type that represents each pixel. This may be a scalar
 /// (such as an `int`) or a `struct` of 'plain old data'.
-/// @param q SYCL queue where your oneAPI kernel will run
+/// @param q SYCL queue where your kernel will run
 /// @param[in] len number of dummy pixels
 /// @param[in] val the dummy value to write
 /// @return `true` after successfully writing the input image to a SYCL pipe.

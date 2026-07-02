@@ -1,5 +1,5 @@
 //==============================================================
-// Copyright Intel Corporation
+// Copyright Altera Corporation. All rights reserved.
 //
 // SPDX-License-Identifier: MIT
 // =============================================================
@@ -15,7 +15,7 @@
 #include <sys/types.h>
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <algorithm>
 #include <chrono>
 #include <fstream>
@@ -195,11 +195,11 @@ int main(int argc, char* argv[]) {
     auto props = property_list{property::queue::enable_profiling()};
 
 #if FPGA_SIMULATOR
-    auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-    auto selector = sycl::ext::intel::fpga_selector_v;
+    auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-    auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
     // create the device queue

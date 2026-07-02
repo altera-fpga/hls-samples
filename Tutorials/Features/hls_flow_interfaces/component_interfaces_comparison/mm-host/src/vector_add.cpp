@@ -1,9 +1,14 @@
 #include <iostream>
-
-// oneAPI headers
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+
 #include "exception_handler.hpp"
+
+// Define namespace alias for easy reference.
+namespace altera_exp = sycl::ext::altera::experimental;
+namespace oneapi_exp = sycl::ext::oneapi::experimental;
+
+constexpr int kVectorSize = 256;
 
 // Buffer locations for MM Host interfaces
 constexpr int kBL1 = 1;
@@ -15,32 +20,34 @@ constexpr int kBL3 = 3;
 class IDSimpleVAdd;
 
 struct SimpleVAddKernel {
-  sycl::ext::oneapi::experimental::annotated_arg<
-      int *, decltype(sycl::ext::oneapi::experimental::properties{
-                 sycl::ext::intel::experimental::buffer_location<kBL1>,
-                 sycl::ext::intel::experimental::dwidth<32>,
-                 sycl::ext::intel::experimental::latency<0>,
-                 sycl::ext::intel::experimental::read_write_mode_read,
-                 sycl::ext::oneapi::experimental::alignment<4>})>
+  oneapi_exp::annotated_arg<
+      int *,
+      decltype(oneapi_exp::properties{
+                 altera_exp::buffer_location<kBL1>,
+                 altera_exp::dwidth<32>,
+                 altera_exp::latency<0>,
+                 altera_exp::read_write_mode_read,
+                 oneapi_exp::alignment<4>})>
       a_in;
 
-  sycl::ext::oneapi::experimental::annotated_arg<
-      int *, decltype(sycl::ext::oneapi::experimental::properties{
-                 sycl::ext::intel::experimental::buffer_location<kBL2>,
-                 sycl::ext::intel::experimental::dwidth<32>,
-                 sycl::ext::intel::experimental::latency<0>,
-                 sycl::ext::intel::experimental::read_write_mode_read,
-                 sycl::ext::oneapi::experimental::alignment<4>})>
-                 
+  oneapi_exp::annotated_arg<
+      int *,
+      decltype(oneapi_exp::properties{
+                 altera_exp::buffer_location<kBL2>,
+                 altera_exp::dwidth<32>,
+                 altera_exp::latency<0>,
+                 altera_exp::read_write_mode_read,
+                 oneapi_exp::alignment<4>})>
       b_in;
 
-  sycl::ext::oneapi::experimental::annotated_arg<
-      int *, decltype(sycl::ext::oneapi::experimental::properties{
-                 sycl::ext::intel::experimental::buffer_location<kBL3>,
-                 sycl::ext::intel::experimental::dwidth<32>,
-                 sycl::ext::intel::experimental::latency<0>,
-                 sycl::ext::intel::experimental::read_write_mode_write,
-                 sycl::ext::oneapi::experimental::alignment<4>})>
+  oneapi_exp::annotated_arg<
+      int *,
+      decltype(oneapi_exp::properties{
+                 altera_exp::buffer_location<kBL3>,
+                 altera_exp::dwidth<32>,
+                 altera_exp::latency<0>,
+                 altera_exp::read_write_mode_write,
+                 oneapi_exp::alignment<4>})>
       c_out;
 
   int len;
@@ -55,20 +62,19 @@ struct SimpleVAddKernel {
   }
 };
 
-constexpr int kVectorSize = 256;
-
 int main() {
+  bool passed = true;
   try {
     // Use compile-time macros to select either:
     //  - the FPGA emulator device (CPU emulation of the FPGA)
     //  - the FPGA device (a real FPGA)
     //  - the simulator device
 #if FPGA_SIMULATOR
-    auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-    auto selector = sycl::ext::intel::fpga_selector_v;
+    auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-    auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
     // create the device queue
@@ -80,26 +86,20 @@ int main() {
               << device.get_info<sycl::info::device::name>().c_str()
               << std::endl;
 
-    int count = kVectorSize;  // pass array size by value
+    // Vector size is a constant here, but it could be a run-time variable too.
+    int count = kVectorSize;
 
-    // declare arrays and fill them
-    // Create USM shared allocations in the specified buffer_location. 
+    // Create USM shared allocations in the specified buffer_location.
     // You can also use host allocations with malloc_host(...) API
     int *a = sycl::malloc_shared<int>(
         count, q,
-        sycl::property_list{
-            sycl::ext::intel::experimental::property::usm::buffer_location(
-                kBL1)});
+        sycl::property_list{altera_exp::property::usm::buffer_location(kBL1)});
     int *b = sycl::malloc_shared<int>(
         count, q,
-        sycl::property_list{
-            sycl::ext::intel::experimental::property::usm::buffer_location(
-                kBL2)});
+        sycl::property_list{altera_exp::property::usm::buffer_location(kBL2)});
     int *c = sycl::malloc_shared<int>(
         count, q,
-        sycl::property_list{
-            sycl::ext::intel::experimental::property::usm::buffer_location(
-                kBL3)});
+        sycl::property_list{altera_exp::property::usm::buffer_location(kBL3)});
 
     for (int i = 0; i < count; i++) {
       a[i] = i;
@@ -108,10 +108,10 @@ int main() {
 
     std::cout << "Add two vectors of size " << count << std::endl;
 
-    q.single_task<IDSimpleVAdd>(SimpleVAddKernel{a, b, c, count}).wait();
+    sycl::event e = q.single_task<IDSimpleVAdd>(SimpleVAddKernel{a, b, c, count});
 
-    // verify that VC is correct
-    bool passed = true;
+    // Verify that outputs are correct, after the kernel has finished running.
+    e.wait();
     for (int i = 0; i < count; i++) {
       int expected = a[i] + b[i];
       if (c[i] != expected) {
@@ -127,15 +127,11 @@ int main() {
     sycl::free(b, q);
     sycl::free(c, q);
 
-    return passed ? EXIT_SUCCESS : EXIT_FAILURE;
-
   } catch (sycl::exception const &e) {
     std::cerr << "Caught a synchronous SYCL exception: " << e.what()
               << std::endl;
-    std::cerr << "   If you are targeting an FPGA hardware, "
-                 "ensure that your system is plugged to an FPGA board that is "
-                 "set up correctly"
-              << std::endl;
     std::terminate();
   }
+
+  return passed ? EXIT_SUCCESS : EXIT_FAILURE;
 }

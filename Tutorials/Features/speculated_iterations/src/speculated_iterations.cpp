@@ -1,10 +1,10 @@
 //==============================================================
-// Copyright Intel Corporation
+// Copyright Altera Corporation. All rights reserved.
 //
 // SPDX-License-Identifier: MIT
 // =============================================================
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <array>
 #include <iomanip>
 #include <iostream>
@@ -38,11 +38,11 @@ template <int N> class KernelCompute;
 template <int spec_iter, bool first_call = false>
 void ComplexExit(float bound, int &res) {
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   double kernel_time_ms = 0.0;
@@ -93,9 +93,6 @@ void ComplexExit(float bound, int &res) {
   } catch (exception const &exc) {
     std::cerr << "Caught synchronous SYCL exception:\n" << exc.what() << "\n";
     if (exc.code().value() == CL_DEVICE_NOT_FOUND) {
-      std::cerr << "If you are targeting an FPGA, please ensure that your "
-                   "system has a correctly configured FPGA board.\n";
-      std::cerr << "Run sys_check in the oneAPI root directory to verify.\n";
       std::cerr << "If you are targeting the FPGA emulator, compile with "
                    "-DFPGA_EMULATOR.\n";
     }
@@ -137,18 +134,26 @@ int main(int argc, char *argv[]) {
   ComplexExit<0, true>(bound, r0);
   ComplexExit<10>(bound, r1);
   ComplexExit<34>(bound, r2);
+#elif defined(Cyclone10)
+  ComplexExit<0, true>(bound, r0);
+  ComplexExit<10>(bound, r1);
+  ComplexExit<34>(bound, r2);
 #elif defined(S10)
   ComplexExit<0, true>(bound, r0);
   ComplexExit<10>(bound, r1);
   ComplexExit<54>(bound, r2);
-#elif defined(Agilex5)
-  ComplexExit<0, true>(bound, r0);
-  ComplexExit<10>(bound, r1);
-  ComplexExit<50>(bound, r2);
 #elif defined(Agilex7)
   ComplexExit<0, true>(bound, r0);
   ComplexExit<10>(bound, r1);
   ComplexExit<50>(bound, r2);
+#elif defined(Agilex5)
+  ComplexExit<0, true>(bound, r0);
+  ComplexExit<10>(bound, r1);
+  ComplexExit<50>(bound, r2);
+#elif defined(Agilex3)
+  ComplexExit<0, true>(bound, r0);
+  ComplexExit<10>(bound, r1);
+  ComplexExit<27>(bound, r2);
 #else
   std::static_assert(false, "Invalid FPGA board macro");
 #endif

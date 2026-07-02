@@ -38,26 +38,26 @@ You can also find more information about [troubleshooting build errors](/README.
 
 | Optimized for        | Description
 |:---                  |:---
-| OS                   | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware             | Intel® Agilex® 7, Arria® 10, and Stratix® 10 FPGAs
-| Software             | Intel® oneAPI DPC++/C++ Compiler
+| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware             | Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
+| Software             | HLS IP Gen Compiler
 
-> **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> For using the simulator flow, Intel® Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> For using the simulator flow, Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition must be installed and accessible through your PATH.
 >
-> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
+> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 ## Key Implementation Details
 
 The GZIP DEFLATE algorithm uses a GZIP-compatible Limpel-Ziv 77 (LZ77) algorithm for data de-duplication and a GZIP-compatible Static Huffman algorithm for bit reduction. The implementation includes three FPGA accelerated tasks (LZ77, Static Huffman, and CRC).
 
-The FPGA implementation of the algorithm enables either one or two independent GZIP compute engines to operate in parallel on the FPGA. The available FPGA resources constrain the number of engines. By default, the design is parameterized to create a single engine when the design is compiled to target an Intel® Arria® 10 FPGA. Two engines are created when compiling for Intel® Stratix® 10 or Agilex® 7 FPGAs, which are a larger device.
+The FPGA implementation of the algorithm enables either one or two independent GZIP compute engines to operate in parallel on the FPGA. The available FPGA resources constrain the number of engines. By default, the design is parameterized to create a single engine when the design is compiled to target an Arria® 10 FPGA. Two engines are created when compiling for Stratix® 10 or Agilex® 7 FPGAs, which are a larger device.
 
 This reference design contains two variants: "High Bandwidth" and "Low-Latency."
 
@@ -99,8 +99,8 @@ To optimize performance, GZIP leverages techniques discussed in the following FP
 | Flag                      | Description
 |:---                       |:---
 | `-Xshardware`             | Targets FPGA hardware (instead of FPGA emulator).
-| `-Xsparallel=2`           | Uses two cores when compiling the bitstream through Intel® Quartus®.
-| `-Xsseed=<seed_num>`      | Uses a particular seed while running Intel® Quartus®, selected to yield the best Fmax for this design.
+| `-Xsparallel=2`           | Uses two cores when compiling the bitstream through Quartus®.
+| `-Xsseed=<seed_num>`      | Uses a particular seed while running Quartus®, selected to yield the best Fmax for this design.
 | `-Xsnum-reorder=6`        | On FPGA boards that have a large memory bandwidth, specify a wider data path for read data from global memory.
 | `-Xsopt-arg="-nocaching"` | Specifies that cached LSUs should not be used.
 
@@ -122,20 +122,13 @@ Performance results are based on testing as of May 14, 2024.
 
 ## Build the `GZIP` Design
 
-> **Note**: When working with the command-line interface (CLI), you should configure the oneAPI toolkits using environment variables.
-> Set up your CLI environment by sourcing the `setvars` script located in the root of your oneAPI installation every time you open a new terminal window.
+> **Note**: When working with the command-line interface (CLI), you should configure the HLS IP Gen Compiler using environment variables.
+> Set up your CLI environment by sourcing the `fpgavars` script located in the root of your HLS IP Gen Compiler installation every time you open a new terminal window.
 > This practice ensures that your compiler, libraries, and tools are ready for development.
 >
 > Linux*:
-> - For system wide installations: `. /opt/intel/oneapi/setvars.sh`
-> - For private installations: ` . ~/intel/oneapi/setvars.sh`
-> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/setvars.sh ; exec csh'`
->
-> Windows*:
-> - `C:\"Program Files (x86)"\Intel\oneAPI\setvars.bat`
-> - Windows PowerShell*, use the following command: `cmd.exe "/K" '"C:\Program Files (x86)\Intel\oneAPI\setvars.bat" && powershell'`
->
-> For more information on configuring environment variables, see [Use the setvars Script with Linux* or macOS*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-programming-guide/top/oneapi-development-environment-setup/use-the-setvars-script-with-linux-or-macos.html) or [Use the setvars Script with Windows*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-programming-guide/top/oneapi-development-environment-setup/use-the-setvars-script-with-windows.html).
+> - `source <install-dir>/fpgavars.sh`
+> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/fpgavars.sh ; exec csh'`
 
 
 ### On Linux*
@@ -151,28 +144,10 @@ Performance results are based on testing as of May 14, 2024.
 
    For the **low latency** version of the design, add `-DLOW_LATENCY=1` to your `cmake` command.
 
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    >  ```
    >  cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
    >  ```
-   >
-   > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-   >  ```
-   >  cmake .. -DFPGA_DEVICE=<board-support-package>:<board-variant> -DIS_BSP=1
-   >  ```
-   > The build system will try to infer the FPGA family from the BSP name.
-   > If it can't, an extra option needs to be passed to `cmake`: `-DDEVICE_FLAG=[A10|S10|Agilex7]` 
-   > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-   > ```
-   > $> aoc -list-boards
-   > Board list:
-   >   <board-variant>
-   >      Board Package: <path/to/board/package>/board-support-package
-   >   <board-variant2>
-   >      Board Package: <path/to/board/package>/board-support-package
-   > ```
-   >
-   > You will only be able to run an executable on the FPGA if you specified a BSP.
 
 3. Compile the design. (The provided targets match the recommended development flow.)
 
@@ -196,67 +171,6 @@ Performance results are based on testing as of May 14, 2024.
        make fpga
        ```
 
-### On Windows*
-
-1. Change to the sample directory.
-2. Configure the build system for the Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" ..
-   ```
-
-   For the **low latency** version of the design, add `-DLOW_LATENCY=1` to your `cmake` command.
-
-  > **Note**: You can change the default target by using the command:
-  >  ```
-  >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
-  >  ```
-  >
-  > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-  >  ```
-  >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<board-support-package>:<board-variant> -DIS_BSP=1
-  >  ```
-  > The build system will try to infer the FPGA family from the BSP name.
-  > If it can't, an extra option needs to be passed to `cmake`: `-DDEVICE_FLAG=[A10|S10|Agilex7]` 
-  > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-  > ```
-  > $> aoc -list-boards
-  > Board list:
-  >   <board-variant>
-  >      Board Package: <path/to/board/package>/board-support-package
-  >   <board-variant2>
-  >      Board Package: <path/to/board/package>/board-support-package
-  > ```
-  >
-  > You will only be able to run an executable on the FPGA if you specified a BSP.
-
-3. Compile the design. (The provided targets match the recommended development flow.)
-
-   1. Compile for emulation (fast compile time, targets emulated FPGA device).
-      ```
-      nmake fpga_emu
-      ```
-   2. Compile for simulation (medium compile time, targets simulated FPGA device).
-      ```
-      nmake fpga_sim
-      ```
-   3. Generate the HTML performance report.
-      ```
-      nmake report
-      ```
-      The report resides at `gzip_report.a.prj/reports/report/report.html`.
-      ```
-   4. Compile for FPGA hardware (longer compile time, targets FPGA device).
-      ```
-      nmake fpga
-      ```
-
-> **Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your 'build' directory in a shorter path, for example `c:\samples\build`. You can then run cmake from that directory, and provide cmake with the full path to your sample directory, for example:
->
->  ```
-  > C:\samples\build> cmake -G "NMake Makefiles" C:\long\path\to\code\sample\CMakeLists.txt
->  ```
 ## Run the `GZIP` Program
 
 ### Configurable Parameters
@@ -281,32 +195,8 @@ Performance results are based on testing as of May 14, 2024.
     ```
     CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./gzip.fpga_sim ../data/100b.txt -o=<output_file>
     ```
- 3. Run the sample on the FPGA device (only if you ran `cmake` with `-DFPGA_DEVICE=<board-support-package>:<board-variant>`).
-   ```
-   ./gzip.fpga <input_file> -o=<output_file>
-   ```
-### On Windows
-
- 1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
-    ```
-    gzip.fpga_emu.exe <input_file> -o=<output_file>
-    ```
- 2. Run the sample on the FPGA simulator.
-    ```
-    set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-    gzip.fpga_sim.exe <input_file> -o=<output_file>
-    set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
-    ```
-    For the smaller file option.
-    ```
-    set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-    gzip.fpga_sim.exe ../data/100b.txt -o=<output_file>
-    set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
-    ```
-> **Note**: Hardware runs are not supported on Windows.
 
 ## Example Output
-
 ```
 Running on device: ofs_n6001 : Intel OFS Platform (ofs_ee00000)
 Launching High-Bandwidth DMA GZIP application with 2 engines

@@ -1,4 +1,4 @@
-//  Copyright (c) 2024 Intel Corporation
+//  Copyright Altera Corporation. All rights reserved.
 //  SPDX-License-Identifier: MIT
 
 // bmp_tools.h
@@ -24,7 +24,7 @@
 #endif
 #endif
 
-// HLS did not allow exception handling, but oneAPI does.
+// HLS did not allow exception handling, but SYCL does.
 
 // #ifndef ENABLE_EXCEPTION_HANDLING
 // #define ENABLE_EXCEPTION_HANDLING 0

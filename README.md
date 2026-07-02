@@ -1,13 +1,12 @@
 # HLS Samples for Field Programmable Gate Arrays (FPGAs)
 
-The hls-samples GitHub repository include tutorials, reference designs, and libraries specific to field programmable gate array (FPGA) features of the Intel® oneAPI Toolkits.
+The hls-samples GitHub repository include tutorials, reference designs, and libraries specific to field programmable gate array (FPGA) features of the HLS IP Gen Compiler.
 
-You will need the following toolkits and add-ons:
+You will need the following toolkit:
 
-- [Intel® oneAPI Base Toolkit (Base Kit)](https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit.html), specifically the Intel® oneAPI DPC++/C++ Compiler.
-- [Intel® FPGA Add-On for oneAPI Base Toolkit](https://www.intel.com/content/www/us/en/developer/tools/oneapi/fpga.html).
+- HLS IP Gen Compiler.
 
->**Note**: This repository is specific to versions of the compiler after 2025.0. For use with earlier versions of the toolkit, one should use the [oneapi-src/oneAPI-samples](https://github.com/oneapi-src/oneAPI-samples/tree/main/DirectProgramming/C%2B%2BSYCL_FPGA) repository.
+>**Note**: This repository is specific to versions of the HLS IP Gen Compiler. For use with earlier versions of the Intel® oneAPI toolkit, one should use the [oneapi-src/oneAPI-samples](https://github.com/oneapi-src/oneAPI-samples/tree/main/DirectProgramming/C%2B%2BSYCL_FPGA) repository.
 Use the latest [release version](https://github.com/altera-fpga/hls-samples/tags) of the repository that corresponds to the version of the compiler you are using.
 
 ## Get the HLS Samples
@@ -24,17 +23,17 @@ Alternatively, you can download a zip file containing the primary branch in repo
 
 ### Understand FPGA Programming
 
-The section [Introduction To FPGA Design Concepts](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/developer-guide/current/introduction-to-fpga-design-concepts.html) contains information on the basic concepts that are foundational to FPGA programming. Read that section to get the most from these FPGA samples.
+The section [Introduction To FPGA Design Concepts](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/3-introduction-to-fpga-design-concepts) contains information on the basic concepts that are foundational to FPGA programming. Read that section to get the most from these FPGA samples.
 
 ## FPGA Repository Structure
 
-This area of the oneAPI-sample repository has a general structure intended to help you find the resources.
+This area of the hls-samples repository has a general structure intended to help you find the resources.
 
 - [Tutorials](Tutorials)
   - [GettingStarted](Tutorials/GettingStarted): Contains basic samples to get you through your first compiles.
   - [Features](Tutorials/Features): Contains samples that demonstrate useful compiler features, like loop unrolling.
   - [DesignPatterns](Tutorials/DesignPatterns): Contains samples that show coding patterns to generate efficient hardware usage.
-  - [Tools](Tutorials/Tools): Contains sample to demonstrate how to use external debugging tools, like profiling.
+  - [Tools](Tutorials/Tools): Contains sample to demonstrate how to use Platform Designer with your IP core.
 - [ReferenceDesigns](ReferenceDesigns): Contains samples that showcase high-performance designs that take advantage of multiple features and design patterns shown in the *Tutorials* section.
 - [include](include): Contains commonly used functions wrapped as libraries.
 
@@ -68,10 +67,10 @@ flowchart LR
 |:---                                                                                                       |:---                                                                              |:---
 | [fpga_compile](Tutorials/GettingStarted/fpga_compile)                                                     | [Tutorials/GettingStarted](Tutorials/GettingStarted)                             | How and why compiling SYCL* code for FPGA differs from CPU or GPU <br> FPGA device image types and when to use them. <br> The compile options used to target FPGA
 | [fast_recompile](Tutorials/GettingStarted/fast_recompile)                                                 | [Tutorials/GettingStarted](Tutorials/GettingStarted)                             | Why to separate host and device code compilation in your FPGA project <br> How to use the `-reuse-exe` and device link. <br> Which method to choose for your project
-| [fpga_template](Tutorials/GettingStarted/fpga_template)                                                   | [Tutorials/GettingStarted](Tutorials/GettingStarted)                             | An Intel® FPGA tutorial that explains the CMake build system that is used in other code samples, and serves as a template that you can re-use in your own designs
+| [fpga_template](Tutorials/GettingStarted/fpga_template)                                                   | [Tutorials/GettingStarted](Tutorials/GettingStarted)                             | An FPGA tutorial that explains the CMake build system that is used in other code samples, and serves as a template that you can re-use in your own designs
 | [component_interfaces_comparison](Tutorials/Features/hls_flow_interfaces/component_interfaces_comparison) | [Tutorials/Features/hls_flow_interfaces](Tutorials/Features/hls_flow_interfaces) | This sample introduces different invocation/data interfaces that can be used for IP components
-| [platform_designer](Tutorials/Tools/platform_designer)                                                    | [Tutorials/Tools](Tutorials/Tools)                                               | How to use FPGA IP produced with the Intel® oneAPI DPC++/C++ Compiler with Intel® Quartus® Prime Pro Edition software suite and Platform Designer
-| [platform_designer_standard](Tutorials/Tools/platform_designer_standard)                                  | [Tutorials/Tools](Tutorials/Tools)                                               | How to use FPGA IP produced with the Intel® oneAPI DPC++/C++ Compiler with Intel® Quartus® Prime Standard Edition software suite and Platform Designer
+| [platform_designer](Tutorials/Tools/platform_designer)                                                    | [Tutorials/Tools](Tutorials/Tools)                                               | How to use FPGA IP produced with the HLS IP Gen Compiler with Quartus® Prime Pro Edition software suite and Platform Designer
+| [platform_designer_standard](Tutorials/Tools/platform_designer_standard)                                  | [Tutorials/Tools](Tutorials/Tools)                                               | How to use FPGA IP produced with the HLS IP Gen Compiler with Quartus® Prime Standard Edition software suite and Platform Designer
 
 #### Tier 2: Explore the Fundamentals
 
@@ -96,7 +95,6 @@ flowchart LR
 | [ac_fixed](Tutorials/Features/ac_fixed)                                                                                       | [Tutorials/Features](Tutorials/Features)                                                 | How different methods of `ac_fixed` number construction affect hardware resource utilization <br> Recommended method for constructing `ac_fixed` numbers in your kernel <br> Accessing and using the `ac_fixed` math library functions <br> Trading off accuracy of results for reduced resource usage on the FPGA
 | [ac_int](Tutorials/Features/ac_int)                                                                                           | [Tutorials/Features](Tutorials/Features)                                                 | Using the `ac_int` data type for basic operations <br> Efficiently using the left shift operation <br> Setting and reading certain bits of an `ac_int` number
 | [device_global (experimental)](Tutorials/Features/experimental/device_global)                                                 | [Tutorials/Features](Tutorials/Features)                                                 | The basic usage of the `device_global` class <br> How to initialize a `device_global` to non-zero values
-| [double_buffering](Tutorials/DesignPatterns/double_buffering)                                                                 | [Tutorials/DesignPatterns](Tutorials/DesignPatterns)                                     | How and when to implement the double buffering optimization technique
 | [explicit_data_movement](Tutorials/DesignPatterns/explicit_data_movement)                                                     | [Tutorials/DesignPatterns](Tutorials/DesignPatterns)                                     | How to explicitly manage the movement of data for the FPGA
 | [hardware_reuse](Tutorials/Features/task_sequence/hardware_reuse)                                                             | [Tutorials/Features](Tutorials/Features)                                                 | How to reuse hardware in your FPGA designs by using loops and task sequences
 | [hostpipes (experimental)](Tutorials/Features/experimental/hostpipes)                                                         | [Tutorials/Features](Tutorials/Features)                                                 | How to use host pipes to send and receive data between a host and the FPGA 
@@ -134,22 +132,17 @@ flowchart LR
 
 | Sample                                                                                                        | Category                                             | Description
 |:---                                                                                                           |:---                                                  |:---
-| [annotated_class_clean_coding  (experimental)](Tutorials/Features/experimental/annotated_class_clean_coding)  | [Tutorials/Features](Tutorials/Features)             | How to use `annotated_class_util.hpp` to simplify your oneAPI code that annotates properties to `pipe`s and `annotated_arg`
+| [annotated_class_clean_coding  (experimental)](Tutorials/Features/experimental/annotated_class_clean_coding)  | [Tutorials/Features](Tutorials/Features)             | How to use `annotated_class_util.hpp` to simplify your SYCL code that annotates properties to `pipe`s and `annotated_arg`
 | [annotated_ptr (experimental)](Tutorials/Features/experimental/annotated_ptr)                                 | [Tutorials/Features](Tutorials/Features)             | How to use `annotated_ptr` to constrain a specific memory access
 | [autorun](Tutorials/DesignPatterns/autorun)                                                                   | [Tutorials/DesignPatterns](Tutorials/DesignPatterns) | How and when to use autorun kernels
 | [banked_memory_system](Tutorials/DesignPatterns/banked_memory_system)                                         | [Tutorials/DesignPatterns](Tutorials/DesignPatterns) | How to optimize a banked memory system and improve throughput
-| [buffered_host_streaming](Tutorials/DesignPatterns/buffered_host_streaming)                                   | [Tutorials/DesignPatterns](Tutorials/DesignPatterns) | How to optimally stream data between the host and device to maximize throughput
 | [compute_units](Tutorials/DesignPatterns/compute_units)                                                       | [Tutorials/DesignPatterns](Tutorials/DesignPatterns) | A design pattern to generate multiple compute units using template metaprogramming
 | [dsp_control](Tutorials/Features/dsp_control)                                                                 | [Tutorials/Features](Tutorials/Features)             | How to apply global DSP control in command-line interface <br> How to apply local DSP control in source code <br> Scope of datatypes and math operations that support DSP control
-| [dynamic_profiler](Tutorials/Tools/dynamic_profiler)                                                          | [Tutorials/Tools](Tutorials/Tools)                   | About the Intel® FPGA dynamic profiler for DPC++ <br> How to set up and use this tool <br> A case study of using this tool to identify performance bottlenecks in pipes
-| [fpga_reg](Tutorials/Features/fpga_reg)                                                                       | [Tutorials/Features](Tutorials/Features)             | How to use the `ext::intel::fpga_reg` extension <br> How `ext::intel::fpga_reg` can be used to re-structure the compiler-generated hardware <br> Situations in which applying  `ext::intel::fpga_reg` might be beneficial
-| [io_streaming](Tutorials/DesignPatterns/io_streaming)                                                         | [Tutorials/DesignPatterns](Tutorials/DesignPatterns) | How to stream data through the FPGA's IO using IO pipes
+| [fpga_reg](Tutorials/Features/fpga_reg)                                                                       | [Tutorials/Features](Tutorials/Features)             | How to use the `ext::altera::fpga_reg` extension <br> How `ext::altera::fpga_reg` can be used to re-structure the compiler-generated hardware <br> Situations in which applying  `ext::altera::fpga_reg` might be beneficial
 | [latency_control (experimental)](Tutorials/Features/experimental/latency_control)                             | [Tutorials/Features](Tutorials/Features)             | How to set latency constraints to pipes and LSUs accesses <br> How to confirm that the compiler respected the latency control directive
 | [loop_carried_dependency](Tutorials/DesignPatterns/loop_carried_dependency)                                   | [Tutorials/DesignPatterns](Tutorials/DesignPatterns) | A technique to remove loop carried dependencies from your FPGA device code, and when to apply it
 | [lsu_control](Tutorials/Features/lsu_control)                                                                 | [Tutorials/Features](Tutorials/Features)             | The basic concepts of LSU styles and LSU modifiers <br>  How to use the LSU controls extension to request specific configurations <br>  How to confirm what LSU configurations are implemented <br> A case study of the type of area trade-offs enabled by LSU
 | [max_reinvocation_delay](Tutorials/Features/max_reinvocation_delay)                                           | [Tutorials/Features](Tutorials/Features)             | How and when to apply the `max_reinvocation_delay` attribute when optimizing loop throughput
-| [mem_channel](Tutorials/Features/mem_channel)                                                                 | [Tutorials/Features](Tutorials/Features)             | How and when to use the `mem_channel` buffer property and the `-Xsno-interleaving` flag
-| [n_way_buffering](Tutorials/DesignPatterns/n_way_buffering)                                                   | [Tutorials/DesignPatterns](Tutorials/DesignPatterns) | How and when to apply the N-way buffering optimization technique
 | [onchip_memory_cache](Tutorials/DesignPatterns/onchip_memory_cache)                                           | [Tutorials/DesignPatterns](Tutorials/DesignPatterns) | How and when to implement the on-chip memory cache optimization
 | [optimization_targets](Tutorials/Features/optimization_targets)                                               | [Tutorials/Features](Tutorials/Features)             | How to set optimization targets for your compile</br>How to use the minimum latency optimization target to compile low-latency designs<br>How to manually override underlying controls set by the minimum latency optimization target
 | [optimize_inner_loop](Tutorials/DesignPatterns/optimize_inner_loop)                                           | [Tutorials/DesignPatterns](Tutorials/DesignPatterns) | How to optimize the throughput of an inner loop with a low trip
@@ -159,12 +152,10 @@ flowchart LR
 | [restartable_streaming_kernel](Tutorials/DesignPatterns/restartable_streaming_kernel)                         | [Tutorials/DesignPatterns](Tutorials/DesignPatterns) | How to make a restartable kernel. The technique shown in this tutorial lets you dynamically terminate your kernel while it runs, allowing it to load a new set of kernel arguments.
 | [scheduler_target_fmax](Tutorials/Features/scheduler_target_fmax)                                             | [Tutorials/Features](Tutorials/Features)             | The behavior of the `scheduler_target_fmax_mhz` attribute and when to use it <br> The effect this attribute can have on kernel performance on FPGA
 | [shannonization](Tutorials/DesignPatterns/shannonization)                                                     | [Tutorials/DesignPatterns](Tutorials/DesignPatterns) | How to make FPGA-specific optimizations to remove computation from the critical path and improve f<sub>MAX</sub>/II
-| [simple_host_streaming](Tutorials/DesignPatterns/simple_host_streaming)                                       | [Tutorials/DesignPatterns](Tutorials/DesignPatterns) | How to achieve low-latency host-device streaming while maintaining throughput
 | [speculated_iterations](Tutorials/Features/speculated_iterations)                                             | [Tutorials/Features](Tutorials/Features)             | What the `speculated_iterations` attribute does <br> How to apply the `speculated_iterations` attribute to loops in your program <br> How to determine the optimal number of speculated iterations
 | [stall_enable](Tutorials/Features/stall_enable)                                                               | [Tutorials/Features](Tutorials/Features)             | What the `use_stall_enable_clusters` attribute does <br> How `use_stall_enable_clusters` attribute affects resource usage and latency <br> How to apply the `use_stall_enable_clusters` attribute to kernels in your program
-| [system_profiling](Tutorials/Tools/system_profiling)                                                          | [Tutorials/Tools](Tutorials/Tools)                   | Summary of profiling tools available for performance optimization <br> About the Intercept Layer for OpenCL™ Applications <br> How to set up and use this tool <br> A case study of using this tool to identify when the double buffering system-level optimization is beneficial
 | [triangular_loop](Tutorials/DesignPatterns/triangular_loop)                                                   | [Tutorials/DesignPatterns](Tutorials/DesignPatterns) | How and when to apply the triangular loop optimization technique
-| [use_library](Tutorials/Tools/use_librar)                                                                     | [Tutorials/Tools](Tutorials/Tools) | How to integrate Verilog RTL into your oneAPI design directly
+| [use_library](Tutorials/Tools/use_library)                                                                     | [Tutorials/Tools](Tutorials/Tools) | How to integrate Verilog RTL into your SYCL design directly
 | [zero_copy_data_transfer](Tutorials/DesignPatterns/zero_copy_data_transfer)                                   | [Tutorials/DesignPatterns](Tutorials/DesignPatterns) | How to use SYCL USM host allocations for the FPGA
 
 #### Tier 4: Explore the Reference Designs
@@ -189,10 +180,9 @@ All the Tier 4 samples are in the [ReferenceDesigns](ReferenceDesigns) category.
 | Sample                                                    | Description
 |:---                                                       |:---
 | [anr](ReferenceDesigns/anr)                               | How to create a parameterizable image processing pipeline to implement an Adaptive Noise Reduction (ANR) algorithm on a FPGA
-| [board_test](ReferenceDesigns/board_test)                 | How to test board interfaces to ensure the designed platform provides expected performance
 | [cholesky](ReferenceDesigns/cholesky)                     | How to implement high performance matrix Cholesky decomposition on a FPGA
 | [cholesky_inversion](ReferenceDesigns/cholesky_inversion) | How to implement high performance Cholesky matrix decomposition on a FPGA
-| [convolution_2d](ReferenceDesigns/convolution2d)          | How to implement a 2D convolution IP component that can be exported to Intel® Quartus® Prime
+| [convolution_2d](ReferenceDesigns/convolution2d)          | How to implement a 2D convolution IP component that can be exported to Quartus® Prime
 | [crr](ReferenceDesigns/crr)                               | How to implement the Cox-Ross-Rubinstein (CRR) binomial tree model on a FPGA
 | [db](ReferenceDesigns/db)                                 | How to accelerate database queries using an FPGA
 | [decompress](ReferenceDesigns/decompress)                 | How to implement an efficient GZIP and Snappy decompression engine on a FPGA
@@ -201,7 +191,7 @@ All the Tier 4 samples are in the [ReferenceDesigns](ReferenceDesigns) category.
 | [matmul](ReferenceDesigns/matmul)                         | How to implement a systolic-array-based high-performance matrix multiplication algorithm on FPGA
 | [merge_sort](ReferenceDesigns/merge_sort)                 | How to use the spatial compute of the FPGA to create a merge sort design that takes advantage of thread- and SIMD-level parallelism
 | [mvdr_beamforming](ReferenceDesigns/mvdr_beamforming)     | How to create a full, complex system that performs IO streaming using SYCL*-compliant code
-| [niosv](ReferenceDesigns/niosv/)                          | Simulate a system with an FPGA IP produced with the Intel® oneAPI DPC++/C++ Compiler, and a Nios® V softcore processor.
+| [niosv](ReferenceDesigns/niosv/)                          | Simulate a system with an FPGA IP produced with the HLS IP Gen Compiler, and a Nios® V softcore processor.
 | [pca](ReferenceDesigns/pca)                               | How to implement high performance principal component analysis on a FPGA
 | [qrd](ReferenceDesigns/qrd)                               | Implementing a high performance FPGA version of the Gram-Schmidt QR decomposition algorithm
 | [qri](ReferenceDesigns/qri)                               | Implementing a high performance FPGA version of the Gram-Schmidt QR decomposition to compute a matrix inversion
@@ -209,7 +199,7 @@ All the Tier 4 samples are in the [ReferenceDesigns](ReferenceDesigns) category.
 
 #### Start exploring the FPGA code samples with this selection
 
-The following FPGA samples represent a selection of useful tutorials suitable to get you started on your first oneAPI application on the FPGA
+The following FPGA samples represent a selection of useful tutorials suitable to get you started on your first SYCL application on the FPGA
 
 | Subject                                   | Sample
 |:---                                       |:---
@@ -218,7 +208,6 @@ The following FPGA samples represent a selection of useful tutorials suitable to
 | Avoid Aliasing of Kernel Arguments        | [kernel_args_restrict](Tutorials/Features/kernel_args_restrict)
 | Optimize by Improving Loop Throughput     | [loop_unroll](Tutorials/Features/loop_unroll)
 | Transfer Data with Pipes                  | [pipes](Tutorials/Features/pipes)  
-| Improve Performance with Double Buffering | [double_buffering](Tutorials/DesignPatterns/double_buffering)
 
 ## Build and Run the Samples on Local Development System
 
@@ -226,11 +215,13 @@ Each sample contains a `README.md` file with instructions to build and run the s
 
 ### Set Environment Variables
 
-When working with the command-line interface (CLI), you should configure the oneAPI toolkits using environment variables.
-Set up your CLI environment by sourcing the `setvars` script every time you open a new terminal window.
+When working with the command-line interface (CLI), you should configure the HLS IP Gen Compiler using environment variables.
+Set up your CLI environment by sourcing the `fpgavars` script every time you open a new terminal window.
 This practice ensures that your compiler, libraries, and tools are ready for development.
-
->**Note**: For more information on configuring environment variables, see [Use the setvars Script with Linux* or macOS*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-programming-guide/top/oneapi-development-environment-setup/use-the-setvars-script-with-linux-or-macos.html) or [Use the setvars Script with Windows*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-programming-guide/top/oneapi-development-environment-setup/use-the-setvars-script-with-windows.html).
+>
+> Linux*:
+> - `source <install-dir>/fpgavars.sh`
+> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/fpgavars.sh ; exec csh'`
 
 ### Include Files
 
@@ -240,8 +231,6 @@ The FPGA samples use many of the headers in the [`include`](include) folder.
 
 If an error occurs when compiling a sample, you can get more details by running `make` with the `VERBOSE=1` argument:
 ``make VERBOSE=1``
-
-If you receive an error message, troubleshoot the problem using the **Diagnostics Utility for Intel® oneAPI Toolkits**. The diagnostic utility provides configuration and system checks to help find missing dependencies, permissions errors, and other issues. See the [Diagnostics Utility for Intel® oneAPI Toolkits User Guide](https://www.intel.com/content/www/us/en/docs/oneapi/user-guide-diagnostic-utility) for more information on using the utility.
 
 ## Performance Disclaimers
 
@@ -254,12 +243,10 @@ No product or component can be absolutely secure.
 
 ## Documentation
 
-- The [Intel® oneAPI FPGA Handbook](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/developer-guide) helps you understand how to target FPGAs using SYCL and Intel® oneAPI Toolkits.
-- The [Intel® oneAPI Programming Guide](https://www.intel.com/content/www/us/en/docs/oneapi/programming-guide) helps you understand target-independent, SYCL-compliant programming using Intel® oneAPI Toolkits.
-- The [Intel® oneAPI DPC++/C++ Compiler Release Notes](https://www.intel.com/content/www/us/en/developer/articles/release-notes/intel-oneapi-dpc-c-compiler-release-notes.html).
-- The [Migrating OpenCL™ FPGA Designs to SYCL*](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/migrate-opencl-design-to-dpcpp) guide.
-- [Additional FPGA-specific Resources](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/optimization-guide).
-- The [Intel® Quartus® Prime Pro and Standard Software User Guides](https://www.intel.com/content/www/us/en/support/programmable/support-resources/design-software/user-guides.html).
+- The [Altera® HLS IP Gen Handbook](https://docs.altera.com/r/docs/m615048/current) helps you understand how to use the Altera HLS IP Gen compiler.
+- The [Altera® HLS IP Gen Compiler Release Notes](https://docs.altera.com/r/docs/m707363/current/hls-ip-gen-release-notes/preface).
+- The [Migrating OpenCL™ FPGA Designs to SYCL*](https://docs.altera.com/r/docs/767849/2024/migrating-opencltm-fpga-designs-to-sycl/download-document) guide.
+- The [Quartus® Prime Pro and Standard Software User Guides](https://www.altera.com/design/guidance/software/quartus-user-guides).
 
 ## Licenses
 

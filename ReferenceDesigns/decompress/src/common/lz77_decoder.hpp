@@ -2,8 +2,8 @@
 #define __LZ77_DECODER_HPP__
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/ac_types/ac_int.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/ac_types/ac_int.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "common.hpp"
 #include "constexpr_math.hpp"            // included from ../../../../include

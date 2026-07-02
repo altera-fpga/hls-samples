@@ -15,7 +15,7 @@ This FPGA tutorial demonstrates how to use the `intel::initiation_interval` attr
 - Relax the II of a loop with a loop-carried dependency in order to achieve a higher kernel f<sub>MAX</sub>
 - Enforce the II of a loop such that the compiler will error out if it cannot achieve the specified II
 
->**Note**: The tutorial assumes you are familiar with the concepts of [loop-carried dependencies](https://software.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide/top/optimize-your-design/throughput-1/single-work-item-kernels/single-work-item-kernel-design-guidelines.html#SECTION_3A389B8F1FE3452C84F44F07FA2C813E) and [initiation interval (II)](https://software.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide/top/fpga-optimization-flags-attributes-pragmas-and-extensions/loop-directives/ii-attribute.html).
+>**Note**: The tutorial assumes you are familiar with the concepts of [loop-carried dependencies](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/12.1-refactor-the-loop-carried-data-dependency) and [initiation interval (II)](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/16.6.2-initiation_interval-attribute).
 
 - A **loop-carried dependency** refers to a situation where an operation in a loop iteration cannot proceed until an operation from a previous loop iteration has completed.
 - The **initiation interval**, or **II**, is the number of clock cycles between the launch of successive loop iterations.
@@ -24,20 +24,20 @@ This FPGA tutorial demonstrates how to use the `intel::initiation_interval` attr
 
 | Optimized for        | Description
 |:---                  |:---
-| OS                   | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware             | Intel® Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
-| Software             | Intel® oneAPI DPC++/C++ Compiler
+| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware             | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
+| Software             | HLS IP Gen Compiler
 
-> **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> For using the simulator flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
 
-> **Warning**: Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
+> **Warning**: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 This sample is part of the FPGA code samples.
 It is categorized as a Tier 2 sample that demonstrates a compiler feature.
@@ -100,7 +100,7 @@ By default, the compiler attempts to schedule each loop with the optimal minimum
 
 The `intel::initiation_interval` attribute can be used to specify an II for a particular loop. It informs the compiler to ignore the default heuristic and to try and schedule the loop that the attribute is applied to with the specific II the user provides.
 
-The targeted f<sub>MAX</sub> can be specified using the [`–Xsclock`](https://software.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide/top/fpga-optimization-flags-attributes-pragmas-and-extensions/optimization-flags/specify-schedule-fmax-target-for-kernels-xsclock-clock-target.html) compiler argument. The argument determines the pipelining effort of the compiler, which uses an internal model of the FPGA fabric to estimate f<sub>MAX</sub>. The true f<sub>MAX</sub> is known only after compiling to hardware. Without the argument, the default target f<sub>MAX</sub> is 240MHz for the Intel® Arria® 10 FPGAs and 480MHz for the Intel® Stratix® 10 and Agilex® 7 FPGAs, but the compiler will not strictly enforce reaching that default target when scheduling loops.
+The targeted f<sub>MAX</sub> can be specified using the [`–Xsclock`](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/16.1.1-specify-schedule-fmax-target-for-kernels-xsclock-clock-target) compiler argument. The argument determines the pipelining effort of the compiler, which uses an internal model of the FPGA fabric to estimate f<sub>MAX</sub>. The true f<sub>MAX</sub> is known only after compiling to hardware. Without the argument, the default target f<sub>MAX</sub> is 240MHz for the Arria® 10 FPGAs and 480MHz for the Stratix® 10 and Agilex® 7 FPGAs, but the compiler will not strictly enforce reaching that default target when scheduling loops.
 
 >**Note:** The scheduler prioritizes II over f<sub>MAX</sub> if both `-Xsclock` **and** `intel::initiation_interval` are used. Your kernel may be able to achieve a lower II for the loop with the `intel::initiation_interval` attribute while targeting a specific f<sub>MAX</sub>, but the loop will not be scheduled with the lower II.
 
@@ -151,31 +151,24 @@ Depending on the feedback path in the long-running loop, the rest of the kernel 
 
 In this part, `intel::initiation_interval` is used for both the short and long running loops to show the two scenarios where using the attribute is appropriate.
 
-The first `intel::initiation_interval` declaration sets an II value of 3 for the Intel® Arria® 10 FPGA, and an II value of 5 for the Intel® Stratix® 10 and Agilex® 7 FPGAs. Since the initialization loop has a low trip count compared to the long-running loop, a higher II for the initialization loop is a reasonable tradeoff to allow for a higher overall f<sub>MAX</sub> for the entire kernel.
+The first `intel::initiation_interval` declaration sets an II value of 3 for the Arria® 10 FPGA, and an II value of 5 for the Stratix® 10 and Agilex® 7 FPGAs. Since the initialization loop has a low trip count compared to the long-running loop, a higher II for the initialization loop is a reasonable tradeoff to allow for a higher overall f<sub>MAX</sub> for the entire kernel.
 
->**Note:** For Intel® Stratix® 10 FPGA, the estimated f<sub>MAX</sub> of the long-running loop is not able to reach the default targeted f<sub>MAX</sub> of 480MHz while maintaining an II of 1. This is due to the nature of the feedback path that exists in the long running loop. Setting the II of the initialization loop to 5 ensures that the initialization loop is not the bottleneck when finding the maximum operating frequency.
+>**Note:** For Stratix® 10 FPGA, the estimated f<sub>MAX</sub> of the long-running loop is not able to reach the default targeted f<sub>MAX</sub> of 480MHz while maintaining an II of 1. This is due to the nature of the feedback path that exists in the long running loop. Setting the II of the initialization loop to 5 ensures that the initialization loop is not the bottleneck when finding the maximum operating frequency.
 
 The second `intel::initiation_interval` declaration sets an II of 1 for the long-running loop. We might not want to compromise the II of 1 achieved for this loop while performing optimizations on other parts of the kernel. By declaring that the loop should have an II of 1, the compiler will produce an error if it cannot schedule this loop with that II. The error implies that the other optimization will have a negative performance impact on this loop. This makes it easier to find the cause of any throughput drops in larger designs.
 
 ## Build the `Loop Initiation Interval` Tutorial
 
->**Note**: When working with the command-line interface (CLI), you should configure the oneAPI toolkits using environment variables. Set up your CLI environment by sourcing the `setvars` script in the root of your oneAPI installation every time you open a new terminal window. This practice ensures that your compiler, libraries, and tools are ready for development.
+>**Note**: When working with the command-line interface (CLI), you should configure the HLS IP Gen Compiler using environment variables. Set up your CLI environment by sourcing the `fpgavars` script in the root of your HLS IP Gen Compiler installation every time you open a new terminal window. This practice ensures that your compiler, libraries, and tools are ready for development.
 >
 > Linux*:
-> - For system wide installations: `. /opt/intel/oneapi/setvars.sh`
-> - For private installations: ` . ~/intel/oneapi/setvars.sh`
-> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/setvars.sh ; exec csh'`
->
-> Windows*:
-> - `C:\"Program Files (x86)"\Intel\oneAPI\setvars.bat`
-> - Windows PowerShell*, use the following command: `cmd.exe "/K" '"C:\Program Files (x86)\Intel\oneAPI\setvars.bat" && powershell'`
->
-> For more information on configuring environment variables, see [Use the setvars Script with Linux* or macOS*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-programming-guide/top/oneapi-development-environment-setup/use-the-setvars-script-with-linux-or-macos.html) or [Use the setvars Script with Windows*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-programming-guide/top/oneapi-development-environment-setup/use-the-setvars-script-with-windows.html).
+> - `source <install-dir>/fpgavars.sh`
+> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/fpgavars.sh ; exec csh'`
 
 ### On Linux*
 
 1. Change to the sample directory.
-2. Build the program for Intel® Agilex® 7 device family, which is the default.
+2. Build the program for Agilex® 7 device family, which is the default.
    ```
    mkdir build
    cd build
@@ -185,28 +178,10 @@ The second `intel::initiation_interval` declaration sets an II of 1 for the long
    - `-DPART=II_ENABLED`
    - `-DPART=II_DISABLED`
    Use `-DPART=II_ENABLED` to build the project with II attribute enabled.
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    >  ```
    >  cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
    >  ```
-   >
-   > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-   >  ```
-   >  cmake .. -DFPGA_DEVICE=<board-support-package>:<board-variant>
-   >  ```
-   > The build system will try to infer the FPGA family from the BSP name.
-   > If it can't, an extra option needs to be passed to `cmake`: `-DDEVICE_FLAG=[A10|S10|CycloneV|Agilex5|Agilex7]` 
-   > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-   > ```
-   > $> aoc -list-boards
-   > Board list:
-   >   <board-variant>
-   >      Board Package: <path/to/board/package>/board-support-package
-   >   <board-variant2>
-   >      Board Package: <path/to/board/package>/board-support-package
-   > ```
-   >
-   > You will only be able to run an executable on the FPGA if you specified a BSP.
 
 3. Compile the design. (The provided targets match the recommended development flow.)
 
@@ -227,65 +202,6 @@ The second `intel::initiation_interval` declaration sets an II of 1 for the long
       make fpga
       ```
 
-### On Windows*
-
-1. Change to the sample directory.
-2. Build the program for the Intel® Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" .. -DPART=<x>
-   ```
-   where `-DPART=<X>` is:
-   - `-DPART=II_ENABLED`
-   - `-DPART=II_DISABLED`
-   Use `-DPART=II_ENABLED` to build the project with II attribute enabled.
-   > **Note**: You can change the default target by using the command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
-   >  ```
-   >
-   > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<board-support-package>:<board-variant>
-   >  ```
-   > The build system will try to infer the FPGA family from the BSP name.
-   > If it can't, an extra option needs to be passed to `cmake`: `-DDEVICE_FLAG=[A10|S10|CycloneV|Agilex5|Agilex7]` 
-   > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-   > ```
-   > $> aoc -list-boards
-   > Board list:
-   >   <board-variant>
-   >      Board Package: <path/to/board/package>/board-support-package
-   >   <board-variant2>
-   >      Board Package: <path/to/board/package>/board-support-package
-   > ```
-   >
-   > You will only be able to run an executable on the FPGA if you specified a BSP.
-
-3. Compile the design. (The provided targets match the recommended development flow.)
-
-   1. Compile for emulation (fast compile time, targets emulated FPGA device).
-      ```
-      nmake fpga_emu
-      ```
-   2. Generate the optimization report. (See [Read the Reports](#read-the-reports) below for information on finding and understanding the reports.)
-      ```
-      nmake report
-      ```
-   3. Compile for simulation (fast compile time, targets simulated FPGA device, reduced problem size).
-      ```
-      nmake fpga_sim
-      ```
-   4. Compile for FPGA hardware (longer compile time, targets FPGA device):
-      ```
-      nmake fpga
-      ```
-> **Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your 'build' directory in a shorter path, for example c:\samples\build.  You can then run cmake from that directory, and provide cmake with the full path to your sample directory, for example:
->
->  ```
-  > C:\samples\build> cmake -G "NMake Makefiles" C:\long\path\to\code\sample\CMakeLists.txt
->  ```
 ### Read the Reports
 
 Locate the `report.html` file in either:
@@ -316,27 +232,6 @@ Compare the results to the report for the version of the design using the `intel
    ```
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./loop_initiation_interval.fpga_sim
    ```
-
-3. Run the sample on the FPGA device (only if you ran `cmake` with `-DFPGA_DEVICE=<board-support-package>:<board-variant>`).
-   ```
-   ./loop_initiation_interval.fpga
-   ```
-
-### On Windows
-
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
-   ```
-   loop_initiation_interval.fpga_emu.exe
-   ```
-
-2. Run the sample on the FPGA simulator device (the kernel executes on the CPU).
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   loop_initiation_interval.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
-   ```
-
-> **Note**: Hardware runs are not supported on Windows.
 
 ## Example Output
 

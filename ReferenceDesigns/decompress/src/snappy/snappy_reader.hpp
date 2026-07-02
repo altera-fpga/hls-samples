@@ -2,8 +2,8 @@
 #define __SNAPPY_READER_HPP__
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/ac_types/ac_int.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/ac_types/ac_int.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "byte_stream.hpp"
 #include "constexpr_math.hpp"         // included from ../../../../include
@@ -390,7 +390,7 @@ sycl::event SubmitSnappyReader(sycl::queue& q, unsigned in_count,
     // lives on the device.
     // Knowing this, the compiler won't generate hardware to
     // potentially get data from the host.
-    sycl::ext::intel::device_ptr<unsigned> preamble_count(preamble_count_ptr);
+    sycl::ext::altera::device_ptr<unsigned> preamble_count(preamble_count_ptr);
 #else
     // Device pointers are not supported when targeting an FPGA 
     // family/part

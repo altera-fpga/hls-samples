@@ -123,7 +123,7 @@ template<typename T>
 struct is_sycl_pipe_impl : std::false_type {};
 
 template<typename Id, typename T, std::size_t N>
-struct is_sycl_pipe_impl<sycl::ext::intel::pipe<Id, T, N>> : std::true_type {};
+struct is_sycl_pipe_impl<sycl::ext::altera::experimental::pipe<Id, T, N>> : std::true_type {};
 
 }  // namespace detail
 

@@ -1,10 +1,10 @@
 //==============================================================
-// Copyright Intel Corporation
+// Copyright Altera Corporation. All rights reserved.
 //
 // SPDX-License-Identifier: MIT
 // =============================================================
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "exception_handler.hpp"
 
@@ -24,11 +24,11 @@ void KernelRun(const std::vector<float> &input_data,
                std::vector<float> &output_data_sub) {
 
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   try {
@@ -73,7 +73,7 @@ void KernelRun(const std::vector<float> &input_data,
         // in the lambda, but also the subtraction in the subtract() function
         // call inside the lambda are affected by the local control and will be
         // implemented in DSP.
-        ext::intel::math_dsp_control<>([&] {
+        ext::altera::math_dsp_control<>([&] {
           output_add_a[1] = input_a[0] + input_a[1];
           output_sub_a[1] = subtract(input_a[0], input_a[1]);
         });
@@ -93,8 +93,8 @@ void KernelRun(const std::vector<float> &input_data,
         // the lambda is affected by the local control and will be implemented
         // in DSP. The subtraction in the subtract() function call is only
         // affected by the global control so will be implemented in soft-logic.
-        ext::intel::math_dsp_control<ext::intel::Preference::DSP,
-                                     ext::intel::Propagate::Off>([&] {
+        ext::altera::math_dsp_control<ext::altera::Preference::DSP,
+                                     ext::altera::Propagate::Off>([&] {
           output_add_a[2] = input_a[0] + input_a[1];
           output_sub_a[2] = subtract(input_a[0], input_a[1]);
         });
@@ -107,9 +107,6 @@ void KernelRun(const std::vector<float> &input_data,
 
     // Most likely the runtime couldn't find FPGA hardware!
     if (e.code().value() == CL_DEVICE_NOT_FOUND) {
-      std::cerr << "If you are targeting an FPGA, please ensure that your "
-                   "system has a correctly configured FPGA board.\n";
-      std::cerr << "Run sys_check in the oneAPI root directory to verify.\n";
       std::cerr << "If you are targeting the FPGA emulator, compile with "
                    "-DFPGA_EMULATOR.\n";
     }

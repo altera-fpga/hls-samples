@@ -1,11 +1,11 @@
 //==============================================================
-// Copyright Intel Corporation
+// Copyright Altera Corporation. All rights reserved.
 //
 // SPDX-License-Identifier: MIT
 // =============================================================
 #include <iomanip>
 #include <iostream>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "exception_handler.hpp"
@@ -30,11 +30,11 @@ class DefaultNoFusionKernel;
 class FusionFunctionKernel;
 
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
 // Handles error reporting
@@ -44,9 +44,6 @@ void ErrorReport(sycl::exception const &e) {
 
   // Most likely the runtime couldn't find FPGA hardware!
   if (e.code().value() == CL_DEVICE_NOT_FOUND) {
-    std::cerr << "If you are targeting an FPGA, please ensure that your "
-                 "system has a correctly configured FPGA board.\n";
-    std::cerr << "Run sys_check in the oneAPI root directory to verify.\n";
     std::cerr << "If you are targeting the FPGA emulator, compile with "
                  "-DFPGA_EMULATOR.\n";
   }
@@ -204,7 +201,7 @@ void FusionFunction(FixedArray &m_array_1, FixedArray &m_array_2) {
 
       h.single_task<FusionFunctionKernel>([=
       ]() [[intel::kernel_args_restrict]] {  // NO-FORMAT: Attribute
-        sycl::ext::intel::fpga_loop_fuse([&] {
+        sycl::ext::altera::fpga_loop_fuse([&] {
           // Different tripcounts, does not fuse by default
           for (size_t i = 0; i < kDifferentTripCount; i++) {
             a_1[i % kArraySize] = i % kArraySize;

@@ -108,10 +108,10 @@ struct USVFromEigens {
               // Delay data signals to create a vine-based data distribution
               // to lower signal fanout.
               pipe_read_a.template get<t>() =
-                  sycl::ext::intel::fpga_reg(pipe_read_a.template get<t>());
+                  sycl::ext::altera::fpga_reg(pipe_read_a.template get<t>());
             });
 
-            write_idx_a = sycl::ext::intel::fpga_reg(write_idx_a);
+            write_idx_a = sycl::ext::altera::fpga_reg(write_idx_a);
           });
         }
       }
@@ -151,10 +151,10 @@ struct USVFromEigens {
             // Delay data signals to create a vine-based data distribution
             // to lower signal fanout.
             pipe_read_v.template get<t>() =
-                sycl::ext::intel::fpga_reg(pipe_read_v.template get<t>());
+                sycl::ext::altera::fpga_reg(pipe_read_v.template get<t>());
           });
 
-          write_idx_v = sycl::ext::intel::fpga_reg(write_idx_v);
+          write_idx_v = sycl::ext::altera::fpga_reg(write_idx_v);
         });
       }
 
@@ -164,7 +164,7 @@ struct USVFromEigens {
           if (column < kDiagonalSize) {
             TT dot_prod{0};
             fpga_tools::UnrolledLoop<A_cols>([&](auto k) {
-              dot_prod = sycl::ext::intel::fpga_reg(dot_prod) +
+              dot_prod = sycl::ext::altera::fpga_reg(dot_prod) +
                          a_load[k][row] * v_load[k][column];
             });
 
@@ -182,7 +182,7 @@ struct USVFromEigens {
         bool get[kSLoopIterPerColumn];
         fpga_tools::UnrolledLoop<kSLoopIterPerColumn>([&](auto k) {
           get[k] = column_iter == k;
-          column_iter = sycl::ext::intel::fpga_reg(column_iter);
+          column_iter = sycl::ext::altera::fpga_reg(column_iter);
         });
 
         fpga_tools::NTuple<TT, pipe_size> pipe_write;
@@ -191,7 +191,7 @@ struct USVFromEigens {
             if constexpr (t * pipe_size + k < A_rows) {
               pipe_write.template get<k>() =
                   get[t] ? s_result[t * pipe_size + k][li / kSLoopIterPerColumn]
-                         : sycl::ext::intel::fpga_reg(
+                         : sycl::ext::altera::fpga_reg(
                                pipe_write.template get<k>());
             }
           });
@@ -206,7 +206,7 @@ struct USVFromEigens {
         bool get[kULoopIterPerColumn];
         fpga_tools::UnrolledLoop<kULoopIterPerColumn>([&](auto k) {
           get[k] = column_iter == k;
-          column_iter = sycl::ext::intel::fpga_reg(column_iter);
+          column_iter = sycl::ext::altera::fpga_reg(column_iter);
         });
 
         fpga_tools::NTuple<TT, pipe_size> pipe_write;
@@ -215,7 +215,7 @@ struct USVFromEigens {
             if constexpr (t * pipe_size + k < A_rows) {
               pipe_write.template get<k>() =
                   get[t] ? u_result[t * pipe_size + k][li / kULoopIterPerColumn]
-                         : sycl::ext::intel::fpga_reg(
+                         : sycl::ext::altera::fpga_reg(
                                pipe_write.template get<k>());
             }
           });

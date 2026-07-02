@@ -1,5 +1,5 @@
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "exception_handler.hpp"
 
@@ -14,11 +14,11 @@ using namespace sycl;
 // choose the device selector based on emulation or actual hardware
 // we make this a global variable so it can be used by the autorun kernels
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
 // declare the kernel names globally to reduce name mangling
@@ -36,10 +36,10 @@ class ARForeverProducePipeID;
 class ARForeverConsumePipeID;
 
 // pipes
-using ARProducePipe = ext::intel::pipe<ARProducePipeID, int>;
-using ARConsumePipe = ext::intel::pipe<ARConsumePipeID, int>;
-using ARForeverProducePipe = ext::intel::pipe<ARForeverProducePipeID, int>;
-using ARForeverConsumePipe = ext::intel::pipe<ARForeverConsumePipeID, int>;
+using ARProducePipe = ext::altera::experimental::pipe<ARProducePipeID, int>;
+using ARConsumePipe = ext::altera::experimental::pipe<ARConsumePipeID, int>;
+using ARForeverProducePipe = ext::altera::experimental::pipe<ARForeverProducePipeID, int>;
+using ARForeverConsumePipe = ext::altera::experimental::pipe<ARForeverConsumePipeID, int>;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Autorun user kernel and global variable
@@ -163,9 +163,6 @@ int main() {
 
     // Most likely the runtime couldn't find FPGA hardware!
     if (e.code().value() == CL_DEVICE_NOT_FOUND) {
-      std::cerr << "If you are targeting an FPGA, please ensure that your "
-                   "system has a correctly configured FPGA board.\n";
-      std::cerr << "Run sys_check in the oneAPI root directory to verify.\n";
       std::cerr << "If you are targeting the FPGA emulator, compile with "
                    "-DFPGA_EMULATOR.\n";
     }

@@ -1,40 +1,44 @@
 #include <iostream>
 
-// oneAPI headers
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "exception_handler.hpp"
+
+// Define namespace alias for easy reference.
+namespace altera_exp = sycl::ext::altera::experimental;
+namespace oneapi_exp = sycl::ext::oneapi::experimental;
+
+constexpr int kVectorSize = 256;
 
 // Forward declare the kernel name in the global scope. This is an FPGA best
 // practice that reduces name mangling in the optimization reports.
 class IDSimpleVAdd;
 
 struct SimpleVAddKernel {
-  sycl::ext::oneapi::experimental::annotated_arg<
-      int *, decltype(sycl::ext::oneapi::experimental::properties{
-                 sycl::ext::intel::experimental::conduit})>
-      a_in;
+  oneapi_exp::annotated_arg<
+      int *,
+      decltype(oneapi_exp::properties{altera_exp::conduit})
+  > a_in;
 
-  sycl::ext::oneapi::experimental::annotated_arg<
-      int *, decltype(sycl::ext::oneapi::experimental::properties{
-                 sycl::ext::intel::experimental::conduit})>
-      b_in;
+  oneapi_exp::annotated_arg<
+      int *,
+      decltype(oneapi_exp::properties{altera_exp::conduit})
+  > b_in;
 
-  sycl::ext::oneapi::experimental::annotated_arg<
-      int *, decltype(sycl::ext::oneapi::experimental::properties{
-                 sycl::ext::intel::experimental::conduit})>
-      c_out;
+  oneapi_exp::annotated_arg<
+      int *,
+      decltype(oneapi_exp::properties{altera_exp::conduit})
+  > c_out;
 
-  sycl::ext::oneapi::experimental::annotated_arg<
-      int, decltype(sycl::ext::oneapi::experimental::properties{
-               sycl::ext::intel::experimental::conduit})>
-      len;
+  oneapi_exp::annotated_arg<
+      int,
+      decltype(oneapi_exp::properties{altera_exp::conduit})
+  > len;
 
   // kernel property method to config invocation interface
-  auto get(sycl::ext::oneapi::experimental::properties_tag) {
-    return sycl::ext::oneapi::experimental::properties{
-        sycl::ext::intel::experimental::streaming_interface<>};
+  auto get(oneapi_exp::properties_tag) {
+    return oneapi_exp::properties{altera_exp::streaming_interface<>};
   }
 
   void operator()() const {
@@ -47,20 +51,19 @@ struct SimpleVAddKernel {
   }
 };
 
-constexpr int kVectorSize = 256;
-
 int main() {
+  bool passed = true;
   try {
     // Use compile-time macros to select either:
     //  - the FPGA emulator device (CPU emulation of the FPGA)
     //  - the FPGA device (a real FPGA)
     //  - the simulator device
 #if FPGA_SIMULATOR
-    auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-    auto selector = sycl::ext::intel::fpga_selector_v;
+    auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-    auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
     // create the device queue
@@ -91,7 +94,6 @@ int main() {
 
     // Verify that outputs are correct, after the kernel has finished running.
     e.wait();
-    bool passed = true;
     for (int i = 0; i < count; i++) {
       int expected = a[i] + b[i];
       if (c[i] != expected) {
@@ -107,15 +109,11 @@ int main() {
     sycl::free(b, q);
     sycl::free(c, q);
 
-    return passed ? EXIT_SUCCESS : EXIT_FAILURE;
-
   } catch (sycl::exception const &e) {
     std::cerr << "Caught a synchronous SYCL exception: " << e.what()
               << std::endl;
-    std::cerr << "   If you are targeting an FPGA hardware, "
-                 "ensure that your system is plugged to an FPGA board that is "
-                 "set up correctly"
-              << std::endl;
     std::terminate();
   }
+
+  return passed ? EXIT_SUCCESS : EXIT_FAILURE;
 }

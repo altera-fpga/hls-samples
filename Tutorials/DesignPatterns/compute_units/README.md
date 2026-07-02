@@ -40,20 +40,20 @@ You can also find more information about [troubleshooting build errors](/README.
 
 | Optimized for      | Description
 |:---                |:---
-| OS                 | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware           | Intel® Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
-| Software           | Intel® oneAPI DPC++/C++ Compiler
+| OS                 | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware           | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
+| Software           | HLS IP Gen Compiler
 
-> **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> For using the simulator flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
 >
-> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
+> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 ## Key Implementation Details
 
@@ -116,20 +116,13 @@ Each compute unit in the chain from `Source` to `Sink` must read from a unique p
 
 ## Build the `Compute Units` Sample
 
-> **Note**: When working with the command-line interface (CLI), you should configure the oneAPI toolkits using environment variables.
-> Set up your CLI environment by sourcing the `setvars` script located in the root of your oneAPI installation every time you open a new terminal window.
+> **Note**: When working with the command-line interface (CLI), you should configure the HLS IP Gen Compiler using environment variables.
+> Set up your CLI environment by sourcing the `fpgavars` script located in the root of your HLS IP Gen Compiler installation every time you open a new terminal window.
 > This practice ensures that your compiler, libraries, and tools are ready for development.
 >
 > Linux*:
-> - For system wide installations: `. /opt/intel/oneapi/setvars.sh`
-> - For private installations: ` . ~/intel/oneapi/setvars.sh`
-> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/setvars.sh ; exec csh'`
->
-> Windows*:
-> - `C:\"Program Files (x86)"\Intel\oneAPI\setvars.bat`
-> - Windows PowerShell*, use the following command: `cmd.exe "/K" '"C:\Program Files (x86)\Intel\oneAPI\setvars.bat" && powershell'`
->
-> For more information on configuring environment variables, see [Use the setvars Script with Linux* or macOS*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-programming-guide/top/oneapi-development-environment-setup/use-the-setvars-script-with-linux-or-macos.html) or [Use the setvars Script with Windows*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-programming-guide/top/oneapi-development-environment-setup/use-the-setvars-script-with-windows.html).
+> - `source <install-dir>/fpgavars.sh`
+> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/fpgavars.sh ; exec csh'`
 
 ### On Linux*
 
@@ -142,26 +135,10 @@ Each compute unit in the chain from `Source` to `Sink` must read from a unique p
    cmake ..
    ```
 
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    >  ```
    >  cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
    >  ```
-   >
-   > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-   >  ```
-   >  cmake .. -DFPGA_DEVICE=<board-support-package>:<board-variant>
-   >  ```
-  > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-  > ```
-  > $> aoc -list-boards
-  > Board list:
-  >   <board-variant>
-  >      Board Package: <path/to/board/package>/board-support-package
-  >   <board-variant2>
-  >      Board Package: <path/to/board/package>/board-support-package
-  > ```
-   >
-   > You will only be able to run an executable on the FPGA if you specified a BSP.
 
 3. Compile the design. (The provided targets match the recommended development flow.)
 
@@ -184,60 +161,6 @@ Each compute unit in the chain from `Source` to `Sink` must read from a unique p
       make fpga
       ```
 
-### On Windows*
-
-1. Change to the sample directory.
-2. Build the program for the Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" ..
-   ```
-
-  > **Note**: You can change the default target by using the command:
-  >  ```
-  >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
-  >  ```
-  >
-  > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-  >  ```
-  >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<board-support-package>:<board-variant>
-  >  ```
-  > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-  > ```
-  > $> aoc -list-boards
-  > Board list:
-  >   <board-variant>
-  >      Board Package: <path/to/board/package>/board-support-package
-  >   <board-variant2>
-  >      Board Package: <path/to/board/package>/board-support-package
-  > ```
-  >
-  > You will only be able to run an executable on the FPGA if you specified a BSP.
-
-3. Compile the design. (The provided targets match the recommended development flow.)
-
-   1. Compile for emulation (fast compile time, targets emulated FPGA device).
-      ```
-      nmake fpga_emu
-      ```
-   2. Compile for simulation (fast compile time, targets simulator FPGA device):
-      ```
-      nmake fpga_sim
-      ```
-   3. Generate HTML performance report.
-      ```
-      nmake report
-      ```
-      The report resides at `compute_units.report.prj.a/reports/report.html`. You can visualize the kernels and pipes generated by looking at the "System Viewer" section of the report. Note that each compute unit is shown as a unique kernel in the reports, with names `ChainComputeUnit<0>`, `ChainComputeUnit<1>`, and so on.
-
-   4. Compile for FPGA hardware (longer compile time, targets FPGA device).
-      ```
-      nmake fpga
-      ```
-
->**Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your `build` directory in a shorter path, for example `C:\samples\build`. You can then build the sample in the new location, but you must specify the full path to the build files.
-
 ## Run the `Compute Units` Sample
 
 ### On Linux
@@ -250,23 +173,6 @@ Each compute unit in the chain from `Source` to `Sink` must read from a unique p
    ```
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./compute_units.fpga_sim
    ```
-3. Run the sample on the FPGA device (only if you ran `cmake` with `-DFPGA_DEVICE=<board-support-package>:<board-variant>`).
-   ```
-   ./compute_units.fpga
-   ```
-### On Windows
-
-1. Run the sample on the FPGA emulator (the kernels execute on the CPU).
-   ```
-   compute_units.fpga_emu.exe
-   ```
-2. Run the sample on the FPGA simulator device.
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   compute_units.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
-   ```
-> **Note**: Hardware runs are not supported on Windows.
 
 ## Example Output
 ```

@@ -5,7 +5,7 @@
 #include <vector>
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "IntersectionKernel.hpp"
 
@@ -61,8 +61,12 @@ event SubmitKernels(queue& q, std::vector<unsigned int>& a,
   static_assert(II > 0, "II target must be positive and non-zero");
 
   // the pipes for this Version of the design
-  using ProduceAPipe = pipe<ProduceAPipeClass<Version>, unsigned int>;
-  using ProduceBPipe = pipe<ProduceBPipeClass<Version>, unsigned int>;
+  using ProduceAPipe =
+      sycl::ext::altera::experimental::pipe<ProduceAPipeClass<Version>,
+                                            unsigned int>;
+  using ProduceBPipe =
+      sycl::ext::altera::experimental::pipe<ProduceBPipeClass<Version>,
+                                            unsigned int>;
 
   // input sizes
   const int a_size = a.size();
@@ -257,11 +261,11 @@ int main(int argc, char** argv) {
 
     // the device selector
 #if FPGA_SIMULATOR
-    auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-    auto selector = sycl::ext::intel::fpga_selector_v;
+    auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-    auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
     // create the device queue
@@ -312,6 +316,10 @@ int main(int argc, char** argv) {
     success &= Intersection<1,2>(q, a, b, golden_n);
     success &= Intersection<2,2>(q, a, b, golden_n);
 #elif defined(Agilex5)
+    success &= Intersection<0,3>(q, a, b, golden_n);
+    success &= Intersection<1,2>(q, a, b, golden_n);
+    success &= Intersection<2,2>(q, a, b, golden_n);
+#elif defined(Agilex3)
     success &= Intersection<0,3>(q, a, b, golden_n);
     success &= Intersection<1,2>(q, a, b, golden_n);
     success &= Intersection<2,2>(q, a, b, golden_n);

@@ -1,12 +1,4 @@
-# Direct CMake to use icpx rather than the default C++ compiler/linker on Linux
-# and icx-cl on Windows
-if(UNIX)
-    set(CMAKE_CXX_COMPILER icpx)
-else() # Windows
-    include (CMakeForceCompiler)
-    CMAKE_FORCE_CXX_COMPILER (icx-cl IntelDPCPP)
-    include (Platform/Windows-Clang)
-endif()
+set(CMAKE_CXX_COMPILER ahls)
 
 cmake_minimum_required (VERSION 3.7.2)
 
@@ -22,13 +14,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(SOURCE_FILES src/explicit_data_movement.cpp)
 set(TARGET_NAME explicit_data_movement)
 
-# Use cmake -DFPGA_DEVICE=<board-support-package>:<board-variant> to choose a
+# Use cmake -DFPGA_DEVICE=<FPGA device family or FPGA part number> to choose a
 # different device.
-# Note that depending on your installation, you may need to specify the full 
-# path to the board support package (BSP), this usually is in your install 
-# folder.
-#
-# You can also specify a device family (E.g. "Arria10" or "Stratix10") or a
+# You can specify a device family (E.g. "Arria10" or "Stratix10") or a
 # specific part number (E.g. "10AS066N3F40E2SG") to generate a standalone IP.
 # FPGA board selection
 if(NOT DEFINED FPGA_DEVICE)
@@ -89,15 +77,8 @@ message(STATUS "Additional USER_LIB_PATHS=${USER_LIB_PATHS}")
 link_libraries(${USER_LIBS})
 message(STATUS "Additional USER_LIBS=${USER_LIBS}")
 
-if(WIN32)
-    # add qactypes for Windows
-    set(QACTYPES "-Qactypes")
-    # This is a Windows-specific flag that enables exception handling in host code
-    set(WIN_FLAG "/EHsc")
-else()
-    # add qactypes for Linux
-    set(QACTYPES "-qactypes")
-endif()
+# add qactypes
+set(QACTYPES "")
 
 string(TOLOWER "${CMAKE_BUILD_TYPE}" LOWER_BUILD_TYPE)
 if(LOWER_BUILD_TYPE MATCHES debug)
@@ -115,8 +96,8 @@ if(WIN32)
     set(EXT ".exe")
 endif()
 
-set(COMMON_COMPILE_FLAGS -fintelfpga -Wall ${WIN_FLAG} ${QACTYPES} ${BSP_FLAG} ${USER_FLAGS})
-set(COMMON_LINK_FLAGS -fintelfpga ${QACTYPES} ${BSP_FLAG} ${USER_FLAGS})
+set(COMMON_COMPILE_FLAGS -Wall ${WIN_FLAG} ${QACTYPES} ${BSP_FLAG} ${USER_FLAGS})
+set(COMMON_LINK_FLAGS ${QACTYPES} ${BSP_FLAG} ${USER_FLAGS})
 
 # A SYCL ahead-of-time (AoT) compile processes the device code in two stages.
 # 1. The "compile" stage compiles the device code to an intermediate
@@ -161,7 +142,7 @@ target_compile_options(${REPORT_TARGET} PRIVATE ${REPORT_COMPILE_FLAGS})
 
 # The report target does not need the QACTYPES flag at link stage
 set(MODIFIED_COMMON_LINK_FLAGS_REPORT ${COMMON_LINK_FLAGS})
-list(REMOVE_ITEM MODIFIED_COMMON_LINK_FLAGS_REPORT ${QACTYPES})
+
 
 target_link_libraries(${REPORT_TARGET} ${MODIFIED_COMMON_LINK_FLAGS_REPORT})
 target_link_libraries(${REPORT_TARGET} ${REPORT_LINK_FLAGS})
@@ -278,11 +259,6 @@ function(getCompileCommands common_compile_flags special_compile_flags common_li
     set(LINK_COMMAND "${LINK_COMMAND}" PARENT_SCOPE)
 
 endfunction()
-
-# Windows executable is going to have the .exe extension
-if(WIN32)
-    set(EXECUTABLE_EXTENSION ".exe")
-endif()
 
 # Display the compile instructions in the emulation flow
 getCompileCommands("${COMMON_COMPILE_FLAGS}" "${EMULATOR_COMPILE_FLAGS}" "${COMMON_LINK_FLAGS}" "${EMULATOR_LINK_FLAGS}" "${EMULATOR_TARGET}" "${EMULATOR_OUTPUT_NAME}${EXECUTABLE_EXTENSION}")

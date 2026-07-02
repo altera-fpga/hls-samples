@@ -8,7 +8,7 @@
 //
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "data_bundle.hpp"
 
@@ -25,9 +25,9 @@ event SubmitInputDMA(queue &q, T *in_ptr, int rows, int cols, int frames) {
 #if defined (IS_BSP)
   // LSU attribute to  turn off caching
   using NonCachingLSU =
-      ext::intel::lsu<ext::intel::burst_coalesce<true>, ext::intel::cache<0>,
-                      ext::intel::statically_coalesce<true>,
-                      ext::intel::prefetch<false>>;
+      ext::altera::lsu<ext::altera::burst_coalesce<true>, ext::altera::cache<0>,
+                      ext::altera::statically_coalesce<true>,
+                      ext::altera::prefetch<false>>;
 #endif 
 
   // validate the number of columns
@@ -45,7 +45,7 @@ event SubmitInputDMA(queue &q, T *in_ptr, int rows, int cols, int frames) {
   return q.single_task<KernelId>([=]() [[intel::kernel_args_restrict]] {
 
 #if defined (IS_BSP)
-    sycl::ext::intel::device_ptr<T> in(in_ptr);
+    sycl::ext::altera::device_ptr<T> in(in_ptr);
 #else 
     T* in(in_ptr);
 #endif  
@@ -90,7 +90,7 @@ event SubmitOutputDMA(queue &q, T *out_ptr, int rows, int cols, int frames) {
   return q.single_task<KernelId>([=]() [[intel::kernel_args_restrict]] {
 
 #if defined (IS_BSP)
-    sycl::ext::intel::device_ptr<T> out(out_ptr);
+    sycl::ext::altera::device_ptr<T> out(out_ptr);
 #else 
     T* out(out_ptr);
 #endif      

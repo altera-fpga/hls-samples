@@ -18,9 +18,9 @@ The `-Xsoptimize=<flag>` command-line option sets optimization targets, and it s
 
 |Flag                      |Explanation                        |Documentation
 |:---                      |:---                               |:---
-|`latency`                 |Minimum latency: minimize kernel latency at the cost of decreased f<sub>MAX</sub> |[*Minimum Latency Flow*](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/developer-guide/current/minimum-latency-flow.html)
-|`throughput-area-balanced`|Balanced throughput-area trade-offs: disable throughput-area trade-off heuristics that increase the throughput at the cost of area |[*Balanced Throughput-Area Trade-Offs Flow*](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/developer-guide/current/max-throughput.html)
-|`area`                    |Minimum area: minimize kernel area at the cost of decreased f<sub>MAX</sub> |[*Minimum Area Flow*](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/developer-guide/current/minimum-area.html)
+|`latency`                 |Minimum latency: minimize kernel latency at the cost of decreased f<sub>MAX</sub> |[*Minimum Latency Flow*](https://altera-dev.fluidtopics.net/r/docs/m615048/current/hls-ip-gen-handbook/16.2.1-minimum-latency-flow)
+|`throughput-area-balanced`|Balanced throughput-area trade-offs: disable throughput-area trade-off heuristics that increase the throughput at the cost of area |[*Balanced Throughput-Area Trade-Offs Flow*](https://altera-dev.fluidtopics.net/r/docs/m615048/current/hls-ip-gen-handbook/16.2.3-balanced-throughput-area-trade-offs-flow)
+|`area`                    |Minimum area: minimize kernel area at the cost of decreased f<sub>MAX</sub> |[*Minimum Area Flow*](https://altera-dev.fluidtopics.net/r/docs/m615048/current/hls-ip-gen-handbook/16.2.2-minimum-area-flow)
 
 To compile your design with the minimum latency optimization target, use the flag option `-Xsoptimize=latency`.
 
@@ -30,20 +30,20 @@ As an example, this tutorial shows how to use the minimum latency optimization t
 
 | Optimized for        | Description
 |:---                  |:---
-| OS                   | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware             | Intel® Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
-| Software             | Intel® oneAPI DPC++/C++ Compiler
+| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware             | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
+| Software             | HLS IP Gen Compiler
 
-> **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> For using the simulator flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
 
-> **Warning**: Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
+> **Warning**: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 This sample is part of the FPGA code samples.
 It is categorized as a Tier 3 sample that demonstrates a compiler feature.
@@ -87,23 +87,16 @@ The basic function performed by the tutorial kernel is an RGB to grayscale algor
 
 ## Build the `Optimization Targets` Tutorial
 
->**Note**: When working with the command-line interface (CLI), you should configure the oneAPI toolkits using environment variables. Set up your CLI environment by sourcing the `setvars` script in the root of your oneAPI installation every time you open a new terminal window. This practice ensures that your compiler, libraries, and tools are ready for development.
+>**Note**: When working with the command-line interface (CLI), you should configure the HLS IP Gen Compiler using environment variables. Set up your CLI environment by sourcing the `fpgavars` script in the root of your HLS IP Gen Compiler installation every time you open a new terminal window. This practice ensures that your compiler, libraries, and tools are ready for development.
 >
 > Linux*:
-> - For system wide installations: `. /opt/intel/oneapi/setvars.sh`
-> - For private installations: ` . ~/intel/oneapi/setvars.sh`
-> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/setvars.sh ; exec csh'`
->
-> Windows*:
-> - `C:\"Program Files (x86)"\Intel\oneAPI\setvars.bat`
-> - Windows PowerShell*, use the following command: `cmd.exe "/K" '"C:\Program Files (x86)\Intel\oneAPI\setvars.bat" && powershell'`
->
-> For more information on configuring environment variables, see *[Use the setvars Script with Linux* or macOS*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-programming-guide/top/oneapi-development-environment-setup/use-the-setvars-script-with-linux-or-macos.html)* or *[Use the setvars Script with Windows*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-programming-guide/top/oneapi-development-environment-setup/use-the-setvars-script-with-windows.html)*.
+> - `source <install-dir>/fpgavars.sh`
+> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/fpgavars.sh ; exec csh'`
 
 ### On Linux*
 
 1. Change to the sample directory.
-2. Build the program for Intel® Agilex® 7 device family, which is the default.
+2. Build the program for Agilex® 7 device family, which is the default.
    ```
    mkdir build
    cd build
@@ -113,28 +106,10 @@ The basic function performed by the tutorial kernel is an RGB to grayscale algor
    - `-DPART=NO_CONTROL`: Compile part 1
    - `-DPART=MINIMUM_LATENCY`: Compile part 2
    - `-DPART=MANUAL_REVERT`: Compile part 3
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    >  ```
    >  cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
    >  ```
-   >
-   > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-   >  ```
-   >  cmake .. -DFPGA_DEVICE=<board-support-package>:<board-variant>
-   >  ```
-   > The build system will try to infer the FPGA family from the BSP name.
-   > If it can't, an extra option needs to be passed to `cmake`: `-DDEVICE_FLAG=[A10|S10|CycloneV|Agilex5|Agilex7]` 
-   > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-   > ```
-   > $> aoc -list-boards
-   > Board list:
-   >   <board-variant>
-   >      Board Package: <path/to/board/package>/board-support-package
-   >   <board-variant2>
-   >      Board Package: <path/to/board/package>/board-support-package
-   > ```
-   >
-   > You will only be able to run an executable on the FPGA if you specified a BSP.
 
 3. Compile the design. (The provided targets match the recommended development flow.)
 
@@ -155,66 +130,6 @@ The basic function performed by the tutorial kernel is an RGB to grayscale algor
       make fpga
       ```
 
-### On Windows*
-
-1. Change to the sample directory.
-2. Build the program for the Intel® Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" .. -DPART=<X>
-   ```
-   where `-DPART=<X>` is:
-   - `-DPART=NO_CONTROL`: Compile part 1
-   - `-DPART=MINIMUM_LATENCY`: Compile part 2
-   - `-DPART=MANUAL_REVERT`: Compile part 3
-   > **Note**: You can change the default target by using the command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
-   >  ```
-   >
-   > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<board-support-package>:<board-variant>
-   >  ```
-   > The build system will try to infer the FPGA family from the BSP name.
-   > If it can't, an extra option needs to be passed to `cmake`: `-DDEVICE_FLAG=[A10|S10|CycloneV|Agilex5|Agilex7]` 
-   > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-   > ```
-   > $> aoc -list-boards
-   > Board list:
-   >   <board-variant>
-   >      Board Package: <path/to/board/package>/board-support-package
-   >   <board-variant2>
-   >      Board Package: <path/to/board/package>/board-support-package
-   > ```
-   >
-   > You will only be able to run an executable on the FPGA if you specified a BSP.
-
-3. Compile the design. (The provided targets match the recommended development flow.)
-
-   1. Compile for emulation (fast compile time, targets emulated FPGA device).
-      ```
-      nmake fpga_emu
-      ```
-   2. Generate the optimization report. (See [Read the Reports](#read-the-reports) below for information on finding and understanding the reports.)
-      ```
-      nmake report
-      ```
-   3. Compile for simulation (fast compile time, targets simulated FPGA device, reduced problem size).
-      ```
-      nmake fpga_sim
-      ```
-   4. Compile for FPGA hardware (longer compile time, targets FPGA device):
-      ```
-      nmake fpga
-      ```
-
-> **Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your 'build' directory in a shorter path, for example c:\samples\build.  You can then run cmake from that directory, and provide cmake with the full path to your sample directory, for example:
->
->  ```
-  > C:\samples\build> cmake -G "NMake Makefiles" C:\long\path\to\code\sample\CMakeLists.txt
->  ```
 ### Read the Reports
 
 After compiling the three reports in different cmake folders, locate all the  the `report.html` files:
@@ -239,27 +154,6 @@ Navigate to **Clock Frequency Summary** (**Summary > Clock Frequency Summary**) 
    ```
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./optimization_targets.fpga_sim
    ```
-
-3. Run the sample on the FPGA device (only if you ran `cmake` with `-DFPGA_DEVICE=<board-support-package>:<board-variant>`).
-   ```
-   ./optimization_targets.fpga
-   ```
-
-### On Windows
-
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
-   ```
-   optimization_targets.fpga_emu.exe
-   ```
-
-2. Run the sample on the FPGA simulator device.
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   optimization_targets.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
-   ```
-
-> **Note**: Hardware runs are not supported on Windows.
 
 ## Example Output
 
@@ -287,9 +181,9 @@ Exec Time: 1.9772e-05s, InputMB: 0.0038147MB
 PASSED: all kernel results are correct
 ```
 
-Comparing to Intel® Arria® 10 GX FPGA, it is more notable on Intel® Stratix® 10 SX FPGA that the minimum latency optimization target significantly reduces the latency, along with the f<sub>MAX</sub> and the throughput. That is because the minimum latency optimization target disables the hyper-optimized handshaking, which achieves higher f<sub>MAX</sub> at the cost of increased latency. 
+Comparing to Arria® 10 GX FPGA, it is more notable on Stratix® 10 SX FPGA that the minimum latency optimization target significantly reduces the latency, along with the f<sub>MAX</sub> and the throughput. That is because the minimum latency optimization target disables the hyper-optimized handshaking, which achieves higher f<sub>MAX</sub> at the cost of increased latency. 
 
-> **Note**: For more information on the hyper-optimized handshaking protocol on Intel® Stratix® 10 and Intel Agilex® 7 devices, see the [*Modify the Handshaking Protocol Between Clusters (-Xshyper-optimized-handshaking)*](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/optimization-guide/current/hyper-opt-handshaking.html) topic in the *FPGA Optimization Guide for Intel® oneAPI Toolkits Developer Guide*.
+> **Note**: For more information on the hyper-optimized handshaking protocol on Stratix® 10 and Agilex® 7 devices, see the [*Modify the Handshaking Protocol Between Clusters (-Xshyper-optimized-handshaking)*](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/16.1.7-improve-fmax-on-hyperflex-fabrics) topic in the *HLS IP Gen Handbook*.
 
 ## License
 

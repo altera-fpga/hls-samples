@@ -1,12 +1,12 @@
 #include <sycl/sycl.hpp>
 #include <numeric>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "exception_handler.hpp"
 
-using BurstCoalescedLSU = sycl::ext::intel::experimental::lsu<
-    sycl::ext::intel::experimental::burst_coalesce<true>,
-    sycl::ext::intel::experimental::statically_coalesce<false>>;
+using BurstCoalescedLSU = sycl::ext::altera::experimental::lsu<
+    sycl::ext::altera::experimental::burst_coalesce<true>,
+    sycl::ext::altera::experimental::statically_coalesce<false>>;
 
 int Operation(int a) { return a * 3 + 2; } // Arbitrary operations.
 
@@ -18,11 +18,11 @@ class LatencyControl;
 void KernelRun(const std::vector<int> &in_data, std::vector<int> &out_data,
                const size_t &size) {
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   try {
@@ -55,7 +55,7 @@ void KernelRun(const std::vector<int> &in_data, std::vector<int> &out_data,
           int value = BurstCoalescedLSU::load(
               in_ptr + i,
               sycl::ext::oneapi::experimental::properties(
-                  sycl::ext::intel::experimental::latency_anchor_id<0>));
+                  sycl::ext::altera::experimental::latency_anchor_id<0>));
 
           value = Operation(value);
 
@@ -64,9 +64,9 @@ void KernelRun(const std::vector<int> &in_data, std::vector<int> &out_data,
           BurstCoalescedLSU::store(
               out_ptr + i, value,
               sycl::ext::oneapi::experimental::properties(
-                  sycl::ext::intel::experimental::latency_constraint<
+                  sycl::ext::altera::experimental::latency_constraint<
                       0,
-                      sycl::ext::intel::experimental::latency_control_type::
+                      sycl::ext::altera::experimental::latency_control_type::
                           exact,
                       5>));
         }
@@ -78,9 +78,6 @@ void KernelRun(const std::vector<int> &in_data, std::vector<int> &out_data,
 
     // Most likely the runtime couldn't find FPGA hardware!
     if (e.code().value() == CL_DEVICE_NOT_FOUND) {
-      std::cerr << "If you are targeting an FPGA, please ensure that your "
-                   "system has a correctly configured FPGA board.\n";
-      std::cerr << "Run sys_check in the oneAPI root directory to verify.\n";
       std::cerr << "If you are targeting the FPGA emulator, compile with "
                    "-DFPGA_EMULATOR.\n";
     }

@@ -16,20 +16,20 @@ The compiler creates load-store units (LSU) to access memories, both on-chip and
 
 | Optimized for        | Description
 |:---                  |:---
-| OS                   | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware             | Intel® Agilex® 7, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
-| Software             | Intel® oneAPI DPC++/C++ Compiler
+| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware             | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
+| Software             | HLS IP Gen Compiler
 
-> **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> For using the simulator flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
 
-> **Warning**: Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
+> **Warning**: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 This sample is part of the FPGA code samples.
 It is categorized as a Tier 3 sample that demonstrates a compiler feature.
@@ -77,11 +77,11 @@ The best LSU style depends on the memory access pattern in your design. There ar
 
 In addition to these two styles, there are also LSU modifiers. LSU modifiers are add-ons that can be combined with LSU styles, such as caching, which can be combined with the burst-coalesced LSU style.
 
-For more details on LSU modifiers and LSU styles, refer to the *Memory Accesses* section in the [FPGA Optimization Guide for Intel® oneAPI Toolkits Developer Guide](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/optimization-guide/current/memory-accesses.html).
+For more details on LSU modifiers and LSU styles, refer to the *Load-Store Units* section in the [HLS IP Gen Handbook](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/15.2-load-store-units).
 
 ### Introduction to the LSU Control Extension
 
-The class: ```ext::intel::lsu``` enables you to control the architecture of the LSU. The class has two member functions, `load()` and `store()`, which allow loading from and storing to a global pointer (via `sycl::multi_ptr` rather than raw pointer).
+The class: ```ext::altera::lsu``` enables you to control the architecture of the LSU. The class has two member functions, `load()` and `store()`, which allow loading from and storing to a global pointer (via `sycl::multi_ptr` rather than raw pointer).
 
 There are two steps to use the LSU control extension to optimize LSU behaviour:
 1. Get a `sycl::multi_ptr` representation of the memory you wish to access using the `get_multi_ptr<>()` function.
@@ -91,10 +91,10 @@ The table below summarizes the LSU control extension parameters. The parameters 
 
 |Control                              | Value                  | Default  | Supports
 |:---                                 |:---                    |:---      |:---
-|`ext::intel::burst_coalesce<B>`      | B is a Boolean         | false    | both load & store
-|`ext::intel::cache<N>`               | N is an integer >=  0  | 0        | only load
-|`ext::intel::statically_coalesce<B>` | B is a Boolean         | true     | both load & store
-|`ext::intel::prefetch<B>`            | B is a Boolean         | false    | only load
+|`ext::altera::burst_coalesce<B>`      | B is a Boolean         | false    | both load & store
+|`ext::altera::cache<N>`               | N is an integer >=  0  | 0        | only load
+|`ext::altera::statically_coalesce<B>` | B is a Boolean         | true     | both load & store
+|`ext::altera::prefetch<B>`            | B is a Boolean         | false    | only load
 
 If the default options are used, a pipelined LSU is implemented.
 
@@ -103,8 +103,8 @@ If the default options are used, a pipelined LSU is implemented.
 ```c++
 // Creating typedefs using the LSU controls class
 // for each combination of LSU options desired.
-using PrefetchingLSU = ext::intel::lsu<ext::intel::prefetch<true>,
-                                       ext::intel::statically_coalesce<false>>;
+using PrefetchingLSU = ext::altera::lsu<ext::altera::prefetch<true>,
+                                       ext::altera::statically_coalesce<false>>;
 // ...
 q.submit([&](handler &h) {
   h.single_task<Kernel>([=] {
@@ -120,7 +120,7 @@ q.submit([&](handler &h) {
 ```
 
 Currently, not every combination of parameters is valid in the compiler.
-For more details on the descriptions of LSU controls, styles, and modifiers refer to the *Load-Store Unit Controls* section in the [FPGA Optimization Guide for Intel® oneAPI Toolkits Developer Guide](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/optimization-guide/current/load-store-unit-controls.html).
+For more details on the descriptions of LSU controls, styles, and modifiers refer to the *Load-Store Units* section in the [HLS IP Gen Handbook](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/15.2-load-store-units).
 
 ### Tutorial Overview
 
@@ -130,59 +130,34 @@ In the tutorial, there are three kernels with the same body:
 
 |Kernel Name        | How it loads from the read accessor
 |:---               |:---
-| KernelPrefetch    | `ext::intel::lsu<ext::intel::prefetch<true>>`
-| KernelBurst       | `ext::intel::lsu<ext::intel::burst_coalesce<true>>`
-| KernelDefault     | directly loads data from read accessor, instead of using the `ext::intel::lsu` class
+| KernelPrefetch    | `ext::altera::lsu<ext::altera::prefetch<true>>`
+| KernelBurst       | `ext::altera::lsu<ext::altera::burst_coalesce<true>>`
+| KernelDefault     | directly loads data from read accessor, instead of using the `ext::altera::lsu` class
 
 The kernel design requests data from global memory in a contiguous manner. Therefore, both the prefetching LSU and the burst-coalesced LSU would allow the design to have high throughput. However, the prefetching LSU is highly optimized for such access patterns, especially in situations where we know, at compile time, that such access pattern exists. This will generally lead to significant area savings. As a result, between the two kernels, `KernelPrefetch` and `KernelBurst`, an improvement in area should be observed with `KernelPrefetch`. The kernel `KernelDefault` shows the same design without using the LSU controls extension. This kernel acts as both a baseline and illustrates the difference in syntax between using the LSU controls and not using them.
 
 ## Build the `LSU Control` Tutorial
 
->**Note**: When working with the command-line interface (CLI), you should configure the oneAPI toolkits using environment variables. Set up your CLI environment by sourcing the `setvars` script in the root of your oneAPI installation every time you open a new terminal window. This practice ensures that your compiler, libraries, and tools are ready for development.
+>**Note**: When working with the command-line interface (CLI), you should configure the HLS IP Gen Compiler using environment variables. Set up your CLI environment by sourcing the `fpgavars` script in the root of your HLS IP Gen Compiler installation every time you open a new terminal window. This practice ensures that your compiler, libraries, and tools are ready for development.
 >
 > Linux*:
-> - For system wide installations: `. /opt/intel/oneapi/setvars.sh`
-> - For private installations: ` . ~/intel/oneapi/setvars.sh`
-> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/setvars.sh ; exec csh'`
->
-> Windows*:
-> - `C:\"Program Files (x86)"\Intel\oneAPI\setvars.bat`
-> - Windows PowerShell*, use the following command: `cmd.exe "/K" '"C:\Program Files (x86)\Intel\oneAPI\setvars.bat" && powershell'`
->
-> For more information on configuring environment variables, see [Use the setvars Script with Linux* or macOS*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-programming-guide/top/oneapi-development-environment-setup/use-the-setvars-script-with-linux-or-macos.html) or [Use the setvars Script with Windows*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-programming-guide/top/oneapi-development-environment-setup/use-the-setvars-script-with-windows.html).
+> - `source <install-dir>/fpgavars.sh`
+> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/fpgavars.sh ; exec csh'`
 
 
 ### On Linux*
 
 1. Change to the sample directory.
-2. Build the program for Intel® Agilex® 7 device family, which is the default.
+2. Build the program for Agilex® 7 device family, which is the default.
    ```
    mkdir build
    cd build
    cmake ..
    ```
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    >  ```
    >  cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
    >  ```
-   >
-   > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-   >  ```
-   >  cmake .. -DFPGA_DEVICE=<board-support-package>:<board-variant>
-   >  ```
-   > The build system will try to infer the FPGA family from the BSP name.
-   > If it can't, an extra option needs to be passed to `cmake`: `-DDEVICE_FLAG=[A10|S10|CycloneV|Agilex5|Agilex7]` 
-   > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-   > ```
-   > $> aoc -list-boards
-   > Board list:
-   >   <board-variant>
-   >      Board Package: <path/to/board/package>/board-support-package
-   >   <board-variant2>
-   >      Board Package: <path/to/board/package>/board-support-package
-   > ```
-   >
-   > You will only be able to run an executable on the FPGA if you specified a BSP.
 
 3. Compile the design. (The provided targets match the recommended development flow.)
 
@@ -203,61 +178,6 @@ The kernel design requests data from global memory in a contiguous manner. There
       make fpga
       ```
 
-### On Windows*
-
-1. Change to the sample directory.
-2. Build the program for the Intel® Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" ..
-   ```
-   > **Note**: You can change the default target by using the command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
-   >  ```
-   >
-   > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<board-support-package>:<board-variant>
-   >  ```
-   > The build system will try to infer the FPGA family from the BSP name.
-   > If it can't, an extra option needs to be passed to `cmake`: `-DDEVICE_FLAG=[A10|S10|CycloneV|Agilex5|Agilex7]` 
-   > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-   > ```
-   > $> aoc -list-boards
-   > Board list:
-   >   <board-variant>
-   >      Board Package: <path/to/board/package>/board-support-package
-   >   <board-variant2>
-   >      Board Package: <path/to/board/package>/board-support-package
-   > ```
-   >
-   > You will only be able to run an executable on the FPGA if you specified a BSP.
-
-3. Compile the design. (The provided targets match the recommended development flow.)
-
-   1. Compile for emulation (fast compile time, targets emulated FPGA device).
-      ```
-      nmake fpga_emu
-      ```
-   2. Generate the optimization report. (See [Read the Reports](#read-the-reports) below for information on finding and understanding the reports.)
-      ```
-      nmake report
-      ```
-   3. Compile for simulation (fast compile time, targets simulated FPGA device, reduced problem size).
-      ```
-      nmake fpga_sim
-      ```
-   4. Compile for FPGA hardware (longer compile time, targets FPGA device):
-      ```
-      nmake fpga
-      ```
-> **Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your 'build' directory in a shorter path, for example c:\samples\build.  You can then run cmake from that directory, and provide cmake with the full path to your sample directory, for example:
->
->  ```
-  > C:\samples\build> cmake -G "NMake Makefiles" C:\long\path\to\code\sample\CMakeLists.txt
->  ```
 ### Read the Reports
 
 Locate `report.html` in the `lsu_control.prj/reports/` directory.
@@ -300,7 +220,7 @@ If your design is limited by the available FPGA resources, you can try the follo
 
 However, configuring an LSU solely based on area may compromise throughput. In this tutorial, the access pattern is ideal for the prefetch LSU and it will achieve the same throughput as the burst coalesced, but this is not always the case.
 
-For more details on the descriptions of LSU controls, styles, and modifiers, refer to the LSU Controls section in the [*FPGA Optimization Guide for Intel® oneAPI Toolkits Developer Guide*](https://software.intel.com/content/www/us/en/develop/documentation/oneapi-fpga-optimization-guide).
+For more details on the descriptions of LSU controls, styles, and modifiers, refer to the LSU section in the [*HLS IP Gen Handbook*](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/15.2-load-store-units).
 
 ## Run the `LSU Control` Sample
 
@@ -314,25 +234,6 @@ For more details on the descriptions of LSU controls, styles, and modifiers, ref
    ```
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./lsu_control.fpga_sim
    ```
-3. Run the sample on the FPGA device (only if you ran `cmake` with `-DFPGA_DEVICE=<board-support-package>:<board-variant>`).
-   ```
-   ./lsu_control.fpga
-   ```
-
-### On Windows
-
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
-   ```
-   lsu_control.fpga_emu.exe
-   ```
-2. Run the sample on the FPGA simulator device.
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   lsu_control.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
-   ```
-> **Note**: Hardware runs are not supported on Windows.
-
 ### Example Output
 
 ```

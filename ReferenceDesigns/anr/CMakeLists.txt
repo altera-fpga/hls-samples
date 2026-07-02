@@ -1,12 +1,4 @@
-# Direct CMake to use icpx rather than the default C++ compiler/linker on Linux
-# and icx-cl on Windows
-if(UNIX)
-    set(CMAKE_CXX_COMPILER icpx)
-else() # Windows
-    include (CMakeForceCompiler)
-    CMAKE_FORCE_CXX_COMPILER (icx-cl IntelDPCPP)
-    include (Platform/Windows-Clang)
-endif()
+set(CMAKE_CXX_COMPILER ahls)
 
 cmake_minimum_required (VERSION 3.7.2)
 
@@ -22,13 +14,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(SOURCE_FILES src/main.cpp)
 set(TARGET_NAME anr)
 
-# Use cmake -DFPGA_DEVICE=<board-support-package>:<board-variant> to choose a
+# Use cmake -DFPGA_DEVICE=<FPGA device family or FPGA part number> to choose a
 # different device.
-# Note that depending on your installation, you may need to specify the full 
-# path to the board support package (BSP), this usually is in your install 
-# folder.
-#
-# You can also specify a device family (E.g. "Arria10" or "Stratix10") or a
+# You can specify a device family (E.g. "Arria10" or "Stratix10") or a
 # specific part number (E.g. "10AS066N3F40E2SG") to generate a standalone IP.
 if(NOT DEFINED FPGA_DEVICE)
     set(FPGA_DEVICE "Agilex7")
@@ -44,8 +32,14 @@ else()
       set(DEVICE_FLAG "A10")
     elseif(FPGA_DEVICE_NAME MATCHES ".*s10.*" OR FPGA_DEVICE_NAME MATCHES ".*stratix10.*")
       set(DEVICE_FLAG "S10")
-    elseif(FPGA_DEVICE_NAME MATCHES ".*agilex.*")
+    elseif(FPGA_DEVICE_NAME MATCHES ".*cyclone10.*")
+      set(DEVICE_FLAG "Cyclone10")
+    elseif(FPGA_DEVICE_NAME MATCHES ".*agilex7.*")
       set(DEVICE_FLAG "Agilex7")
+    elseif(FPGA_DEVICE_NAME MATCHES ".*agilex5.*")
+      set(DEVICE_FLAG "Agilex5")
+    elseif(FPGA_DEVICE_NAME MATCHES ".*agilex3.*")
+      set(DEVICE_FLAG "Agilex3")
     endif()
 
     # Check if the target is a BSP
@@ -59,8 +53,8 @@ endif()
 
 if(NOT DEFINED DEVICE_FLAG)
     message(FATAL_ERROR "An unrecognized or custom board was passed, but DEVICE_FLAG was not specified. \
-                         Please make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10 or \
-                         -DDEVICE_FLAG=Agilex7.")
+                         Please make sure you have set -DDEVICE_FLAG=A10, -DDEVICE_FLAG=S10, \
+                         -DDEVICE_FLAG=Cyclone10, -DDEVICE_FLAG=Agilex7, -DDEVICE_FLAG=Agilex5 or -DDEVICE_FLAG=Agilex3.")
 endif()
 
 # Increase the allowable constexpr steps for the front end. This allows the
@@ -80,6 +74,10 @@ if(NOT DEFINED SEED)
   elseif(DEVICE_FLAG MATCHES "S10")
     set(SEED 2)
   elseif(DEVICE_FLAG MATCHES "Agilex7")
+    set(SEED 3)
+  elseif(DEVICE_FLAG MATCHES "Agilex5")
+    set(SEED 3)
+  elseif(DEVICE_FLAG MATCHES "Agilex3")
     set(SEED 3)
   else()
     set(SEED 4)
@@ -112,7 +110,13 @@ else()
     set(PIXELS_PER_CYCLE 2)
   elseif(DEVICE_FLAG MATCHES "S10")
     set(PIXELS_PER_CYCLE 2)
+  elseif(DEVICE_FLAG MATCHES "Cyclone10")
+    set(PIXELS_PER_CYCLE 2)
   elseif(DEVICE_FLAG MATCHES "Agilex7")
+    set(PIXELS_PER_CYCLE 1)
+  elseif(DEVICE_FLAG MATCHES "Agilex5")
+    set(PIXELS_PER_CYCLE 1)
+  elseif(DEVICE_FLAG MATCHES "Agilex3")
     set(PIXELS_PER_CYCLE 1)
   else()
     message(WARNING "Unknown board: setting PIXELS_PER_CYCLE to 1")
@@ -149,6 +153,11 @@ endif()
 # compilation. 
 set(USER_FPGA_FLAGS ${USER_FPGA_FLAGS};${SEED_FLAG})
 
+if(DEVICE_FLAG MATCHES "Agilex5")
+  # This design has better througput on Agilex5 with this optimization
+  set(USER_FPGA_FLAGS ${USER_FPGA_FLAGS};-Xsglobal-ring)
+endif()
+
 # Use cmake -DUSER_FLAGS=<flags> to set extra flags for general compilation.
 set(USER_FLAGS ${USER_FLAGS};${CONSTEXPR_STEPS};${FILTER_SIZE_FLAG};${PIXELS_PER_CYCLE_FLAG};${MAX_COLS_FLAG};${PIXEL_BITS_FLAG};${BSP_FLAG})
 
@@ -184,15 +193,8 @@ message(STATUS "Additional USER_LIB_PATHS=${USER_LIB_PATHS}")
 link_libraries(${USER_LIBS})
 message(STATUS "Additional USER_LIBS=${USER_LIBS}")
 
-if(WIN32)
-    # add qactypes for Windows
-    set(QACTYPES "-Qactypes")
-    # This is a Windows-specific flag that enables exception handling in host code
-    set(WIN_FLAG "/EHsc")
-else()
-    # add qactypes for Linux
-    set(QACTYPES "-qactypes")
-endif()
+# add qactypes
+set(QACTYPES "")
 
 string(TOLOWER "${CMAKE_BUILD_TYPE}" LOWER_BUILD_TYPE)
 if(LOWER_BUILD_TYPE MATCHES debug)
@@ -210,8 +212,8 @@ if(WIN32)
     set(EXT ".exe")
 endif()
 
-set(COMMON_COMPILE_FLAGS -fintelfpga -Wall ${WIN_FLAG} ${QACTYPES} ${USER_FLAGS})
-set(COMMON_LINK_FLAGS -fintelfpga ${QACTYPES} ${USER_FLAGS})
+set(COMMON_COMPILE_FLAGS -Wall ${WIN_FLAG} ${QACTYPES} ${USER_FLAGS})
+set(COMMON_LINK_FLAGS ${QACTYPES} ${USER_FLAGS})
 
 # A SYCL ahead-of-time (AoT) compile processes the device code in two stages.
 # 1. The "compile" stage compiles the device code to an intermediate
@@ -256,7 +258,7 @@ target_compile_options(${REPORT_TARGET} PRIVATE ${REPORT_COMPILE_FLAGS})
 
 # The report target does not need the QACTYPES flag at link stage
 set(MODIFIED_COMMON_LINK_FLAGS_REPORT ${COMMON_LINK_FLAGS})
-list(REMOVE_ITEM MODIFIED_COMMON_LINK_FLAGS_REPORT ${QACTYPES})
+
 
 target_link_libraries(${REPORT_TARGET} ${MODIFIED_COMMON_LINK_FLAGS_REPORT})
 target_link_libraries(${REPORT_TARGET} ${REPORT_LINK_FLAGS})
@@ -373,11 +375,6 @@ function(getCompileCommands common_compile_flags special_compile_flags common_li
     set(LINK_COMMAND "${LINK_COMMAND}" PARENT_SCOPE)
 
 endfunction()
-
-# Windows executable is going to have the .exe extension
-if(WIN32)
-    set(EXECUTABLE_EXTENSION ".exe")
-endif()
 
 # Display the compile instructions in the emulation flow
 getCompileCommands("${COMMON_COMPILE_FLAGS}" "${EMULATOR_COMPILE_FLAGS}" "${COMMON_LINK_FLAGS}" "${EMULATOR_LINK_FLAGS}" "${EMULATOR_TARGET}" "${EMULATOR_OUTPUT_NAME}${EXECUTABLE_EXTENSION}")

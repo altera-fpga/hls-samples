@@ -1,5 +1,5 @@
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <algorithm>
 #include <array>
 #include <chrono>
@@ -83,11 +83,11 @@ int main(int argc, char* argv[]) {
   /////////////////////////////////////////////////////////////
 
 #if FPGA_SIMULATOR
-    auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-    auto selector = sycl::ext::intel::fpga_selector_v;
+    auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-    auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   // create the device queue
@@ -233,8 +233,8 @@ double RunANR(queue& q, PixelT* in_ptr, PixelT* out_ptr, int cols, int rows,
               int frames, ANRParams params, float* sig_i_lut_data_ptr) {
   // the input and output pipe for the sorter
   using PipeType = DataBundle<PixelT, kPixelsPerCycle>;
-  using ANRInPipe = sycl::ext::intel::pipe<ANRInPipeID, PipeType>;
-  using ANROutPipe = sycl::ext::intel::pipe<ANROutPipeID, PipeType>;
+  using ANRInPipe = sycl::ext::altera::experimental::pipe<ANRInPipeID, PipeType>;
+  using ANROutPipe = sycl::ext::altera::experimental::pipe<ANROutPipeID, PipeType>;
 
   // launch the input and output kernels that read from and write to the device
   auto input_kernel_event =

@@ -1,5 +1,5 @@
-# launch this script from an environment containing oneAPI, Intel® Quartus®
-# Prime, Platform Designer
+# launch this script from an environment containing the Altera® HLS IP Gen compiler,
+# Altera® Quartus® Prime, Platform Designer
 
 # get the base directory of the design
 set EXAMPLE_ROOT_DIR [ file dirname [ file normalize [ info script ] ] ]
@@ -18,7 +18,7 @@ proc echoAndEval { tcl_cmd } {
 
 set OS [lindex $tcl_platform(platform) 0]
 
-post_message -type info  "1. Compile oneAPI kernel into an IP component"
+post_message -type info  "1. Compile the kernel into an IP component"
 echoAndEval "file mkdir build"
 echoAndEval "cd build"
 post_message -type info "Detected OS = $OS"

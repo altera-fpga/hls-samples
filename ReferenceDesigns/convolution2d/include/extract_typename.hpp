@@ -1,4 +1,4 @@
-//  Copyright (c) 2024 Intel Corporation
+//  Copyright Altera Corporation. All rights reserved.
 //  SPDX-License-Identifier: MIT
 
 // extract_typename.hpp
@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 
-#include <sycl/ext/intel/prototype/pipes_ext.hpp>
+#include <sycl/ext/altera/experimental/pipes_ext.hpp>
 
 template <typename T>
 struct ExtractValueType {

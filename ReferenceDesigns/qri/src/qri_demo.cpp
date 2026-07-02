@@ -3,8 +3,8 @@
 #include <chrono>
 #include <iomanip>
 #include <list>
-#include <sycl/ext/intel/ac_types/ac_complex.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/ac_types/ac_complex.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "exception_handler.hpp"
 
@@ -214,11 +214,11 @@ int main(int argc, char *argv[]) {
   try {
 
 #if FPGA_SIMULATOR
-    auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-    auto selector = sycl::ext::intel::fpga_selector_v;
+    auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-    auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
     // Enable the queue profiling to time the execution

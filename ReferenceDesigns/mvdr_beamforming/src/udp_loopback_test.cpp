@@ -9,8 +9,8 @@
 #include <sys/mman.h>
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/ac_types/ac_complex.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/ac_types/ac_complex.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "tuple.hpp"
 #include "UDP.hpp"
@@ -38,9 +38,9 @@ struct IOPipeType {
   uchar dat[8];
 };
 using WriteIOPipe =
-    ext::intel::kernel_writeable_io_pipe<WriteIOPipeID, IOPipeType, 512>;
+    ext::altera::kernel_writeable_io_pipe<WriteIOPipeID, IOPipeType, 512>;
 using ReadIOPipe =
-    ext::intel::kernel_readable_io_pipe<ReadIOPipeID, IOPipeType, 512>;
+    ext::altera::kernel_readable_io_pipe<ReadIOPipeID, IOPipeType, 512>;
 
 // submits the main processing kernel, templated on the input and output pipes
 // NOTE: this kernel is agnostic to whether the input/output pipe is a 'real'
@@ -112,7 +112,7 @@ int main(int argc, char **argv) {
   printf("\n");
 
   // set up SYCL queue
-  ext::intel::fpga_selector device_selector;
+  ext::altera::fpga_selector device_selector;
   queue q(device_selector);
 
   // input and output packet words

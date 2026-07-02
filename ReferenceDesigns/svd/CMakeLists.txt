@@ -1,12 +1,4 @@
-# Direct CMake to use icpx rather than the default C++ compiler/linker on Linux
-# and icx-cl on Windows
-if(UNIX)
-    set(CMAKE_CXX_COMPILER icpx)
-else() # Windows
-    include (CMakeForceCompiler)
-    CMAKE_FORCE_CXX_COMPILER (icx-cl IntelDPCPP)
-    include (Platform/Windows-Clang)
-endif()
+set(CMAKE_CXX_COMPILER ahls)
 
 cmake_minimum_required (VERSION 3.7.2)
 
@@ -44,6 +36,12 @@ else()
         message(STATUS "The selected target ${FPGA_DEVICE} is assumed to be an FPGA part number, so the IS_BSP macro will not be passed to your C++ code.")
         message(STATUS "If the target is actually a BSP, run cmake with -DIS_BSP=1 to pass the IS_BSP macro to your C++ code.")
     endif()
+endif()
+
+# Agilex 3 devices are too small to fit this design
+string(TOLOWER ${FPGA_DEVICE} FPGA_DEVICE_NAME)
+if(FPGA_DEVICE_NAME MATCHES ".*agilex3.*")
+    message(FATAL_ERROR "The design is currently too large to fit on Agilex 3 devices.")
 endif()
 
 if(NOT DEFINED FIXED_ITERATIONS)
@@ -93,15 +91,8 @@ message(STATUS "Additional USER_LIB_PATHS=${USER_LIB_PATHS}")
 link_libraries(${USER_LIBS})
 message(STATUS "Additional USER_LIBS=${USER_LIBS}")
 
-if(WIN32)
-    # add qactypes for Windows
-    set(QACTYPES "-Qactypes")
-    # This is a Windows-specific flag that enables exception handling in host code
-    set(WIN_FLAG "/EHsc")
-else()
-    # add qactypes for Linux
-    set(QACTYPES "-qactypes")
-endif()
+# add qactypes
+set(QACTYPES "")
 
 string(TOLOWER "${CMAKE_BUILD_TYPE}" LOWER_BUILD_TYPE)
 if(LOWER_BUILD_TYPE MATCHES debug)
@@ -119,8 +110,8 @@ if(WIN32)
     set(EXT ".exe")
 endif()
 
-set(COMMON_COMPILE_FLAGS -fintelfpga -Wall ${WIN_FLAG} ${QACTYPES} ${USER_FLAGS})
-set(COMMON_LINK_FLAGS -fintelfpga ${QACTYPES} ${USER_FLAGS})
+set(COMMON_COMPILE_FLAGS -Wall ${WIN_FLAG} ${QACTYPES} ${USER_FLAGS})
+set(COMMON_LINK_FLAGS ${QACTYPES} ${USER_FLAGS})
 
 # A SYCL ahead-of-time (AoT) compile processes the device code in two stages.
 # 1. The "compile" stage compiles the device code to an intermediate
@@ -165,7 +156,7 @@ target_compile_options(${REPORT_TARGET} PRIVATE ${REPORT_COMPILE_FLAGS})
 
 # The report target does not need the QACTYPES flag at link stage
 set(MODIFIED_COMMON_LINK_FLAGS_REPORT ${COMMON_LINK_FLAGS})
-list(REMOVE_ITEM MODIFIED_COMMON_LINK_FLAGS_REPORT ${QACTYPES})
+
 
 target_link_libraries(${REPORT_TARGET} ${MODIFIED_COMMON_LINK_FLAGS_REPORT})
 target_link_libraries(${REPORT_TARGET} ${REPORT_LINK_FLAGS})
@@ -282,11 +273,6 @@ function(getCompileCommands common_compile_flags special_compile_flags common_li
     set(LINK_COMMAND "${LINK_COMMAND}" PARENT_SCOPE)
 
 endfunction()
-
-# Windows executable is going to have the .exe extension
-if(WIN32)
-    set(EXECUTABLE_EXTENSION ".exe")
-endif()
 
 # Display the compile instructions in the emulation flow
 getCompileCommands("${COMMON_COMPILE_FLAGS}" "${EMULATOR_COMPILE_FLAGS}" "${COMMON_LINK_FLAGS}" "${EMULATOR_LINK_FLAGS}" "${EMULATOR_TARGET}" "${EMULATOR_OUTPUT_NAME}${EXECUTABLE_EXTENSION}")

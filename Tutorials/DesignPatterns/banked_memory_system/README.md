@@ -4,7 +4,7 @@ This code sample demonstrates how to optimize a banked memory system.
 
 ## Purpose
 
-When compiling your design for FPGA architectures, the Intel® oneAPI DPC++/C++ Compiler can choose to implement your variables as registers, or as block memories. The details of this decision are better defined in the [Memory System code sample](/Tutorials/Features/memory_attributes). However, an ill-formed memory layout can lead to negative impact on your system performance. 
+When compiling your design for FPGA architectures, the HLS IP Gen Compiler can choose to implement your variables as registers, or as block memories. The details of this decision are better defined in the [Memory System code sample](/Tutorials/Features/memory_attributes). However, an ill-formed memory layout can lead to negative impact on your system performance. 
 
 This tutorial teaches you:
 
@@ -34,24 +34,24 @@ flowchart LR
 ```
 
 Find more information about how to navigate this part of the code samples in the [FPGA top-level README.md](/README.md).
-You can also find more information about [troubleshooting build errors](/README.md#troubleshooting), [running the sample on the Intel® DevCloud](/README.md#build-and-run-the-samples-on-intel-devcloud-optional), [links to selected documentation](/README.md#documentation), etc.
+You can also find more information about [troubleshooting build errors](/README.md#troubleshooting), [links to selected documentation](/README.md#documentation), etc.
 
 | Optimized for      | Description
 |:---                |:---
-| OS                 | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10 <br> Windows Server* 2019
-| Hardware           | Agilex™ 7, Agilex™ 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs
-| Software           | Intel® oneAPI DPC++/C++ Compiler
+| OS                 | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware           | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
+| Software           | HLS IP Gen Compiler
 
-> **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> For using the simulator flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> For using the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
 >
-> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
+> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 ## Key Implementation Details
 
@@ -93,7 +93,7 @@ The desired memory access pattern in `NaiveKernel` is illustrated in the followi
 
 ![Naive Kernel Memory Access Pattern](./assets/access_pattern_naive.gif)
 
-In the `NaiveKernel`, the first array dimension (row) is accessed in an unrolled loop. In this way, the kernel tries to access all five elements in one column of the buffer, namely `array2d[0][col]` to `array2d[4][col]`. As a result, there are 4 loads and 5 stores to the memory system in each loop iteration, and since the initiation interval is 1, they **should** happen in a single clock cycle. Note that though the second `row` loop, which prepares the output to the `OutStreamNaiveKernel` pipe, also performs loads on each bank, since the values to be loaded are already accessed in the previous loop, these loads are shared. The [kernel memory viewer report](https://www.intel.com/content/www/us/en/docs/oneapi-fpga-add-on/developer-guide/current/kernel-memory-viewer.html) shows that the memory system for `array2d` has 8 banks. This report shows the stallable load-store units (LSUs) that prevent the 4 loads and 5 stores from happening in a single clock cycle, and explains why the compiler decided to insert them.
+In the `NaiveKernel`, the first array dimension (row) is accessed in an unrolled loop. In this way, the kernel tries to access all five elements in one column of the buffer, namely `array2d[0][col]` to `array2d[4][col]`. As a result, there are 4 loads and 5 stores to the memory system in each loop iteration, and since the initiation interval is 1, they **should** happen in a single clock cycle. Note that though the second `row` loop, which prepares the output to the `OutStreamNaiveKernel` pipe, also performs loads on each bank, since the values to be loaded are already accessed in the previous loop, these loads are shared. The [kernel memory viewer report](https://docs.altera.com/r/docs/m615048/current/hls-ip-gen-handbook/8.1.5-kernel-memory-viewer) shows that the memory system for `array2d` has 8 banks. This report shows the stallable load-store units (LSUs) that prevent the 4 loads and 5 stores from happening in a single clock cycle, and explains why the compiler decided to insert them.
 
 ![Stallable Arbitration Node](./assets/stallable_arbitration_node.png)
 
@@ -172,29 +172,20 @@ Subsequently, since we have made the LSU non-stallable, we expect no stalls in t
 
 ## Building the `banked_memory_system` Tutorial
 
-> **Note**: When working with the command-line interface (CLI), you should configure the oneAPI toolkits using environment variables.
-> Set up your CLI environment by sourcing the `setvars` script located in the root of your oneAPI installation every time you open a new terminal window.
+> **Note**: When working with the command-line interface (CLI), you should configure the HLS IP Gen Compiler using environment variables.
+> Set up your CLI environment by sourcing the `fpgavars` script located in the root of your HLS IP Gen Compiler installation every time you open a new terminal window.
 > This practice ensures that your compiler, libraries, and tools are ready for development.
 >
 > Linux*:
-> - For system wide installations: `. /opt/intel/oneapi/setvars.sh`
-> - For private installations: ` . ~/intel/oneapi/setvars.sh`
-> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/setvars.sh ; exec csh'`
->
-> Windows*:
-> - `C:\Program Files(x86)\Intel\oneAPI\setvars.bat`
-> - Windows PowerShell*, use the following command: `cmd.exe "/K" '"C:\Program Files (x86)\Intel\oneAPI\setvars.bat" && powershell'`
->
-> For more information on configuring environment variables, see [Use the setvars Script with Linux* or macOS*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-programming-guide/top/oneapi-development-environment-setup/use-the-setvars-script-with-linux-or-macos.html) or [Use the setvars Script with Windows*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-programming-guide/top/oneapi-development-environment-setup/use-the-setvars-script-with-windows.html).
-
-Use these commands to run the design, depending on your OS.
+> - `source <install-dir>/fpgavars.sh`
+> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/fpgavars.sh ; exec csh'`
 
 ### On a Linux* System
 This design uses CMake to generate a build script for GNU/make.
 
 1. Change to the sample directory.
 
-2. Build the program for Intel® Agilex® 7 device family, which is the default.
+2. Build the program for Agilex® 7 device family, which is the default.
 
    ```
    mkdir build
@@ -202,7 +193,7 @@ This design uses CMake to generate a build script for GNU/make.
    cmake ..
    ```
 
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    > ```
    > cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
    > ```
@@ -228,64 +219,6 @@ This design uses CMake to generate a build script for GNU/make.
        make fpga
        ```
 
-### On Windows*
-
-1. Change to the sample directory.
-
-2. Build the program for the Intel® Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" ..
-   ```
-   > **Note**: You can change the default target by using the command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
-   >  ```
-   >
-   > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<board-support-package>:<board-variant>
-   >  ```
-  > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-  > ```
-  > $> aoc -list-boards
-  > Board list:
-  >   <board-variant>
-  >      Board Package: <path/to/board/package>/board-support-package
-  >   <board-variant2>
-  >      Board Package: <path/to/board/package>/board-support-package
-  > ```
-   >
-   > You will only be able to run an executable on the FPGA if you specified a BSP.
-
-3. Compile the design. (The provided targets match the recommended development flow.)
-
-   1. Compile for emulation (fast compile time, targets emulated FPGA device):
-      ```
-      nmake fpga_emu
-      ```
-   2. Generate the optimization report:
-      ```
-      nmake report
-      ```
-      The report resides at `banked_mem.report.prj.a/reports/report.html`. See the [*Reading the Reports*](#reading-the-reports) section below to understand the report contents.
-
-   3. Compile for simulation (fast compile time, targets simulated FPGA device, reduced data size):
-      ```
-      nmake fpga_sim
-      ```
-   4. Compile for FPGA hardware (longer compile time, targets FPGA device):
-      ```
-      nmake fpga
-      ```
-
-> **Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your 'build' directory in a shorter path, for example c:\samples\build.  You can then run cmake from that directory, and provide cmake with the full path to your sample directory, for example:
->
->  ```
-  > C:\samples\build> cmake -G "NMake Makefiles" C:\long\path\to\code\sample\CMakeLists.txt
->  ```
-
 ## Run the `fpga_template` Executable
 
 ### On Linux
@@ -297,22 +230,10 @@ This design uses CMake to generate a build script for GNU/make.
    ```
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./banked_mem.fpga_sim
    ```
-### On Windows
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
-   ```
-   banked_mem.fpga_emu.exe
-   ```
-2. Run the sample on the FPGA simulator device.
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   banked_mem.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
-   ```
-
 ## Example Output
 
 ```
-Running on device: Intel(R) FPGA Emulation Device
+Running on device: FPGA Emulation Device
 Launch kernel
 Checking output
 Verification PASSED.

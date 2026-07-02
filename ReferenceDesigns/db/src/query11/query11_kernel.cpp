@@ -39,8 +39,8 @@ struct GreaterThan {
 };
 
 // input and output pipes for the sorter
-using SortInPipe = pipe<class SortInputPipe, SortType>;
-using SortOutPipe = pipe<class SortOutputPipe, SortType>;
+using SortInPipe = altera_exp::pipe<class SortInputPipe, SortType>;
+using SortOutPipe = altera_exp::pipe<class SortOutputPipe, SortType>;
 ///////////////////////////////////////////////////////////////////////////////
 
 bool SubmitQuery11(queue& q, Database& dbinfo, std::string& nation,

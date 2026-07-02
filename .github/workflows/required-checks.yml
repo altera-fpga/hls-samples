@@ -1,0 +1,224 @@
+name: Repository Checks
+
+# This is a single workflow to house all checks
+# Configuration to this file is done via required-checks.config
+
+on:
+  pull_request:
+    types:
+    - opened
+    - reopened
+    - synchronize
+    - ready_for_review
+    - labeled
+    - unlabeled
+  pull_request_review:
+# To future maintainers: as of 2023-04-05 (Stella commit 7deb33c38d45a59f70b8b4209ea06da0daa0d0d2), the only jobs in this workflow that need `labeled` and `unlabeled` are the three for: finding reviewers, overriding on label, and accepting when the review mechanism is disabled.
+# We decided not to exclude the other jobs in the workflow from running when labeled/unlabeled because basically nobody labels or unlabels PRs right now. It seemed like unnecessary work at the time, to solve a problem which didn't exist.
+# If the time has come when people are using PR labels more often and resource usage is a problem, you can exclude all but those three jobs from running on labeled/unlabeled.
+
+jobs:
+  configuration:
+    name: Read Configuration
+    runs-on: [ self-hosted, static, linux, "site-SC" ]
+    outputs:
+      config: ${{ steps.read-config.outputs.config }}
+    steps:
+    - uses: actions/checkout@v3
+      name: check out current repo
+    - id: read-config
+      name: Read Configuration
+      shell: "arc shell rocket -- bash {0}"
+      run: |
+        CONFIG=$(yq e '.' .github/workflows/required-checks.config -o=json | tr '\n' ' ')
+        echo "config=$CONFIG" >> $GITHUB_OUTPUT
+        echo "set-output name=config::$CONFIG"
+
+  validate-codeowners:
+    name: Validate Codeowners
+    runs-on: [ self-hosted, static, linux, "site-SC" ]
+    needs:
+    - configuration
+    if: ${{ fromJSON(needs.configuration.outputs.config).validate-codeowners.enabled }}
+    steps:
+
+    - name: checkout codeowners-validator action repo
+      uses: actions/checkout@v3
+      with:
+        repository: altera-sandbox/applications.fpga.oneapi.internal.github-actions
+        token: ${{ secrets.SYS_HLD_TOKEN }}
+        path: .github/internal/actions
+        persist-credentials: false
+
+    - name: call codeowners-validator action
+      uses: ./.github/internal/actions/codeowners-validator
+      with:
+        github_access_token: ${{ secrets.SYS_HLD_TOKEN }}
+        # Disable the unowned check until I've updated CODEOWNERS for this repo.
+        experimental_checks: ${{ fromJSON(needs.configuration.outputs.config).validate-codeowners.experimental_checks }}
+
+  lfs-warning:
+    name: LFS warning
+    runs-on: [self-hosted, static, linux, "site-SC"]
+    needs:
+    - configuration
+    if: ${{ fromJSON(needs.configuration.outputs.config).lfs-warning.enabled }}
+    steps:
+    - name: Get Repo Code
+      id: get_repo_code
+      uses: actions/checkout@v3
+    - name: Get Files With Bad SHA
+      id: bad_file_getter
+      env:
+        PR_NUMBER: ${{ github.event.number }}
+      shell: "arc shell jq -- bash {0}"
+      run: |
+        CHANGED_FILE_DATA=$(gh api https://api.github.com/repos/{owner}/{repo}/pulls/$PR_NUMBER/files)
+        FILES=$(echo "$CHANGED_FILE_DATA" | jq -r ".[] | select(.sha == null) | .filename")
+        echo "files<<EOF" >> $GITHUB_OUTPUT
+        echo "$FILES" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+    - name: Checkout Actions Repo
+      uses: actions/checkout@v3
+      with:
+        repository: altera-innersource/applications.fpga.oneapi.external.actionsdesk-lfs-warning
+        ref: master
+        token: ${{ secrets.SYS_HLD_TOKEN }}
+        path: .github/external/actions/actionsdesk-lfs-warning
+    - name: LFS Warning
+      id: lfs_warning
+      uses: ./.github/external/actions/actionsdesk-lfs-warning
+      with:
+        filesizelimit: 5MB
+        token: ${{ secrets.SYS_HLD_TOKEN }}
+        exclusionPatterns: |
+          ${{ steps.bad_file_getter.outputs.files }}
+
+  py-lint:
+    name: Python Linting
+    runs-on: [self-hosted, static, linux, "site-SC"]
+    needs:
+    - configuration
+    if: ${{ fromJSON(needs.configuration.outputs.config).py-lint.enabled }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check formatting with Black
+        shell: arc shell python/3.10.5 -- bash {0}
+        if: ${{ fromJSON(needs.configuration.outputs.config).py-lint.black-enabled }}
+        run: |
+          black --version
+          black . --check --diff
+      - name: Lint with flake8
+        shell: arc shell python/3.10.5 -- bash {0}
+        if: ${{ fromJSON(needs.configuration.outputs.config).py-lint.flake8-enabled }}
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --statistics
+      - name: Lint with pylint
+        shell: arc shell python/3.10.5 -- bash {0}
+        if: ${{ fromJSON(needs.configuration.outputs.config).py-lint.pylint-enabled }}
+        run: |
+          pylint --version
+          pylint $(git ls-files '*.py')
+
+  get-reviewers:
+    name: Get Code Reviewers
+    runs-on: [ self-hosted, static, linux, "site-SC" ]
+    needs:
+    - configuration
+    if: ${{ fromJSON(needs.configuration.outputs.config).get-reviewers.enabled && ! github.event.pull_request.draft }}
+    steps:
+      - name: Clone This Repo
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.SYS_HLD_TOKEN }}
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Checkout Actions Repo
+        uses: actions/checkout@v3
+        with:
+          repository: altera-innersource/applications.fpga.oneapi.internal.github-actions
+          token: ${{ secrets.SYS_HLD_TOKEN }}
+          path: .github/internal/actions
+      - name: Get Reviewers
+        id: get-reviewers
+        uses: ./.github/internal/actions/get-reviewers
+        with:
+          token: ${{ secrets.SYS_HLD_TOKEN }}
+          actions_output_all_owners: true
+      - name: Grant Pass Status for Check Reviews if Not Enabled or Review-Override
+        if: ${{ ! fromJSON(needs.configuration.outputs.config).check-reviews.enabled || contains( github.event.pull_request.labels.*.name, 'review-override') }}
+        run: |
+          set -e
+          DESCRIPTION='automatic approval – check-reviews is not enabled for this repo'
+          if [ '${{ fromJSON(needs.configuration.outputs.config).check-reviews.enabled }}' == true ]; then
+            DESCRIPTION='overridden by review-override label'
+          fi
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            /repos/$GITHUB_REPOSITORY/statuses/${{ github.event.pull_request.head.sha }} \
+            -f state='success' \
+            -f description="$DESCRIPTION" \
+            -f context='Required Code Reviews Approved'
+      - name: Check if all latest reviews are approved
+        uses: ./.github/internal/actions/check-reviews
+        if: ${{ fromJSON(needs.configuration.outputs.config).check-reviews.enabled && ! contains( github.event.pull_request.labels.*.name, 'review-override') }}
+        with:
+          token: ${{ secrets.SYS_HLD_TOKEN }}
+          all_owners: ${{ steps.get-reviewers.outputs.all_owners }}
+
+  repo-specific:
+    name: Repo Specific Checks
+    needs:
+    - configuration
+    if: ${{ fromJSON(needs.configuration.outputs.config).repo-specific.enabled }}
+    uses: ./.github/workflows/repo-specific-checks.yml
+    secrets: inherit
+
+  summary:
+    name: Required Checks
+    runs-on: [ self-hosted, static, linux, "site-SC" ]
+    needs:
+    - validate-codeowners
+    - lfs-warning
+    - py-lint
+    - get-reviewers
+    - repo-specific
+    if: always()
+    steps:
+    - name: Success
+      env:
+        NEEDS: ${{ toJSON(needs) }}
+      run: |
+        echo "$NEEDS"
+        UNSUCCESSFUL_JOBS=$(echo "$NEEDS" | /usr/intel/bin/jq -j 'to_entries | map(select(.value.result != "success" and .value.result != "skipped")) | map("\(.key) ") | .[]' -)
+        if [ -n "$UNSUCCESSFUL_JOBS" ]; then
+          echo "Some checks failed: ${UNSUCCESSFUL_JOBS}"
+          exit 1
+        fi
+        echo "All required checks passed."
+        exit 0
+
+  stella-ui:
+    name: Stella UI
+    runs-on: [ self-hosted, static, "site-SC" ]
+    needs:
+      - summary
+    # This job must run even if the other ones fail.
+    if: always()
+    concurrency: 
+      group: telescope-${{ github.head_ref }}-${{ github.event.number }}
+    steps:
+      - name: Checkout Actions Repo
+        uses: actions/checkout@v3
+        with:
+          repository: altera-innersource/applications.fpga.oneapi.internal.github-actions
+          token: ${{ secrets.SYS_HLD_TOKEN }}
+          path: .github/internal/actions
+
+      - name: Update Stella UI
+        uses: ./.github/internal/actions/update-stella-ui
+        with:
+          token: ${{ secrets.SYS_HLD_TOKEN }}
+          mongodb_connection_string: ${{ secrets.MONGODB_CONNECTION_STRING }}

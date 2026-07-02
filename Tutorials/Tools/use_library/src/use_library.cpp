@@ -1,11 +1,10 @@
 //==============================================================
-// Copyright Intel Corporation
+// Copyright Altera Corporation. All rights reserved.
 //
 // SPDX-License-Identifier: MIT
 // =============================================================
-#include <sycl/ext/intel/ac_types/ac_int.hpp>
-// oneAPI headers
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/ac_types/ac_int.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "lib_rtl.hpp"
@@ -23,18 +22,18 @@ class KernelComputeRTL;
 // IDPipeA and IDPipeB will be written to by the host, and then read by the kernel (device)
 // IDPipeC will be written to by the kernel (device), and then read by the host
 class IDPipeA;
-using InputPipeA = sycl::ext::intel::experimental::pipe<IDPipeA, uint32_t>;
+using InputPipeA = sycl::ext::altera::experimental::pipe<IDPipeA, uint32_t>;
 class IDPipeB;
-using InputPipeB = sycl::ext::intel::experimental::pipe<IDPipeB, uint32_t>;
+using InputPipeB = sycl::ext::altera::experimental::pipe<IDPipeB, uint32_t>;
 class IDPipeC;
-using OutputPipeC = sycl::ext::intel::experimental::pipe<IDPipeC, uint64_t>;
+using OutputPipeC = sycl::ext::altera::experimental::pipe<IDPipeC, uint64_t>;
 
 class IDPipeD;
-using InputPipeD = sycl::ext::intel::experimental::pipe<IDPipeD, uint32_t>;
+using InputPipeD = sycl::ext::altera::experimental::pipe<IDPipeD, uint32_t>;
 class IDPipeE;
-using InputPipeE = sycl::ext::intel::experimental::pipe<IDPipeE, uint32_t>;
+using InputPipeE = sycl::ext::altera::experimental::pipe<IDPipeE, uint32_t>;
 class IDPipeF;
-using OutputPipeF = sycl::ext::intel::experimental::pipe<IDPipeF, uint64_t>;
+using OutputPipeF = sycl::ext::altera::experimental::pipe<IDPipeF, uint64_t>;
 
 // This kernel computes multiplier result by using the C++ '*' operator
 template <typename PipeIn1, typename PipeIn2, typename PipeOut>
@@ -44,8 +43,8 @@ struct NativeMult27x27 {
   // overhead
   auto get(sycl::ext::oneapi::experimental::properties_tag) {
     return sycl::ext::oneapi::experimental::properties{
-        sycl::ext::intel::experimental::streaming_interface_accept_downstream_stall, 
-        sycl::ext::intel::experimental::pipelined<1>};
+        sycl::ext::altera::experimental::streaming_interface_accept_downstream_stall, 
+        sycl::ext::altera::experimental::pipelined<1>};
   }
   
    void operator()() const {
@@ -64,8 +63,8 @@ struct RtlMult27x27 {
   // overhead
   auto get(sycl::ext::oneapi::experimental::properties_tag) {
     return sycl::ext::oneapi::experimental::properties{
-        sycl::ext::intel::experimental::streaming_interface_accept_downstream_stall, 
-        sycl::ext::intel::experimental::pipelined<1>};
+        sycl::ext::altera::experimental::streaming_interface_accept_downstream_stall, 
+        sycl::ext::altera::experimental::pipelined<1>};
   }
   
   void operator()() const {
@@ -84,11 +83,11 @@ int main() {
 
   // Select the FPGA emulator (CPU), FPGA simulator, or FPGA device
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   try {
@@ -124,9 +123,6 @@ int main() {
 
     // Most likely the runtime couldn't find FPGA hardware!
     if (e.code().value() == CL_DEVICE_NOT_FOUND) {
-      std::cerr << "If you are targeting an FPGA, please ensure that your "
-                   "system has a correctly configured FPGA board.\n";
-      std::cerr << "Run sys_check in the oneAPI root directory to verify.\n";
       std::cerr << "If you are targeting the FPGA emulator, compile with "
                    "-DFPGA_EMULATOR.\n";
     }

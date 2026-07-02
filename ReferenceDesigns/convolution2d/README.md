@@ -1,6 +1,6 @@
 # 2D Image Convolution
 
-This project demonstrates how to use SYCL HLS to create a 2D Convolution IP that can be used in your Intel® Quartus® Prime projects. 
+This project demonstrates how to use SYCL HLS to create a 2D Convolution IP that can be used in your Quartus® Prime projects. 
 
 ## Purpose
 
@@ -39,40 +39,20 @@ You can also find more information about [troubleshooting build errors](/README.
 
 | Optimized for      | Description
 |:---                |:---
-| OS                 | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware           | Intel® Agilex® 7, Arria® 10, and Stratix® 10 FPGAs
-| Software           | Intel® oneAPI DPC++/C++ Compiler
+| OS                 | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 8/9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware           | Agilex® 5, Agilex® 7 and Arria® 10 FPGAs
+| Software           | HLS IP Gen Compiler
 
-> **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> For using the simulator flow, Intel® Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> For using the simulator flow, Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition must be installed and accessible through your PATH.
 >
-> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
-
-### Performance
-
-Performance results are based on testing conducted with a pre-release version of oneAPI 2024.2, with released Intel® Quartus® Prime Pro Edition 24.1 software. Testing was conducted May 25, 2024. Area and f<sub>MAX</sub> estimates are averaged across 8 seeds. 
-* These area estimates are ONLY for the `Convolution2d` kernel, and do not include the `RGB2Grey` or `Grey2RGB` kernels. You can compile the design with only the `Convolution2d` kernel by compiling with the `-DTEST_CONV2D_ISOLATED=1` compiler flag, or by adding `#define TEST_CONV2D_ISOLATED 1` in `src/main.cpp`.
-* These estimates were achieved by setting a 600 MHz clock target for the `Agilex7` device. You can set the clock target by adding the `-Xsclock=600MHz` flag to CMakeLists.txt, or by passing it to the `cmake` command as shown in [Building the `convolution2d` Tutorial](#building-the-convolution2d-tutorial).
-* The reported fMAX is the 'restricted fMAX' as reported by Intel® Quartus® Prime.
-
-> **Note**: Refer to the [Performance Disclaimers](/README.md#performance-disclaimers) section for important performance information.
-
-#### Intel Agilex® 7 FPGA
-
-| Parallel Pixels | Window Dimensions | Coefficient Type | Input Type     | f<sub>MAX</sub> (MHz) | ALMs  | DSP blocks | M20K Block RAM
-|---              |---                |---               |---             |---                    |---    |---         |---
-| 1               | 3x3               | `float`          | 10-bit Integer | 639.8                 | 3026  |   9        | 19
-| 2               | 3x3               | `float`          | 10-bit Integer | 639.8                 | 4618  |  18        | 19
-| 4               | 3x3               | `float`          | 10-bit Integer | 639.8                 | 7677  |  36        | 18
-| 8               | 3x3               | `float`          | 10-bit Integer | 639.8                 | 14410 |  72        | 19
-
-> **Note**: This design uses a relatively large number of ALM resources because of the floating-point conversions in `ConvolutionFunction()` in `src/convolution_kernel.hpp`. The coefficients for this design were specified as floating-point for maximal flexibility in coefficient values, but the enthusiastic user is encouraged to convert this function to fixed-point using the `ac_fixed` types, as described in [this sample](/Tutorials/Features/ac_fixed).
+> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 ## Key Implementation Details
 
@@ -88,7 +68,7 @@ The `LineBuffer2d` class lets you specify the number of concurrent pixels your d
 
 ![](assets/FIR2d_pip2.svg)
 
-You can instantiate the `LineBuffer2d` in a oneAPI kernel. The example below demonstrates a kernel that parses data indefinitely, but uses 'start-of-packet' and 'end-of-packet' sideband signals to indicate where new frames start. These signals are communicated to the `LineBuffer2d` instance in the call to the `Filter()`.
+You can instantiate the `LineBuffer2d` in a kernel. The example below demonstrates a kernel that parses data indefinitely, but uses 'start-of-packet' and 'end-of-packet' sideband signals to indicate where new frames start. These signals are communicated to the `LineBuffer2d` instance in the call to the `Filter()`.
 
 ```c++
 #include "linebuffer2d.hpp"
@@ -248,7 +228,7 @@ For convenience, you may use the header file included in `quartus_project_files/
 
 In this design, pipes are used to transfer data between kernels, and between the design and the testbench (host code). An aggregate type (`std::array`) is used to allow multiple pixels to transfer in one clock cycle. To help with this, this reference design uses the `WriteFrameToPipe()` and `ReadFrameFromPipe()` functions, which are defined in `include/vvp_stream_adapters.hpp`. 
 
-`WriteFrameToPipe()` writes the contents of an array of pixels *into* a SYCL pipe that can be consumed by a oneAPI kernel. It detects the parameterization of the aggregate type used by the pipe, and groups pixels together accordingly. It also generates start-of-packet and end-of-packet sideband signals like a VVP FPGA IP would, so you can test that your IP can interface with other IPs that use the VVP standard. 
+`WriteFrameToPipe()` writes the contents of an array of pixels *into* a SYCL pipe that can be consumed by a kernel. It detects the parameterization of the aggregate type used by the pipe, and groups pixels together accordingly. It also generates start-of-packet and end-of-packet sideband signals like a VVP FPGA IP would, so you can test that your IP can interface with other IPs that use the VVP standard. 
 
 `ReadFrameFromPipe()` consumes groups of pixels from a SYCL pipe and writes the pixels sequentially to a block of memory. Like `WriteFrameToPipe()`, this function also detects the parameterization of the aggregate type used by the pipe, and groups pixels together accordingly. It parses start-of-packet and end-of-packet sideband signals like a VVP FPGA IP would, and informs you of any errors via its output arguments. If this function detects an unexpected start-of-packet signal, it will print a note and write the new frame over the previous partial frame. It will return once it has read a complete frame, so if your design does not completely output a frame, the `ReadFrameFromPipe()` function will hang. 
 
@@ -313,22 +293,13 @@ bool TestTinyFrameOnStencil(sycl::queue q, bool print_debug_info) {
 
 ## Building the `convolution2d` Tutorial
 
-> **Note**: When working with the command-line interface (CLI), you should configure the oneAPI toolkits using environment variables.
-> Set up your CLI environment by sourcing the `setvars` script located in the root of your oneAPI installation every time you open a new terminal window.
+> **Note**: When working with the command-line interface (CLI), you should configure the HLS IP Gen Compiler using environment variables.
+> Set up your CLI environment by sourcing the `fpgavars` script located in the root of your HLS IP Gen Compiler installation every time you open a new terminal window.
 > This practice ensures that your compiler, libraries, and tools are ready for development.
 >
 > Linux*:
-> - For system wide installations: `. /opt/intel/oneapi/setvars.sh`
-> - For private installations: ` . ~/intel/oneapi/setvars.sh`
-> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/setvars.sh ; exec csh'`
->
-> Windows*:
-> - `C:\Program Files(x86)\Intel\oneAPI\setvars.bat`
-> - Windows PowerShell*, use the following command: `cmd.exe "/K" '"C:\Program Files (x86)\Intel\oneAPI\setvars.bat" && powershell'`
->
-> For more information on configuring environment variables, see [Use the setvars Script with Linux* or macOS*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-programming-guide/top/oneapi-development-environment-setup/use-the-setvars-script-with-linux-or-macos.html) or [Use the setvars Script with Windows*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-programming-guide/top/oneapi-development-environment-setup/use-the-setvars-script-with-windows.html).
-
-Use these commands to run the design, depending on your OS.
+> - `source <install-dir>/fpgavars.sh`
+> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/fpgavars.sh ; exec csh'`
 
 ### On a Linux* System
 This design uses CMake to generate a build script for GNU/make.
@@ -343,7 +314,7 @@ This design uses CMake to generate a build script for GNU/make.
    cmake ..
    ```
 
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    > ```
    > cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
    > ```
@@ -363,42 +334,8 @@ This design uses CMake to generate a build script for GNU/make.
    | FPGA Simulator      | `make fpga_sim`
    | FPGA Hardware       | `nmake fpga`
 
-### On a Windows* System
-This design uses CMake to generate a build script for  `nmake`.
+>**Note**: Since this design uses host pipes, make sure that the emulator pipe depth behaviour is as intended. Set the environment variable `CL_CONFIG_CHANNEL_DEPTH_EMULATION_MODE` to `ignore-depth` for this design so that multiple writes can happen to the pipe without first having the contents read.
 
-1. Change to the sample directory.
-
-2. Configure the build system for the Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" ..
-   ```
-
-   > **Note**: You can change the default target by using the command:
-   > ```
-   > cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
-   > ```
-
-   > **Note**: The performance table above was produced by compiling with the `-DTEST_CONV2D_ISOLATED=1` compiler flag.
-   > ```
-   > cmake -G "NMake Makefiles" .. -DTEST_CONV2D_ISOLATED=1 -DUSER_FPGA_FLAGS="-Xsclock=600MHz"
-   > ```
-
-3. Compile the design through the generated `Makefile`. The following build targets are provided, matching the recommended development flow:
-
-   | Compilation Type    | Command (Windows)
-   |:---                 |:---
-   | FPGA Emulator       | `nmake fpga_emu`
-   | Optimization Report | `nmake report`
-   | FPGA Simulator      | `nmake fpga_sim`
-   | FPGA Hardware       | `nmake fpga`
-
-   > **Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your 'build' directory in a shorter path, for example c:\samples\build.  You can then run cmake from that directory, and provide cmake with the full path to your sample directory, for example:
->
->  ```
-  > C:\samples\build> cmake -G "NMake Makefiles" C:\long\path\to\code\sample\CMakeLists.txt
->  ```
 ## Run the `convolution2d` Executable
 
 ### On Linux
@@ -410,22 +347,10 @@ This design uses CMake to generate a build script for  `nmake`.
    ```
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./conv.fpga_sim
    ```
-### On Windows
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
-   ```
-   conv.fpga_emu.exe
-   ```
-2. Run the sample on the FPGA simulator device.
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   conv.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
-   ```
-
 ## Example Output
 
 ```
-Running on device: Intel(R) FPGA Emulation Device
+Running on device: Altera(R) FPGA Emulation Device
 
 **********************************
 Check a sequence of good frames... 

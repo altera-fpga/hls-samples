@@ -38,13 +38,13 @@ public:
   // Customizing mmhost only supported when targetting an FPGA part/family
   sycl::ext::oneapi::experimental::annotated_arg<TT *, 
       decltype(sycl::ext::oneapi::experimental::properties{
-          sycl::ext::intel::experimental::awidth<28>,
-          sycl::ext::intel::experimental::buffer_location<aspace>,
-          sycl::ext::intel::experimental::dwidth<datawidth>,
-          sycl::ext::intel::experimental::latency<0>,
-          sycl::ext::intel::experimental::maxburst<1>,
-          sycl::ext::intel::experimental::read_write_mode_read,
-          sycl::ext::intel::experimental::wait_request_requested})>
+          sycl::ext::altera::experimental::awidth<28>,
+          sycl::ext::altera::experimental::buffer_location<aspace>,
+          sycl::ext::altera::experimental::dwidth<datawidth>,
+          sycl::ext::altera::experimental::latency<0>,
+          sycl::ext::altera::experimental::maxburst<1>,
+          sycl::ext::altera::experimental::read_write_mode_read,
+          sycl::ext::altera::experimental::wait_request_requested})>
 #else
   TT *
 #endif
@@ -80,7 +80,7 @@ public:
     // the device.
     // Knowing this, the compiler won't generate hardware to potentially get
     // data from the host.
-    sycl::ext::intel::device_ptr<TT> a_ptr_located(a_ptr);
+    sycl::ext::altera::device_ptr<TT> a_ptr_located(a_ptr);
 #else
     // Device pointers are not supported when targeting an FPGA family/part
     TT *a_ptr_located(a_ptr);
@@ -115,9 +115,9 @@ public:
         });
         // Store the "elems_per_ddr_access" elements into on-chip memory
         fpga_tools::UnrolledLoop<kItersPerRowCol>([&](auto k) {
-          write_idx = sycl::ext::intel::fpga_reg(write_idx);
+          write_idx = sycl::ext::altera::fpga_reg(write_idx);
           fpga_tools::UnrolledLoop<elems_per_ddr_access>([&](auto t) {
-            load_reg[t] = sycl::ext::intel::fpga_reg(load_reg[t]);
+            load_reg[t] = sycl::ext::altera::fpga_reg(load_reg[t]);
             if constexpr ((k * elems_per_ddr_access + t) < rows_a) {
               if (write_idx == k) {
                 mem[mat][i / kItersPerRowCol][k * elems_per_ddr_access + t] =
@@ -139,7 +139,7 @@ public:
           int block = i / (kBlocksB * common);
           bool get[kBlocksA];
           fpga_tools::UnrolledLoop<kBlocksA>([&](auto k) {
-            block = sycl::ext::intel::fpga_reg(block);
+            block = sycl::ext::altera::fpga_reg(block);
             get[k] = block == k;
           });
           // Write one column of a matrix tile to the pipe
@@ -148,7 +148,7 @@ public:
             fpga_tools::UnrolledLoop<tile_a>([&](auto t) {
               pipe_write.template get<t>() =
                   get[k] ? mem[mat][i % common][k * tile_a + t]
-                         : sycl::ext::intel::fpga_reg(
+                         : sycl::ext::altera::fpga_reg(
                                pipe_write.template get<t>());
             });
           });
@@ -194,13 +194,13 @@ public:
   // Customizing mmhost only supported when targetting an FPGA part/family
   sycl::ext::oneapi::experimental::annotated_arg<TT *, 
       decltype(sycl::ext::oneapi::experimental::properties{
-          sycl::ext::intel::experimental::awidth<28>,
-          sycl::ext::intel::experimental::buffer_location<aspace>,
-          sycl::ext::intel::experimental::dwidth<datawidth>,
-          sycl::ext::intel::experimental::latency<0>,
-          sycl::ext::intel::experimental::maxburst<1>,
-          sycl::ext::intel::experimental::read_write_mode_read,
-          sycl::ext::intel::experimental::wait_request_requested})>
+          sycl::ext::altera::experimental::awidth<28>,
+          sycl::ext::altera::experimental::buffer_location<aspace>,
+          sycl::ext::altera::experimental::dwidth<datawidth>,
+          sycl::ext::altera::experimental::latency<0>,
+          sycl::ext::altera::experimental::maxburst<1>,
+          sycl::ext::altera::experimental::read_write_mode_read,
+          sycl::ext::altera::experimental::wait_request_requested})>
 #else
   TT *
 #endif
@@ -236,7 +236,7 @@ public:
     // the device.
     // Knowing this, the compiler won't generate hardware to potentially get
     // data from the host.
-    sycl::ext::intel::device_ptr<TT> b_ptr_located(b_ptr);
+    sycl::ext::altera::device_ptr<TT> b_ptr_located(b_ptr);
 #else
     // Device pointers are not supported when targeting an FPGA family/part
     TT *b_ptr_located(b_ptr);
@@ -271,9 +271,9 @@ public:
         });
         // Store the "elems_per_ddr_access" elements into on-chip memory
         fpga_tools::UnrolledLoop<kItersPerRowCol>([&](auto k) {
-          write_idx = sycl::ext::intel::fpga_reg(write_idx);
+          write_idx = sycl::ext::altera::fpga_reg(write_idx);
           fpga_tools::UnrolledLoop<elems_per_ddr_access>([&](auto t) {
-            load_reg[t] = sycl::ext::intel::fpga_reg(load_reg[t]);
+            load_reg[t] = sycl::ext::altera::fpga_reg(load_reg[t]);
             if constexpr ((k * elems_per_ddr_access + t) < cols_b) {
               if (write_idx == k) {
                 mem[mat][i / kItersPerRowCol][k * elems_per_ddr_access + t] =
@@ -295,7 +295,7 @@ public:
           int block = (i % (kBlocksB * common)) / common;
           bool get[kBlocksB];
           fpga_tools::UnrolledLoop<kBlocksB>([&](auto k) {
-            block = sycl::ext::intel::fpga_reg(block);
+            block = sycl::ext::altera::fpga_reg(block);
             get[k] = block == k;
           });
           // Write one row of a matrix tile to the pipe
@@ -304,7 +304,7 @@ public:
             fpga_tools::UnrolledLoop<tile_b>([&](auto t) {
               pipe_write.template get<t>() =
                   get[k] ? mem[mat][i % common][k * tile_b + t]
-                         : sycl::ext::intel::fpga_reg(
+                         : sycl::ext::altera::fpga_reg(
                                pipe_write.template get<t>());
             });
           });
@@ -342,13 +342,13 @@ public:
   // Customizing mmhost only supported when targetting an FPGA part/family
   sycl::ext::oneapi::experimental::annotated_arg<TT *, 
       decltype(sycl::ext::oneapi::experimental::properties{
-          sycl::ext::intel::experimental::awidth<28>,
-          sycl::ext::intel::experimental::buffer_location<aspace>,
-          sycl::ext::intel::experimental::dwidth<datawidth>,
-          sycl::ext::intel::experimental::latency<0>,
-          sycl::ext::intel::experimental::maxburst<1>,
-          sycl::ext::intel::experimental::read_write_mode_write,
-          sycl::ext::intel::experimental::wait_request_requested})>
+          sycl::ext::altera::experimental::awidth<28>,
+          sycl::ext::altera::experimental::buffer_location<aspace>,
+          sycl::ext::altera::experimental::dwidth<datawidth>,
+          sycl::ext::altera::experimental::latency<0>,
+          sycl::ext::altera::experimental::maxburst<1>,
+          sycl::ext::altera::experimental::read_write_mode_write,
+          sycl::ext::altera::experimental::wait_request_requested})>
 #else
   TT *
 #endif
@@ -384,7 +384,7 @@ public:
     // the device.
     // Knowing this, the compiler won't generate hardware to potentially get
     // data from the host.
-    sycl::ext::intel::device_ptr<TT> c_ptr_located(c_ptr);
+    sycl::ext::altera::device_ptr<TT> c_ptr_located(c_ptr);
 #else
     // Device pointers are not supported when targeting an FPGA family/part
     TT *c_ptr_located(c_ptr);
@@ -412,10 +412,10 @@ public:
           // on-chip memory "mem"
           fpga_tools::NTuple<TT, tile_a> pipe_read = PipeC::read();
           fpga_tools::UnrolledLoop<kBlocksA>([&](auto k) {
-            block_a = sycl::ext::intel::fpga_reg(block_a);
+            block_a = sycl::ext::altera::fpga_reg(block_a);
             fpga_tools::UnrolledLoop<tile_a>([&](auto t) {
               pipe_read.template get<t>() =
-                  sycl::ext::intel::fpga_reg(pipe_read.template get<t>());
+                  sycl::ext::altera::fpga_reg(pipe_read.template get<t>());
               if (block_a == k) {
                 mem[mat][block_b * tile_b + (i % tile_b)][k * tile_a + t] =
                     pipe_read.template get<t>();
@@ -433,7 +433,7 @@ public:
         int write_idx = i % kItersPerRowCol;
         bool get[kItersPerRowCol];
         fpga_tools::UnrolledLoop<kItersPerRowCol>([&](auto k) {
-          write_idx = sycl::ext::intel::fpga_reg(write_idx);
+          write_idx = sycl::ext::altera::fpga_reg(write_idx);
           get[k] = write_idx == k;
         });
 
@@ -446,7 +446,7 @@ public:
             if constexpr ((k * elems_per_ddr_access + t) < rows_a) {
               load_reg[t] = get[k] ? mem[mat][i / kItersPerRowCol]
                                         [k * elems_per_ddr_access + t]
-                                   : sycl::ext::intel::fpga_reg(load_reg[t]);
+                                   : sycl::ext::altera::fpga_reg(load_reg[t]);
             }
           });
         });

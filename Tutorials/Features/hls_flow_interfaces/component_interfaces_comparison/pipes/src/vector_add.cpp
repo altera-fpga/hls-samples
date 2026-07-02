@@ -1,10 +1,24 @@
+#include <algorithm>
 #include <iostream>
+#include <numeric>
+#include <vector>
 
-// oneAPI headers
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "exception_handler.hpp"
+
+// Define namespace alias for easy reference.
+namespace altera_exp = sycl::ext::altera::experimental;
+namespace oneapi_exp = sycl::ext::oneapi::experimental;
+
+constexpr int kVectorSize = 256;
+#if FPGA_EMULATOR
+// Specify non-zero capacity for emulator to avoid unexpected hang
+constexpr unsigned int kPipeMinCapacity = kVectorSize;
+#else
+constexpr unsigned int kPipeMinCapacity = 0;
+#endif
 
 // Forward declare the kernel name in the global scope. This is an FPGA best
 // practice that reduces name mangling in the optimization reports.
@@ -15,15 +29,10 @@ class IDPipeA;
 class IDPipeB;
 class IDPipeC;
 
-using PipeProps = decltype(sycl::ext::oneapi::experimental::properties(
-    sycl::ext::intel::experimental::ready_latency<0>));
-
-using InputPipeA =
-    sycl::ext::intel::experimental::pipe<IDPipeA, int, 0, PipeProps>;
-using InputPipeB =
-    sycl::ext::intel::experimental::pipe<IDPipeB, int, 0, PipeProps>;
-using OutputPipeC =
-    sycl::ext::intel::experimental::pipe<IDPipeC, int, 0, PipeProps>;
+// Host pipes with default properties
+using InputPipeA = altera_exp::pipe<IDPipeA, int, kPipeMinCapacity>;
+using InputPipeB = altera_exp::pipe<IDPipeB, int, kPipeMinCapacity>;
+using OutputPipeC = altera_exp::pipe<IDPipeC, int, kPipeMinCapacity>;
 
 struct SimpleVAddKernel {
   int len;
@@ -38,20 +47,30 @@ struct SimpleVAddKernel {
   }
 };
 
-constexpr int kVectorSize = 256;
-
 int main() {
+  bool passed = true;
+
+  // Vector size is a constant here, but it could be a run-time variable too.
+  int count = kVectorSize;
+
+  // Fill vectors with values from 0 to count - 1 and count to 1
+  std::vector<int> a(count);
+  std::vector<int> b(count);
+  std::iota(a.begin(), a.end(), 0);
+  std::generate(b.begin(), b.end(),
+                [i = 0, count]() mutable { return count - (i++); });
+
   try {
     // Use compile-time macros to select either:
     //  - the FPGA emulator device (CPU emulation of the FPGA)
     //  - the FPGA device (a real FPGA)
     //  - the simulator device
 #if FPGA_SIMULATOR
-    auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-    auto selector = sycl::ext::intel::fpga_selector_v;
+    auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-    auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
     // create the device queue
@@ -63,15 +82,8 @@ int main() {
               << device.get_info<sycl::info::device::name>().c_str()
               << std::endl;
 
-    // Vector size is a constant here, but it could be a run-time variable too.
-    int count = kVectorSize;
-
     // Push data into pipes before invoking kernel
-    int *a = new int[count];
-    int *b = new int[count];
     for (int i = 0; i < count; i++) {
-      a[i] = i;
-      b[i] = (count - i);
       // When writing to a host pipe in non kernel code,
       // you must pass the sycl::queue as the first argument
       InputPipeA::write(q, a[i]);
@@ -85,7 +97,6 @@ int main() {
     // Verify that outputs are correct. Do not wait for the kernel to complete,
     // because the pipe reads are blocking. Therefore, waiting would cause
     // deadlock.
-    bool passed = true;
     for (int i = 0; i < count; i++) {
       int expected = a[i] + b[i];
       int calc = OutputPipeC::read(q);
@@ -97,19 +108,11 @@ int main() {
     }
 
     std::cout << (passed ? "PASSED" : "FAILED") << std::endl;
-
-    delete[] a;
-    delete[] b;
-
-    return passed ? EXIT_SUCCESS : EXIT_FAILURE;
-
   } catch (sycl::exception const &e) {
     std::cerr << "Caught a synchronous SYCL exception: " << e.what()
               << std::endl;
-    std::cerr << "   If you are targeting an FPGA hardware, "
-                 "ensure that your system is plugged to an FPGA board that is "
-                 "set up correctly"
-              << std::endl;
     std::terminate();
   }
+
+  return passed ? EXIT_SUCCESS : EXIT_FAILURE;
 }

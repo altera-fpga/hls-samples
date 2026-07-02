@@ -1,10 +1,10 @@
 //==============================================================
-// Copyright Intel Corporation
+// Copyright Altera Corporation. All rights reserved.
 //
 // SPDX-License-Identifier: MIT
 // =============================================================
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <iomanip>
 #include <iostream>
 #include <string>
@@ -74,11 +74,11 @@ void RunKernel(const std::vector<int> &vec_a,
   // Run the kernel on either the FPGA emulator, or FPGA simulator, or FPGA
   // hardware
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   size_t input_size = vec_a.size();
@@ -119,13 +119,13 @@ void RunKernel(const std::vector<int> &vec_a,
 
           // Fully unroll the accumulator loop.
           // All of the unrolled operations can be freely scheduled by the
-          // oneAPI DPC++/C++ Compiler's FPGA backend as part of a common data pipeline.
+          // HLS IP Gen compiler as part of a common data pipeline.
           #pragma unroll
           for (size_t j = 0; j < kSize; j++) {
 #ifdef USE_FPGA_REG
             // Use fpga_reg to insert a register between the copy of val used
             // in each unrolled iteration.
-            val = ext::intel::fpga_reg(val);
+            val = ext::altera::fpga_reg(val);
             // Since val is held constant across the kSize unrolled iterations,
             // the FPGA hardware structure of val's distribution changes from a
             // kSize-way fanout (without fpga_reg) to a chain of of registers
@@ -133,7 +133,7 @@ void RunKernel(const std::vector<int> &vec_a,
 
             // Use fpga_reg to insert a register between each step in the acc
             // adder chain.
-            acc = ext::intel::fpga_reg(acc) + (coeff[j] * (val + kOffset[j]));
+            acc = ext::altera::fpga_reg(acc) + (coeff[j] * (val + kOffset[j]));
             // This transforms a compiler-inferred adder tree into an adder
             // chain, altering the structure of the pipeline. Refer to the
             // diagram in the README.
@@ -146,7 +146,7 @@ void RunKernel(const std::vector<int> &vec_a,
 
           // Rotate the values of the coefficient array.
           // The loop is fully unrolled. This is a canonical code structure;
-          // the oneAPI DPC++/C++ Compiler's FPGA backend infers a shift register here.
+          // the HLS IP Gen compiler infers a shift register here.
           int tmp = coeff[0];
           #pragma unroll
           for (size_t j = 0; j < kSize - 1; j++) {
@@ -180,9 +180,6 @@ void RunKernel(const std::vector<int> &vec_a,
 
     // Most likely the runtime couldn't find FPGA hardware!
     if (e.code().value() == CL_DEVICE_NOT_FOUND) {
-      std::cerr << "If you are targeting an FPGA, please ensure that your "
-                   "system has a correctly configured FPGA board.\n";
-      std::cerr << "Run sys_check in the oneAPI root directory to verify.\n";
       std::cerr << "If you are targeting the FPGA emulator, compile with "
                    "-DFPGA_EMULATOR.\n";
     }

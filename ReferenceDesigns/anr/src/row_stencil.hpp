@@ -2,7 +2,7 @@
 #define __ROW_STENCIL_HPP__
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <limits>
 
 #include "data_bundle.hpp"

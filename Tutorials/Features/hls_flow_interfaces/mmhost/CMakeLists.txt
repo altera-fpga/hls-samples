@@ -1,12 +1,4 @@
-# Direct CMake to use icpx rather than the default C++ compiler/linker on Linux
-# and icx-cl on Windows
-if(UNIX)
-    set(CMAKE_CXX_COMPILER icpx)
-else() # Windows
-    include (CMakeForceCompiler)
-    CMAKE_FORCE_CXX_COMPILER (icx-cl IntelDPCPP)
-    include (Platform/Windows-Clang)
-endif()
+set(CMAKE_CXX_COMPILER ahls)
 
 cmake_minimum_required (VERSION 3.7.2)
 
@@ -23,13 +15,13 @@ if(${TYPE} MATCHES PART1)
     set(SOURCE_FILES part1_pointers/src/mmhost.cpp)
     set(TARGET_NAME mmhost_part1)
 elseif(${TYPE} MATCHES PART2)
-    set(SOURCE_FILES part2_single_host/src/mmhost.cpp)
+    set(SOURCE_FILES part2_hosts/src/mmhost.cpp)
     set(TARGET_NAME mmhost_part2)
 elseif(${TYPE} MATCHES PART3)
-    set(SOURCE_FILES part3_hosts/src/mmhost.cpp)
+    set(SOURCE_FILES part3_ddr_hosts/src/mmhost.cpp)
     set(TARGET_NAME mmhost_part3)
 elseif(${TYPE} MATCHES PART4)
-    set(SOURCE_FILES part4_ddr_hosts/src/mmhost.cpp)
+    set(SOURCE_FILES part4_accessors/src/mmhost.cpp)
     set(TARGET_NAME mmhost_part4)
 else()
     message(FATAL_ERROR "No matching compile type found for ${TYPE}\n
@@ -103,15 +95,8 @@ message(STATUS "Additional USER_LIB_PATHS=${USER_LIB_PATHS}")
 link_libraries(${USER_LIBS})
 message(STATUS "Additional USER_LIBS=${USER_LIBS}")
 
-if(WIN32)
-    # add qactypes for Windows
-    set(QACTYPES "-Qactypes")
-    # This is a Windows-specific flag that enables exception handling in host code
-    set(WIN_FLAG "/EHsc")
-else()
-    # add qactypes for Linux
-    set(QACTYPES "-qactypes")
-endif()
+# add qactypes
+set(QACTYPES "")
 
 string(TOLOWER "${CMAKE_BUILD_TYPE}" LOWER_BUILD_TYPE)
 if(LOWER_BUILD_TYPE MATCHES debug)
@@ -129,8 +114,8 @@ if(WIN32)
     set(EXT ".exe")
 endif()
 
-set(COMMON_COMPILE_FLAGS -fintelfpga -Wall ${WIN_FLAG} ${QACTYPES} ${USER_FLAGS})
-set(COMMON_LINK_FLAGS -fintelfpga ${QACTYPES} ${USER_FLAGS})
+set(COMMON_COMPILE_FLAGS -Wall ${WIN_FLAG} ${QACTYPES} ${USER_FLAGS})
+set(COMMON_LINK_FLAGS ${QACTYPES} ${USER_FLAGS})
 
 # A SYCL ahead-of-time (AoT) compile processes the device code in two stages.
 # 1. The "compile" stage compiles the device code to an intermediate
@@ -175,7 +160,7 @@ target_compile_options(${REPORT_TARGET} PRIVATE ${REPORT_COMPILE_FLAGS})
 
 # The report target does not need the QACTYPES flag at link stage
 set(MODIFIED_COMMON_LINK_FLAGS_REPORT ${COMMON_LINK_FLAGS})
-list(REMOVE_ITEM MODIFIED_COMMON_LINK_FLAGS_REPORT ${QACTYPES})
+
 
 target_link_libraries(${REPORT_TARGET} ${MODIFIED_COMMON_LINK_FLAGS_REPORT})
 target_link_libraries(${REPORT_TARGET} ${REPORT_LINK_FLAGS})
@@ -292,11 +277,6 @@ function(getCompileCommands common_compile_flags special_compile_flags common_li
     set(LINK_COMMAND "${LINK_COMMAND}" PARENT_SCOPE)
 
 endfunction()
-
-# Windows executable is going to have the .exe extension
-if(WIN32)
-    set(EXECUTABLE_EXTENSION ".exe")
-endif()
 
 # Display the compile instructions in the emulation flow
 getCompileCommands("${COMMON_COMPILE_FLAGS}" "${EMULATOR_COMPILE_FLAGS}" "${COMMON_LINK_FLAGS}" "${EMULATOR_LINK_FLAGS}" "${EMULATOR_TARGET}" "${EMULATOR_OUTPUT_NAME}${EXECUTABLE_EXTENSION}")

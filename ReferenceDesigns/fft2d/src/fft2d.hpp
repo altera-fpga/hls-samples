@@ -4,8 +4,8 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
-#include <sycl/ext/intel/ac_types/ac_complex.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/ac_types/ac_complex.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 // Large twiddle factors tables
@@ -517,10 +517,10 @@ struct Transpose {
   // The data width is equal to width of the DDR burst performed by the function
   sycl::ext::oneapi::experimental::annotated_arg<
       ac_complex<T> *, decltype(sycl::ext::oneapi::experimental::properties{
-                           sycl::ext::intel::experimental::buffer_location<1>,
-                           sycl::ext::intel::experimental::dwidth<
+                           sycl::ext::altera::experimental::buffer_location<1>,
+                           sycl::ext::altera::experimental::dwidth<
                                sizeof(ac_complex<T>) * 8 * (1 << log_points)>,
-                           sycl::ext::intel::experimental::latency<0>})>
+                           sycl::ext::altera::experimental::latency<0>})>
       dest;
 #endif
 

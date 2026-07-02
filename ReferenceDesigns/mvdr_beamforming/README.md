@@ -10,7 +10,7 @@ This reference design demonstrates IO streaming using SYCL* on an FPGA for a lar
 
 ## Purpose
 
-The purpose of this reference design is to implement a high-performance streaming IO design. In this reference design, we implement an MVDR-beamforming algorithm using oneAPI.
+The purpose of this reference design is to implement a high-performance streaming IO design. In this reference design, we implement an MVDR-beamforming algorithm using the HLS IP Gen compiler.
 
 This reference design code sample leverages concepts that are discussed in the following FPGA tutorials:
 
@@ -48,29 +48,26 @@ You can also find more information about [troubleshooting build errors](/README.
 
 | Optimized for        | Description
 |:---                  |:---
-| OS                   | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware             | Intel® Agilex® 7, Arria® 10, and Stratix® 10 FPGAs
-| Software             | Intel® oneAPI DPC++/C++ Compiler
+| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware             | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
+| Software             | HLS IP Gen Compiler
 
-> **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> For using the simulator flow, Intel® Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
-> - Questa*-Intel® FPGA Edition (Simulator flow can have a long run time)
-> - Questa*-Intel® FPGA Starter Edition (Simulator flow can have a long run time)
+> For using the simulator flow, Quartus® Prime Pro Edition and one of the following simulators must be installed and accessible through your PATH:
+> - Questa*-Altera® FPGA Edition (Simulator flow can have a long run time)
+> - Questa*-Altera® FPGA Starter Edition (Simulator flow can have a long run time)
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition must be installed and accessible through your PATH.
 >
-> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
->
-> :warning: This code sample may fail to compile with the Intel® oneAPI DPC++/C++ Compiler 2024.2 due to a known bug which will be fixed in a patch. Information about the patch will be available on
-https://www.intel.com/content/www/us/en/developer/tools/oneapi/fpga.html
+> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 ## Key Implementation Details
 
 ### MVDR Beamforming
 
->**Note**: This reference design is built upon the **IO Streaming** sample code and concepts. Review that tutorial for more information.
+> **Note**: This reference design is built upon the **IO Streaming** sample code and concepts. Review that tutorial for more information.
 
 The images below show the data flow in the MVDR beamforming design. The first image shows the "real" data flow when IO pipes are used at the inputs and outputs. The second image shows the data flow in this reference design where we don't have access to a BSP with IO pipes.
 
@@ -105,20 +102,13 @@ The `DataProducer` kernel replaces the input IO pipe in the first image. The spl
 
 ## Build the `MVDR Beamforming` Design
 
-> **Note**: When working with the command-line interface (CLI), you should configure the oneAPI toolkits using environment variables.
-> Set up your CLI environment by sourcing the `setvars` script located in the root of your oneAPI installation every time you open a new terminal window.
+> **Note**: When working with the command-line interface (CLI), you should configure the HLS IP Gen Compiler using environment variables.
+> Set up your CLI environment by sourcing the `fpgavars` script located in the root of your HLS IP Gen Compiler installation every time you open a new terminal window.
 > This practice ensures that your compiler, libraries, and tools are ready for development.
 >
 > Linux*:
-> - For system wide installations: `. /opt/intel/oneapi/setvars.sh`
-> - For private installations: ` . ~/intel/oneapi/setvars.sh`
-> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/setvars.sh ; exec csh'`
->
-> Windows*:
-> - `C:\"Program Files (x86)"\Intel\oneAPI\setvars.bat`
-> - Windows PowerShell*, use the following command: `cmd.exe "/K" '"C:\Program Files (x86)\Intel\oneAPI\setvars.bat" && powershell'`
->
-> For more information on configuring environment variables, see [Use the setvars Script with Linux* or macOS*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-programming-guide/top/oneapi-development-environment-setup/use-the-setvars-script-with-linux-or-macos.html) or [Use the setvars Script with Windows*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-programming-guide/top/oneapi-development-environment-setup/use-the-setvars-script-with-windows.html).
+> - `source <install-dir>/fpgavars.sh`
+> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/fpgavars.sh ; exec csh'`
 
 ### On Linux*
 
@@ -131,26 +121,10 @@ The `DataProducer` kernel replaces the input IO pipe in the first image. The spl
    cmake ..
    ```
 
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    >  ```
    >  cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
    >  ```
-   >
-   > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-   >  ```
-   >  cmake .. -DFPGA_DEVICE=<board-support-package>:<board-variant> -DIS_BSP=1
-   >  ```
-  > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-  > ```
-  > $> aoc -list-boards
-  > Board list:
-  >   <board-variant>
-  >      Board Package: <path/to/board/package>/board-support-package
-  >   <board-variant2>
-  >      Board Package: <path/to/board/package>/board-support-package
-  > ```
-   >
-   > You will only be able to run an executable on the FPGA if you specified a BSP.
 
 3. Compile the design. (The provided targets match the recommended development flow.)
 
@@ -173,62 +147,6 @@ The `DataProducer` kernel replaces the input IO pipe in the first image. The spl
       make fpga
       ```
 
-### On Windows*
-
-1. Change to the sample directory.
-2. Configure the build system for the Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" ..
-   ```
-
-  > **Note**: You can change the default target by using the command:
-  >  ```
-  >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
-  >  ```
-  >
-  > Alternatively, you can target an explicit FPGA board variant and BSP by using the following command:
-  >  ```
-  >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<board-support-package>:<board-variant> -DIS_BSP=1
-  >  ```
-  > **Note**: You can poll your system for available BSPs using the `aoc -list-boards` command. The board list that is printed out will be of the form
-  > ```
-  > $> aoc -list-boards
-  > Board list:
-  >   <board-variant>
-  >      Board Package: <path/to/board/package>/board-support-package
-  >   <board-variant2>
-  >      Board Package: <path/to/board/package>/board-support-package
-  > ```
-  >
-  > You will only be able to run an executable on the FPGA if you specified a BSP.
-
-3. Compile the design. (The provided targets match the recommended development flow.)
-
-   1. Compile for emulation (fast compile time, targets emulated FPGA device).
-      ```
-      nmake fpga_emu
-      ```
-   2. Compile for simulation (fast compile time, targets simulator FPGA device):
-      ```
-      nmake fpga_sim
-      ```
-   3. Generate the HTML performance report.
-      ```
-      nmake report
-      ```
-      The report resides at `mvdr_beamforming_report.a.prj/reports/report.html`.
-
-   4. Compile for FPGA hardware (longer compile time, targets FPGA device).
-      ```
-      nmake fpga
-      ```
-> **Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your 'build' directory in a shorter path, for example `c:\samples\build`. You can then run cmake from that directory, and provide cmake with the full path to your sample directory, for example:
->
->  ```
-  > C:\samples\build> cmake -G "NMake Makefiles" C:\long\path\to\code\sample\CMakeLists.txt
->  ```
 ## Run the `MVDR Beamforming` Design
 
 ### Configurable Parameters
@@ -239,7 +157,7 @@ The general syntax for running the program is shown below and the table describe
 
 | Argument Index | Description
 |:---            |:---
-| 0              | The number of matrices (default=`1024`)
+| 0              | The number of matrices (default=`2` for fpga_sim, default='1024' for fpga_emu and fpga)
 | 1              | The input directory (default=`../data`)
 | 2              | The output directory (default=`.`)
 
@@ -249,33 +167,17 @@ The general syntax for running the program is shown below and the table describe
    ./mvdr_beamforming.fpga_emu 1024 ../data .
    ```
 2. Run the sample on the FPGA simulator device.
-   ```
-   CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./mvdr_beamforming.fpga_sim 1024 ../data .
-   ```
-3. Run the sample on the FPGA device (only if you ran `cmake` with `-DFPGA_DEVICE=<board-support-package>:<board-variant>`).
-   ```
-   ./mvdr_beamforming.fpga 1024 ../data .
-   ```
 
-### On Windows
+  > **Note**: For this large design, the simulator may take up to several hours to execute.
 
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
-   ```
-   mvdr_beamforming.fpga_emu.exe 1024 ../data .
-   ```
-2. Run the sample on the FPGA simulator device.
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   mvdr_beamforming.fpga_sim.exe ../data .
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
-   ```
-> **Note**: Hardware runs are not supported on Windows.
-
+  ```
+   CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./mvdr_beamforming.fpga_sim 2 ../data .
+  ```
 ## Build and Run the Design Using Real IO-pipes
 
-This section describes how to build and run this reference design on a BSP with real IO pipes. The real IO pipes version does **not** work on Windows and requires a specific system setup and BSP.
+This section describes how to build and run this reference design on a BSP with real IO pipes.
 
->**Note**: This design requires a specific board support package (BSP) with a distinct hardware configuration. For access to this BSP or general customer support, submit a case through Intel® Premier Support (IPS) or contact your Intel or Distribution Sales Representative.
+> **Note**: This design requires a specific board support package (BSP) with a distinct hardware configuration. For access to this BSP or general customer support, contact your Altera or Distribution Sales Representative.
 
 ### Build on Linux
 
@@ -336,7 +238,7 @@ This section describes how to build and run this reference design on a BSP with 
    | 7              | Host User Datagram Protocol (UDP) Port
    | 8              | The number of matrices (optional, default=`1024`)
    | 9              | The input directory (optional, default=`../data`)
-   | 10             | The output directory (optional, default=`.`
+   | 10             | The output directory (optional, default=`.`)
 
 
 ## Example Output

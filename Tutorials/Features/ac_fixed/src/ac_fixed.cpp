@@ -1,7 +1,7 @@
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/ac_types/ac_fixed.hpp>
-#include <sycl/ext/intel/ac_types/ac_fixed_math.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/ac_types/ac_fixed.hpp>
+#include <sycl/ext/altera/ac_types/ac_fixed_math.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include <iomanip>  // for std::setprecision
 #include <cmath>
@@ -111,11 +111,11 @@ void TestCalculateWithACFixed(queue &q, const fixed_10_3_t &x,
 
 int main() {
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   try {
@@ -202,9 +202,6 @@ int main() {
 
     // Most likely the runtime couldn't find FPGA hardware!
     if (e.code().value() == CL_DEVICE_NOT_FOUND) {
-      std::cerr << "If you are targeting an FPGA, please ensure that your "
-                   "system has a correctly configured FPGA board.\n";
-      std::cerr << "Run sys_check in the oneAPI root directory to verify.\n";
       std::cerr << "If you are targeting the FPGA emulator, compile with "
                    "-DFPGA_EMULATOR.\n";
     }

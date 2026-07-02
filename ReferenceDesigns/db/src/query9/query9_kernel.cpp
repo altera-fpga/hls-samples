@@ -45,8 +45,8 @@ using SortType = SortData;
 constexpr int kNumSortStages = CeilLog2(kLineItemTableSize * 0.06);
 constexpr int kSortSize = Pow2(kNumSortStages);
 
-using SortInPipe = pipe<class SortInputPipe, SortType>;
-using SortOutPipe = pipe<class SortOutputPipe, SortType>;
+using SortInPipe = altera_exp::pipe<class SortInputPipe, SortType>;
+using SortOutPipe = altera_exp::pipe<class SortOutputPipe, SortType>;
 
 static_assert(kLineItemTableSize * 0.06 <= kSortSize,
               "Must be able to sort all part keys");

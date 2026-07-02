@@ -1,12 +1,12 @@
 //==============================================================
-// Copyright Intel Corporation
+// Copyright Altera Corporation. All rights reserved.
 //
 // SPDX-License-Identifier: MIT
 // =============================================================
 #include <numeric>
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "exception_handler.hpp"
 
@@ -20,14 +20,14 @@ class KernelDefault;
 
 // Aliases for LSU Control Extension types
 // Implemented using template arguments such as prefetch & burst_coalesce
-// on the new ext::intel::lsu class to specify LSU style and modifiers
-using PrefetchingLSU = ext::intel::lsu<ext::intel::prefetch<true>,
-                                  ext::intel::statically_coalesce<false>>;
+// on the new ext::altera::lsu class to specify LSU style and modifiers
+using PrefetchingLSU = ext::altera::lsu<ext::altera::prefetch<true>,
+                                  ext::altera::statically_coalesce<false>>;
 
-using PipelinedLSU = ext::intel::lsu<>;
+using PipelinedLSU = ext::altera::lsu<>;
 
-using BurstCoalescedLSU = ext::intel::lsu<ext::intel::burst_coalesce<true>,
-                                     ext::intel::statically_coalesce<false>>;
+using BurstCoalescedLSU = ext::altera::lsu<ext::altera::burst_coalesce<true>,
+                                     ext::altera::statically_coalesce<false>>;
 
 // Input data and output data size constants
 constexpr size_t kMaxVal = 128;
@@ -52,11 +52,11 @@ void KernelRun(const std::vector<int> &input_data, const size_t &input_size,
   std::fill(output_data.begin(), output_data.end(), -1);
 
 #if FPGA_SIMULATOR
-  auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-  auto selector = sycl::ext::intel::fpga_selector_v;
+  auto selector = sycl::ext::altera::fpga_selector_v;
 #else  // #if FPGA_EMULATOR
-  auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+  auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
   try {
@@ -148,9 +148,6 @@ void KernelRun(const std::vector<int> &input_data, const size_t &input_size,
 
     // Most likely the runtime couldn't find FPGA hardware!
     if (e.code().value() == CL_DEVICE_NOT_FOUND) {
-      std::cerr << "If you are targeting an FPGA, please ensure that your "
-                   "system has a correctly configured FPGA board.\n";
-      std::cerr << "Run sys_check in the oneAPI root directory to verify.\n";
       std::cerr << "If you are targeting the FPGA emulator, compile with "
                    "-DFPGA_EMULATOR.\n";
     }

@@ -1,0 +1,23 @@
+name: Metadata Change Detector
+
+on:
+  pull_request_target:
+    types:
+      - edited
+
+jobs:
+  no-clobber:
+    name: Detect Link Metadata Changes
+    runs-on: [self-hosted, static, linux, "site-SC"]
+    steps:
+      - name: Checkout action repo
+        uses: actions/checkout@v3
+        with:
+          repository: altera-innersource/applications.fpga.oneapi.internal.github-actions
+          token: ${{ secrets.SYS_HLD_TOKEN }}
+          path: .github/internal/actions
+          persist-credentials: false
+      - name: Call metadata-change-detector action
+        uses: ./.github/internal/actions/metadata-change-detector
+        with:
+          token: ${{ secrets.SYS_HLD_TOKEN }}

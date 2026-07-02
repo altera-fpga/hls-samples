@@ -2,7 +2,7 @@
 #define __TRANSPOSE_HPP__
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "tuple.hpp"          // From the include directory
 #include "unrolled_loop.hpp"  // From the include directory

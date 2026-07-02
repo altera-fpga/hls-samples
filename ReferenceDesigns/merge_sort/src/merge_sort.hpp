@@ -8,7 +8,7 @@
 #include <vector>
 
 #include <sycl/sycl.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 
 #include "consume.hpp"
 #include "merge.hpp"

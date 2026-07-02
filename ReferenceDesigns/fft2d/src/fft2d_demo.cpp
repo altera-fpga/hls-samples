@@ -3,8 +3,8 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
-#include <sycl/ext/intel/ac_types/ac_complex.hpp>
-#include <sycl/ext/intel/fpga_extensions.hpp>
+#include <sycl/ext/altera/ac_types/ac_complex.hpp>
+#include <sycl/ext/altera/fpga_extensions.hpp>
 #include <sycl/sycl.hpp>
 
 #include "exception_handler.hpp"
@@ -18,6 +18,24 @@ template <int lognr_points>
 void FourierTransformGold(ac_complex<double> *data, bool inverse);
 template <int lognr_points>
 void FourierStage(ac_complex<double> *data);
+
+// Define the log of the FFT size on each dimension and the level of
+// parallelism to implement
+#if FPGA_SIMULATOR
+  // Force small sizes in simulation mode to reduce simulation time
+  constexpr int kLogN = 4;
+  constexpr int kParallelism = 4;
+#else
+  constexpr int kLogN = LOGN;
+  constexpr int kParallelism = PARALLELISM;
+#endif
+
+// Pipes declaration
+// Kernel to kernel pipes
+using FetchToFFT = sycl::ext::altera::experimental::pipe<
+    class FetchToFFTPipe, std::array<ac_complex<float>, kParallelism>, 0>;
+using FFTToTranspose = sycl::ext::altera::experimental::pipe<
+    class FFTToTransposePipe, std::array<ac_complex<float>, kParallelism>, 0>;
 
 int main(int argc, char **argv) {
   if (argc == 1) {
@@ -67,11 +85,11 @@ void TestFFT(bool mangle, bool inverse) {
   try {
     // Device selector selection
 #if FPGA_SIMULATOR
-    auto selector = sycl::ext::intel::fpga_simulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_simulator_selector_v;
 #elif FPGA_HARDWARE
-    auto selector = sycl::ext::intel::fpga_selector_v;
+    auto selector = sycl::ext::altera::fpga_selector_v;
 #else
-    auto selector = sycl::ext::intel::fpga_emulator_selector_v;
+    auto selector = sycl::ext::altera::fpga_emulator_selector_v;
 #endif
 
     // Enable the queue profiling to time the execution
@@ -85,17 +103,6 @@ void TestFFT(bool mangle, bool inverse) {
     // Print out the device information.
     std::cout << "Running on device: "
               << device.get_info<sycl::info::device::name>() << std::endl;
-
-    // Define the log of the FFT size on each dimension and the level of
-    // parallelism to implement
-#if FPGA_SIMULATOR
-    // Force small sizes in simulation mode to reduce simulation time
-    constexpr int kLogN = 4;
-    constexpr int kParallelism = 4;
-#else
-    constexpr int kLogN = LOGN;
-    constexpr int kParallelism = PARALLELISM;
-#endif
 
     static_assert(kParallelism == 4 || kParallelism == 8,
                   "The FFT kernel implementation only supports 4-parallel and "
@@ -154,7 +161,7 @@ void TestFFT(bool mangle, bool inverse) {
       // In the SYCL HLS flow, we need to define the memory interface.
       // For, that we need to assign a location to the memory being accessed.
       auto prop_list = sycl::property_list{
-          sycl::ext::intel::experimental::property::usm::buffer_location(1)};
+          sycl::ext::altera::experimental::property::usm::buffer_location(1)};
 #endif
 
       input_data = sycl::malloc_host<ac_complex<float>>(kN * kN, q);
@@ -222,14 +229,6 @@ void TestFFT(bool mangle, bool inverse) {
 
     // This is a limitation of the design
     static_assert(kN / kParallelism >= kParallelism);
-
-    // Kernel to kernel pipes
-    using FetchToFFT =
-        sycl::ext::intel::pipe<class FetchToFFTPipe,
-                               std::array<ac_complex<float>, kParallelism>, 0>;
-    using FFTToTranspose =
-        sycl::ext::intel::pipe<class FFTToTransposePipe,
-                               std::array<ac_complex<float>, kParallelism>, 0>;
 
     for (int i = 0; i < 2; i++) {
       ac_complex<float> *to_read = i == 0 ? input_data : temp_data;

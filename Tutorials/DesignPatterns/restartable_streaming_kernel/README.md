@@ -4,25 +4,23 @@ This tutorial demonstrates how to make a streaming kernel that can be stopped at
 
 | Optimized for       | Description                                                                                 |
 | :------------------ | :------------------------------------------------------------------------------------------ |
-| OS                  | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10 <br> Windows Server* 2019 |
-| Hardware            | Intel® Agilex® 7, Agilex® 5, Arria® 10, Stratix® 10, and Cyclone® V FPGAs                   |
-| Software            | Intel® oneAPI DPC++/C++ Compiler                                                            |
-| What you will learn | Best practices for creating and managing a oneAPI FPGA project                              |
+| OS                  | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware            | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
+| Software            | HLS IP Gen Compiler
+| What you will learn | How to create a streaming kernel                                                            |
 | Time to complete    | 10 minutes                                                                                  |
 
-> **Note**: Even though the Intel DPC++/C++ oneAPI compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> To use the simulator flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
+> To use the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH:
 >
-> - Questa\*-Intel® FPGA Edition
-> - Questa\*-Intel® FPGA Starter Edition
+> - Questa\*-Altera® FPGA Edition
+> - Questa\*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
 >
-> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
-
-> **Note**: In oneAPI full systems, kernels that use SYCL Unified Shared Memory (USM) host allocations or USM shared allocations (and therefore the code in this tutorial) are only supported by Board Support Packages (BSPs) with USM support. Kernels that use these types of allocations can always be used to generate standalone IPs.
+> :warning: Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 ## Prerequisites
 
@@ -109,24 +107,13 @@ Any data written to the `OutputPipe` between the host code writing a `true` to `
 
 ## Building the `restartable_streaming_kernel` Tutorial
 
-> **Note**: When working with the command-line interface (CLI), you should configure the oneAPI toolkits using environment variables.
-> Set up your CLI environment by sourcing the `setvars` script located in the root of your oneAPI installation every time you open a new terminal window.
+> **Note**: When working with the command-line interface (CLI), you should configure the HLS IP Gen Compiler using environment variables.
+> Set up your CLI environment by sourcing the `fpgavars` script located in the root of your HLS IP Gen Compiler installation every time you open a new terminal window.
 > This practice ensures that your compiler, libraries, and tools are ready for development.
 >
 > Linux\*:
->
-> - For system wide installations: `. /opt/intel/oneapi/setvars.sh`
-> - For private installations: ` . ~/intel/oneapi/setvars.sh`
-> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/setvars.sh ; exec csh'`
->
-> Windows\*:
->
-> - `C:\"Program Files (x86)"\Intel\oneAPI\setvars.bat`
-> - Windows PowerShell\*, use the following command: `cmd.exe "/K" '"C:\Program Files (x86)\Intel\oneAPI\setvars.bat" && powershell'`
->
-> For more information on configuring environment variables, see [Use the setvars Script with Linux* or macOS*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-programming-guide/top/oneapi-development-environment-setup/use-the-setvars-script-with-linux-or-macos.html) or [Use the setvars Script with Windows\*](https://www.intel.com/content/www/us/en/develop/documentation/oneapi-programming-guide/top/oneapi-development-environment-setup/use-the-setvars-script-with-windows.html).
-
-Use these commands to run the design, depending on your OS.
+> - `source <install-dir>/fpgavars.sh`
+> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/fpgavars.sh ; exec csh'`
 
 ### On a Linux\* System
 
@@ -142,7 +129,7 @@ This design uses CMake to generate a build script for GNU/make.
    cmake ..
    ```
 
-   > **Note**: You can change the default target by using the command:
+   > **Note**: You can change the default target by using the following command. **Targeting a BSP is not supported.**
    >
    > ```
    > cmake .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
@@ -167,67 +154,6 @@ This design uses CMake to generate a build script for GNU/make.
       make fpga
       ```
 
-### On a Windows\* System
-
-This design uses CMake to generate a build script for `nmake`.
-
-1. Change to the sample directory.
-
-2. Configure the build system for the Agilex® 7 device family, which is the default.
-
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" ..
-   ```
-
-   You can create a debuggable binary by setting `CMAKE_BUILD_TYPE` to `Debug`:
-
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" .. -DCMAKE_BUILD_TYPE=Debug
-   ```
-
-   If you want to use the `report`, `fpga_sim`, or `fpga` flows, you should switch the `CMAKE_BUILD_TYPE` back to `Release``:
-
-   ```
-   cmake -G "NMake Makefiles" .. -DCMAKE_BUILD_TYPE=Release
-   ```
-
-   > **Note**: You can change the default target by using the command:
-   >
-   > ```
-   > cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number>
-   > ```
-
-
-
-3. Compile the design. (The provided targets match the recommended development flow.)
-
-   1. Compile for emulation (fast compile time, targets emulated FPGA device).
-      ```
-      nmake fpga_emu
-      ```
-   2. Generate the optimization report. 
-      ```
-      nmake report
-      ```
-   3. Compile for simulation (fast compile time, targets simulator FPGA device).
-      ```
-      nmake fpga_sim
-      ```
-   4. Compile with Quartus place and route (To get accurate area estimate, longer compile time).
-      ```
-      nmake fpga
-      ```
-
-   > **Note**: If you encounter any issues with long paths when compiling under Windows\*, you may have to create your 'build' directory in a shorter path, for example `C:\samples\build`. You can then run cmake from that directory, and provide cmake with the full path to your sample directory, for example:
-   >
-   > ```
-   > C:\samples\build> cmake -G "NMake Makefiles" C:\long\path\to\code\sample\CMakeLists.txt
-   > ```
-
 ## Run the `restartable_streaming_kernel` Executable
 
 ### On Linux
@@ -239,19 +165,6 @@ This design uses CMake to generate a build script for `nmake`.
 2. Run the sample on the FPGA simulator device.
    ```
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./restartable.fpga_sim
-   ```
-
-### On Windows
-
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
-   ```
-   restartable.fpga_emu.exe
-   ```
-2. Run the sample on the FPGA simulator device.
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   restartable.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
    ```
 
 ## Example Output

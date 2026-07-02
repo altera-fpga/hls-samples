@@ -10,7 +10,7 @@ This sample is a tutorial that demonstrates how to reuse hardware in your FPGA d
 
 ## Purpose
 
-In normal operation, the oneAPI FPGA compiler automatically in-lines repeated function calls, creating multiple instances of hardware that can run in parallel. This in-lining strategy is necessary to achieve high throughput, but in cases where you want to minimize area utilization, you may wish to sacrifice throughput and allow certain functions to be reused. This sample demonstrates two strategies to reuse hardware in your designs:
+In normal operation, the Altera® HLS IP Gen compiler automatically in-lines repeated function calls, creating multiple instances of hardware that can run in parallel. This in-lining strategy is necessary to achieve high throughput, but in cases where you want to minimize area utilization, you may wish to sacrifice throughput and allow certain functions to be reused. This sample demonstrates two strategies to reuse hardware in your designs:
 
 1. Calling a function in a loop will causes it to only be instantiated once
 2. Launching a task sequence with a function callback lets you reuse a function in cases where it is not practical to reuse it in a loop.
@@ -19,20 +19,20 @@ In normal operation, the oneAPI FPGA compiler automatically in-lines repeated fu
 
 | Optimized for        | Description
 |:---                  |:---
-| OS                   | Ubuntu* 20.04 <br> RHEL*/CentOS* 8 <br> SUSE* 15 <br> Windows* 10, 11 <br> Windows Server* 2019
-| Hardware             | Intel® Agilex® 7, Arria® 10, and Stratix® 10 FPGAs
-| Software             | Intel® oneAPI DPC++/C++ Compiler
+| OS                   | Ubuntu* 20.04, Ubuntu* 22.04, Ubuntu* 24.04 <br> RHEL* 9 <br> SUSE* 15 <br> **NOTE: Windows is not supported**
+| Hardware             | Agilex® 3, Agilex® 5, Agilex® 7, Stratix® 10 and Arria® 10 FPGAs
+| Software             | HLS IP Gen Compiler
 
-> **Note**: Even though the Intel® oneAPI DPC++/C++ compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
+> **Note**: Even though the HLS IP Gen compiler is enough to compile for emulation, generating reports and generating RTL, there are extra software requirements for the simulation flow and FPGA compiles.
 >
-> To use the simulator flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH environment variable setting:
-> - Questa*-Intel® FPGA Edition
-> - Questa*-Intel® FPGA Starter Edition
+> To use the simulator flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) and one of the following simulators must be installed and accessible through your PATH environment variable setting:
+> - Questa*-Altera® FPGA Edition
+> - Questa*-Altera® FPGA Starter Edition
 > - ModelSim® SE
 >
-> When using the hardware compile flow, Intel® Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
+> When using the hardware compile flow, Quartus® Prime Pro Edition (or Standard Edition when targeting Cyclone® V) must be installed and accessible through your PATH.
 >
-> **Warning** Make sure you add the device files associated with the FPGA that you are targeting to your Intel® Quartus® Prime installation.
+> **Warning** Make sure you add the device files associated with the FPGA that you are targeting to your Quartus® Prime installation.
 
 This sample is part of the FPGA code samples.
 It is categorized as a Tier 2 sample that demonstrates a compiler feature.
@@ -143,7 +143,7 @@ struct VectorOp{
     // and dynamic allocations are not allowed.
     // Declare the task sequence object outside the for loop 
     // so that the hardware can be shared at the return point.
-    sycl::ext::intel::experimental::task_sequence<OpSqrt> task_a;
+    sycl::ext::altera::experimental::task_sequence<OpSqrt> task_a;
 
     for (int i = 0; i < len; i++){
       D3Vector item = InputPipeA::read();
@@ -167,22 +167,13 @@ The 3 different example designs in this sample perform similar operations. You m
 3. [Task sequence](3_task_sequence/src/main.cpp) Square root of dot product is invoked with a same task sequence object, both in the loop and at the return point. The hardware of it is shared by each invocation of the task.
 
 ## Build the `hardware_reuse` Tutorial
-> **Note**: When working with the command-line interface (CLI), you should configure the oneAPI toolkits using environment variables.
-> Set up your CLI environment by sourcing the `setvars` script located in the root of your oneAPI installation every time you open a new terminal window.
+> **Note**: When working with the command-line interface (CLI), you should configure the HLS IP Gen Compiler using environment variables.
+> Set up your CLI environment by sourcing the `fpgavars` script located in the root of your HLS IP Gen Compiler installation every time you open a new terminal window.
 > This practice ensures that your compiler, libraries, and tools are ready for development.
 >
 > Linux*:
-> - For system wide installations: `. /opt/intel/oneapi/setvars.sh`
-> - For private installations: ` . ~/intel/oneapi/setvars.sh`
-> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/setvars.sh ; exec csh'`
->
-> Windows*:
-> - `C:\"Program Files (x86)"\Intel\oneAPI\setvars.bat`
-> - Windows PowerShell*, use the following command: `cmd.exe "/K" '"C:\Program Files (x86)\Intel\oneAPI\setvars.bat" && powershell'`
->
-> For more information on configuring environment variables, see [Use the setvars Script with Linux* or macOS*](https://www.intel.com/content/www/us/en/docs/oneapi/programming-guide/current/use-the-setvars-and-oneapi-vars-scripts-with-linux.html or [Use the setvars Script with Windows*](https://www.intel.com/content/www/us/en/docs/oneapi/programming-guide/current/use-the-setvars-and-oneapi-vars-scripts-with-linux.html).
-
-Use these commands to run the design, depending on your OS.
+> - `source <install-dir>/fpgavars.sh`
+> - For non-POSIX shells, like csh, use the following command: `bash -c 'source <install-dir>/fpgavars.sh ; exec csh'`
 
 ### On Linux* Systems
 
@@ -213,6 +204,8 @@ Use these commands to run the design, depending on your OS.
       ```
       make fpga_emu
       ```
+      >**Note**: Since this design uses host pipes, make sure that the emulator pipe depth behaviour is as intended. Set the environment variable `CL_CONFIG_CHANNEL_DEPTH_EMULATION_MODE` to `ignore-depth` for this design so that multiple writes can happen to the pipe without first having the contents read.
+
    2. Generate the HTML optimization reports.
       ```
       make report
@@ -225,48 +218,6 @@ Use these commands to run the design, depending on your OS.
       ```
       make fpga
       ```
-
-### On Windows* Systems
-
-1. Change to the sample directory.
-2. Configure the build system for the Intel® Agilex® 7 device family, which is the default.
-   ```
-   mkdir build
-   cd build
-   cmake -G "NMake Makefiles" .. -DTYPE=<NAIVE/LOOP/TASK_SEQUENCE>
-   ```
-   >Use the appropriate `TYPE` parameter when running CMake to choose which design to compile:
-   >| Example                                      | Directory             | Type (-DTYPE=) |
-   >|----------------------------------------------|-----------------------|----------------|
-   >| Naive                                        | naive/                | `NAIVE`        |
-   >| Loop                                         | loop/                 | `LOOP`         |
-   >| Task sequence                                | task-sequence/        | `TASK_SEQUENCE`|
-   
-   > **Note**: You can override the default target by using the command:
-   >  ```
-   >  cmake -G "NMake Makefiles" .. -DFPGA_DEVICE=<FPGA device family or FPGA part number> -DTYPE=<NAIVE/LOOP/TASK_SEQUENCE>
-   >  ```
-
-3. Compile the design. (The provided targets match the recommended development flow.)
-
-   1. Compile for emulation (fast compile time, targets emulated FPGA device).
-      ```
-      nmake fpga_emu
-      ```
-   2. Generate the optimization report. 
-      ```
-      nmake report
-      ```
-   3. Compile for simulation (fast compile time, targets simulator FPGA device).
-      ```
-      nmake fpga_sim
-      ```
-   4. Compile with Quartus place and route (To get accurate area estimate, longer compile time).
-      ```
-      nmake fpga
-      ```
-
-> **Note**: If you encounter any issues with long paths when compiling under Windows*, you may have to create your ‘build’ directory in a shorter path, for example `C:\samples\build`.  You can then run cmake from that directory, and provide cmake with the full path to your sample directory.
 
 ### Read the Reports
 Locate `report.html` in the `naive.report.prj/reports/`, `naive_loop.report.prj/reports/` and `task_sequences.report.prj/reports/` directory.
@@ -311,22 +262,6 @@ System Viewer: Kernel system > 3ull>) > 3ull>).B1 > Cluster 3*
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./hw_reuse_naive.fpga_sim
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./hw_reuse_loop.fpga_sim
    CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1 ./hw_reuse_tseq.fpga_sim 
-   ```
-
-### On Windows
-1. Run the sample on the FPGA emulator (the kernel executes on the CPU).
-   ```
-   hw_reuse_naive.fpga_emu.exe
-   hw_reuse_loop.fpga_emu.exe
-   hw_reuse_tseq.fpga_emu.exe 
-   ```
-2. Run the sample on the FPGA simulator device.
-   ```
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=1
-   hw_reuse_naive.fpga_sim.exe
-   hw_reuse_loop.fpga_sim.exe
-   hw_reuse_tseq.fpga_sim.exe
-   set CL_CONTEXT_MPSIM_DEVICE_INTELFPGA=
    ```
 
 ## Example Output
